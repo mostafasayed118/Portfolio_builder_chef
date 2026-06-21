@@ -1,0 +1,109 @@
+{
+  "site": {
+    "title": "Chef Amira",
+    "tagline": "Artisan Breads & Pastries",
+    "description": "Experience the finest artisan breads and pastries crafted with passion"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "menu": "Menu",
+    "contact": "Contact",
+    "bookNow": "Book a Tasting"
+  },
+  "hero": {
+    "heading": "Baked with Love,\nShared with Joy",
+    "subheading": "Discover our handcrafted artisan breads and pastries made with the finest ingredients",
+    "ctaPrimary": "View Our Menu",
+    "ctaSecondary": "Book a Tasting"
+  },
+  "about": {
+    "heading": "Our Story",
+    "subheading": "Passion baked into every loaf",
+    "readMore": "Read More"
+  },
+  "menu": {
+    "heading": "Our Menu",
+    "subheading": "Freshly baked every morning",
+    "orderBtn": "Order Now",
+    "customOrderHeading": "Custom Orders",
+    "customOrderDesc": "Have something special in mind? We create bespoke pastries and cakes for every occasion.",
+    "customOrderBtn": "Request a Custom Order",
+    "categories": {
+      "all": "All",
+      "cakes": "Cakes",
+      "pastries": "Pastries",
+      "cookies": "Cookies",
+      "seasonal": "Seasonal"
+    }
+  },
+  "testimonials": {
+    "heading": "What Our Customers Say"
+  },
+  "contact": {
+    "heading": "Get in Touch",
+    "subheading": "We'd love to hear from you",
+    "btn": "Send Message",
+    "success": "Message sent successfully!",
+    "error": "Failed to send message. Please try again."
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "admin": {
+    "login": {
+      "heading": "Admin Login",
+      "subheading": "Sign in to manage your bakery",
+      "userLabel": "Email",
+      "passLabel": "Password",
+      "userPlaceholder": "you@example.com",
+      "passPlaceholder": "Enter your password",
+      "btn": "Sign In",
+      "forgotText": "Forgot password?",
+      "errorMsg": "Invalid email or password"
+    },
+    "dashboard": {
+      "welcome": "Dashboard",
+      "menuItems": "Menu Items",
+      "testimonials": "Testimonials",
+      "galleryPhotos": "Gallery Photos",
+      "manageHeading": "Manage",
+      "recentChanges": "Recent Changes",
+      "section": "Section",
+      "whatChanged": "What changed",
+      "date": "Date",
+      "logoutBtn": "Logout"
+    },
+    "edit": {
+      "saveBtn": "Save Changes",
+      "cancelBtn": "Cancel",
+      "previewBtn": "Preview",
+      "successMsg": "Changes saved successfully",
+      "errorMsg": "Something went wrong"
+    },
+    "heroSection": "Hero Section",
+    "aboutSection": "About Section",
+    "menuSection": "Menu Section",
+    "testimonials": "Testimonials",
+    "gallery": "Gallery",
+    "contactMessages": "Contact Messages",
+    "logout": "Logout"
+  },
+  "gallery": {
+    "heading": "Our Gallery"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "noData": "No data available",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "uploading": "Uploading...",
+    "uploadError": "Upload failed",
+    "fileTooLarge": "File is too large"
+  }
+}

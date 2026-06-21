@@ -1,0 +1,109 @@
+{
+  "site": {
+    "title": "الشيف أميرة",
+    "tagline": "مخبوزات حرفية",
+    "description": "استمتع بأرقى أنواع الخبز الحرفي والمعجنات المصنوعة بشغف"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "about": "عننا",
+    "menu": "القائمة",
+    "contact": "اتصل بنا",
+    "bookNow": "احجز تذوق"
+  },
+  "hero": {
+    "heading": "مخبوز بالحب،\nمشارك بالفرح",
+    "subheading": "اكتشف خبزنا الحرفي ومعجناتنا المصنوعة يدويًا بأفضل المكونات",
+    "ctaPrimary": "عرض القائمة",
+    "ctaSecondary": "احجز تذوق"
+  },
+  "about": {
+    "heading": "قصتنا",
+    "subheading": "شغف يُخبز في كل رغيف",
+    "readMore": "اقرأ المزيد"
+  },
+  "menu": {
+    "heading": "قائمتنا",
+    "subheading": "طازج يوميًا كل صباح",
+    "orderBtn": "اطلب الآن",
+    "customOrderHeading": "طلبات خاصة",
+    "customOrderDesc": "عندك مناسبة خاصة؟ بنصنعلك المعجنات والكيك المخصص لكل مناسبة.",
+    "customOrderBtn": "اطلب طلب خاص",
+    "categories": {
+      "all": "الكل",
+      "cakes": "الكيك",
+      "pastries": "المعجنات",
+      "cookies": "البسكويت",
+      "seasonal": "الموسمي"
+    }
+  },
+  "testimonials": {
+    "heading": "ماذا يقول عملاؤنا"
+  },
+  "contact": {
+    "heading": "تواصل معنا",
+    "subheading": "يسعدنا سماعك",
+    "btn": "إرسال الرسالة",
+    "success": "تم إرسال الرسالة بنجاح!",
+    "error": "فشل إرسال الرسالة. حاول مرة أخرى."
+  },
+  "footer": {
+    "rights": "جميع الحقوق محفوظة."
+  },
+  "admin": {
+    "login": {
+      "heading": "تسجيل الدخول",
+      "subheading": "سجل دخولك لإدارة المخبز",
+      "userLabel": "البريد الإلكتروني",
+      "passLabel": "كلمة المرور",
+      "userPlaceholder": "you@example.com",
+      "passPlaceholder": "أدخل كلمة المرور",
+      "btn": "تسجيل الدخول",
+      "forgotText": "نسيت كلمة المرور؟",
+      "errorMsg": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+    },
+    "dashboard": {
+      "welcome": "لوحة التحكم",
+      "menuItems": "عناصر القائمة",
+      "testimonials": "آراء العملاء",
+      "galleryPhotos": "صور المعرض",
+      "manageHeading": "إدارة",
+      "recentChanges": "آخر التغييرات",
+      "section": "القسم",
+      "whatChanged": "التغيير",
+      "date": "التاريخ",
+      "logoutBtn": "تسجيل الخروج"
+    },
+    "edit": {
+      "saveBtn": "حفظ التغييرات",
+      "cancelBtn": "إلغاء",
+      "previewBtn": "معاينة",
+      "successMsg": "تم حفظ التغييرات بنجاح",
+      "errorMsg": "حدث خطأ ما"
+    },
+    "heroSection": "القسم الرئيسي",
+    "aboutSection": "قسم عننا",
+    "menuSection": "قسم القائمة",
+    "testimonials": "آراء العملاء",
+    "gallery": "معرض الصور",
+    "contactMessages": "رسائل التواصل",
+    "logout": "تسجيل الخروج"
+  },
+  "gallery": {
+    "heading": "معرض الصور"
+  },
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "error": "حدث خطأ ما",
+    "noData": "لا توجد بيانات",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "add": "إضافة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "uploading": "جارٍ الرفع...",
+    "uploadError": "فشل الرفع",
+    "fileTooLarge": "الملف كبير جدًا"
+  }
+}
