@@ -8,10 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslations } from "next-intl";
 import { SectionEditorShell } from "@/components/admin/SectionEditorShell";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { toast } from "sonner";
 
 export default function AdminHeroPage() {
+  const t = useTranslations("admin.heroEditor.labels");
+  const tHero = useTranslations("admin.heroEditor");
   const hero = useQuery(api.queries.getHeroContent);
   const updateHero = useMutation(api.mutations.updateHeroContent);
   const [saving, setSaving] = useState(false);
@@ -22,6 +26,7 @@ export default function AdminHeroPage() {
   const [subheadingAr, setSubheadingAr] = useState("");
   const [ctaLabelEn, setCtaLabelEn] = useState("");
   const [ctaLabelAr, setCtaLabelAr] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -32,6 +37,7 @@ export default function AdminHeroPage() {
       setSubheadingAr(hero.subheading_ar ?? "");
       setCtaLabelEn(hero.ctaLabel_en ?? "");
       setCtaLabelAr(hero.ctaLabel_ar ?? "");
+      setImageUrl(hero.imageUrl ?? null);
       setLoaded(true);
     }
   }, [hero, loaded]);
@@ -42,8 +48,13 @@ export default function AdminHeroPage() {
     subheadingEn !== hero?.subheading_en ||
     subheadingAr !== hero?.subheading_ar ||
     ctaLabelEn !== hero?.ctaLabel_en ||
-    ctaLabelAr !== hero?.ctaLabel_ar
+    ctaLabelAr !== hero?.ctaLabel_ar ||
+    imageUrl !== (hero?.imageUrl ?? null)
   );
+
+  function handleUploadComplete({ url }: { url: string }) {
+    setImageUrl(url);
+  }
 
   async function handleSave() {
     if (!hero) return;
@@ -56,11 +67,11 @@ export default function AdminHeroPage() {
         subheading_ar: subheadingAr,
         ctaLabel_en: ctaLabelEn,
         ctaLabel_ar: ctaLabelAr,
-        imageUrl: hero.imageUrl ?? null,
+        imageUrl,
       });
-      toast.success("Hero section saved");
+      toast.success(tHero("savedToast"));
     } catch {
-      toast.error("Failed to save");
+      toast.error(tHero("saveFailedToast"));
     } finally {
       setSaving(false);
     }
@@ -83,7 +94,7 @@ export default function AdminHeroPage() {
 
   return (
     <SectionEditorShell
-      title="Hero Section"
+      title="Homepage Welcome"
       breadcrumb="Dashboard"
       onSave={handleSave}
       isSaving={saving}
@@ -93,30 +104,39 @@ export default function AdminHeroPage() {
       <Card className="bg-surface border-border/50">
         <CardContent className="p-6 space-y-6">
           <div className="space-y-2">
-            <Label className="text-foreground">Heading - English</Label>
+            <Label className="text-foreground">{t("headingEn")}</Label>
             <Textarea value={headingEn} onChange={(e) => setHeadingEn(e.target.value)} rows={2} className="bg-surface-elevated border-border/50 focus:border-accent" />
           </div>
           <div className="space-y-2">
-            <Label className="text-foreground">العنوان - العربية</Label>
+            <Label className="text-foreground">{t("headingAr")}</Label>
             <Textarea value={headingAr} onChange={(e) => setHeadingAr(e.target.value)} rows={2} dir="rtl" className="bg-surface-elevated border-border/50 focus:border-accent text-right" />
           </div>
           <div className="space-y-2">
-            <Label className="text-foreground">Subheading - English</Label>
+            <Label className="text-foreground">{t("subheadingEn")}</Label>
             <Textarea value={subheadingEn} onChange={(e) => setSubheadingEn(e.target.value)} rows={3} className="bg-surface-elevated border-border/50 focus:border-accent" />
           </div>
           <div className="space-y-2">
-            <Label className="text-foreground">الوصف - العربية</Label>
+            <Label className="text-foreground">{t("subheadingAr")}</Label>
             <Textarea value={subheadingAr} onChange={(e) => setSubheadingAr(e.target.value)} rows={3} dir="rtl" className="bg-surface-elevated border-border/50 focus:border-accent text-right" />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label className="text-foreground">CTA Button - English</Label>
+              <Label className="text-foreground">{t("ctaEn")}</Label>
               <Input value={ctaLabelEn} onChange={(e) => setCtaLabelEn(e.target.value)} className="bg-surface-elevated border-border/50 focus:border-accent" />
             </div>
             <div className="space-y-2">
-              <Label className="text-foreground">الزر - العربية</Label>
+              <Label className="text-foreground">{t("ctaAr")}</Label>
               <Input value={ctaLabelAr} onChange={(e) => setCtaLabelAr(e.target.value)} dir="rtl" className="bg-surface-elevated border-border/50 focus:border-accent text-right" />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-foreground">Hero Portrait</Label>
+            <ImageUploadField
+              currentUrl={imageUrl}
+              onUpload={handleUploadComplete}
+              onRemove={() => setImageUrl(null)}
+            />
           </div>
         </CardContent>
       </Card>

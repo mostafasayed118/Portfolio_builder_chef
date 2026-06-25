@@ -8,10 +8,12 @@
  * @module
  */
 
+import type * as auth from "../auth.js";
 import type * as files from "../files.js";
+import type * as lib_logger from "../lib/logger.js";
+import type * as lib_timezone from "../lib/timezone.js";
 import type * as mutations from "../mutations.js";
 import type * as queries from "../queries.js";
-import type * as seed from "../seed.js";
 
 import type {
   ApiFromModules,
@@ -20,10 +22,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   files: typeof files;
+  "lib/logger": typeof lib_logger;
+  "lib/timezone": typeof lib_timezone;
   mutations: typeof mutations;
   queries: typeof queries;
-  seed: typeof seed;
 }>;
 
 /**

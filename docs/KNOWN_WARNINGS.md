@@ -1,136 +1,117 @@
-# KNOWN WARNINGS
+# Known Warnings — Chef Mohamed Mamdouh Portfolio
 
-**Last Updated:** 2026-06-21
-
-Accepted trade-offs and intentional design decisions. These are NOT bugs — do NOT attempt to "fix" them without understanding the reasoning.
-
----
-
-## Warning #1: `<img>` Used Instead of `<Image>` in Gallery
-
-**Status:** ✅ Intentional — DO NOT "fix"
-
-### The Warning
-The gallery components (`public GallerySection` and `admin gallery`) use native `<img>` tags instead of Next.js `<Image>` component.
-
-### Why This Is Acceptable
-- Gallery images come from Convex storage with dynamic URLs that match `*.convex.cloud` (already in `remotePatterns`)
-- Using `<Image>` would require:
-  - Specifying `width` and `height` for every image (not feasible for masonry layout with unknown dimensions)
-  - Adding `unoptimized` prop for external dynamic images (negates the benefit)
-- The gallery uses `loading="lazy"` natively via `<img loading="lazy">`
-- The admin uses `<img>` inside sortable DnD cards where `<Image>`'s wrapper div would interfere with drag transforms
-
-### When To Use `<Image>`
-- Use `<Image>` for static, known-dimension images (logos, hero images with fixed aspect ratios)
-- Use `<img>` for dynamic gallery/masonry layouts with unknown dimensions
+This document tracks expected build/runtime warnings and their resolution status.
+Items marked ✅ RESOLVED are kept for audit trail. Items marked ⚠️ are still active.
 
 ---
 
-## Warning #2: No Suspense Boundaries Around Convex Sections
+## Warning #1 — Next.js 15 `params` is Now Async
 
-**Status:** ✅ Intentional — DO NOT "fix"
+**Description:** In Next.js 15, the `params` prop passed to `page.tsx` / `layout.tsx` is a
+Promise. Accessing it synchronously produces the warning:
+> "A component was suspended by an uncached promise."
 
-### The Warning
-Public-facing section components (HeroSection, MenuSection, etc.) use `useQuery()` from Convex without being wrapped in `<Suspense>` boundaries.
-
-### Why This Is Acceptable
-- `useQuery()` from Convex does NOT trigger React Suspense — it returns `undefined` while loading
-- Each component handles loading internally via `if (!data) return <Skeleton />`
-- This is the standard Convex pattern documented at docs.convex.dev
-- Adding `<Suspense>` would not improve UX because Convex queries don't suspend rendering
-
-### The Pattern
-```tsx
-function Section() {
-  const data = useQuery(api.queries.getData)
-
-  if (!data) return <Skeleton />    // ← Loading handled here, not via Suspense
-  return <div>{data}</div>
-}
-```
+**Affected files:** All `src/app/[locale]/**/page.tsx` and `layout.tsx` files.
+**Status:** ⚠️ Expected in development — use `await params` or `React.use(params)`. Tracked until migration complete.
 
 ---
 
-## Warning #3: Hardcoded "Admin" Title in AdminTopbar
+## Warning #2 — Convex `useQuery` Returns `undefined` on First Render
 
-**Status:** ✅ Intentional — Low priority, DO NOT "fix" without reason
+**Description:** All `useQuery` calls return `undefined` before the first successful Convex fetch.
+Every component that calls `useQuery` must handle the `undefined` loading state explicitly
+(e.g. Skeleton component), or it will throw a runtime error.
 
-### The Warning
-```tsx
-// src/app/[locale]/admin/(protected)/layout.tsx
-<AdminTopbar title="Admin" />  // Not translated
-```
-
-### Why This Is Acceptable
-- The AdminTopbar only shows on mobile (hidden on desktop via `lg:hidden`)
-- The `title` prop is overridden by each page's own `<h1>` heading in the content area
-- This is a minor cosmetic issue with no functional impact
-- Translating "Admin" to Arabic ("لوحة التحكم") would be trivial but unnecessary since this is an admin-only view
-
-### What To Do Instead of Hardcoding
-If the hardcoded title bothers you, use the translated key from the admin namespace:
-```tsx
-// Get translations from the parent — but requires converting layout to understand locale
-```
-
-**Recommendation:** Leave as-is unless a user specifically requests translation.
+**Status:** ⚠️ By-design Convex behaviour — ensure all components have loading guards.
 
 ---
 
-## Warning #4: SESSION_SECRET Validation
+## Warning #3 — `@clerk/nextjs` Peer Dependency Mismatch
 
-**Status:** ✅ Documented — Setup-time concern, NOT a code fix
+**Description:** Clerk v7 lists `react@^18` as peer but the project uses React 19.
+`npm install` may log: `WARN: peer react@"^18.0.0" from @clerk/nextjs`.
 
-### The Warning
-The `SESSION_SECRET` environment variable must be at least 32 characters. There is no runtime validation in the code.
-
-### Why This Is Acceptable
-- This is a well-known requirement of `iron-session` (will throw at startup if too short)
-- Documented in both `.env.local.example` and the setup guide
-- Runtime validation would add unnecessary complexity for a setup-time error
-- The `npm run generate-password` script could be extended to generate a random secret, but that's a feature enhancement, not a fix
-
-### What To Do
-When setting up the project:
-```bash
-# Generate a random 32+ char string
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-# Paste into SESSION_SECRET in .env.local
-```
+**Status:** ⚠️ Non-blocking — Clerk v7 works with React 19 in practice. Will resolve when Clerk
+releases an official React 19 peer range.
 
 ---
 
-## Warning #5: Space in Chef's Name "Chef Amira"
+## Warning #4 — Clerk Session Cookie in Preview Environments
 
-**Status:** ✅ Intentional — DO NOT "fix"
+**Description:** Clerk session cookies may not be sent correctly in some cross-origin
+preview environments (Vercel preview URLs accessed from different domains), causing unexpected redirects to `/admin/login`.
 
-The project uses "Chef Amira" consistently as the brand name. Note that the name contains a space that appears in URLs and file paths. This is intentional brand identity — do not replace with "Chef_Amira" or "ChefAmira" unless explicitly requested.
-
----
-
-## Warning #6: Rate Limiting Uses In-Memory Map
-
-**Status:** ✅ Intentional — Acceptable for single-instance deployment
-
-### The Warning
-Login rate limiting uses a JavaScript `Map<string, { attempts, firstAttempt }>` stored in memory.
-
-### Why This Is Acceptable
-- This is a single-instance Next.js application (no horizontal scaling)
-- Rate limit state resets on server restart (which is acceptable for a bakery portfolio)
-- For production with multiple instances, replace with a Convex mutation/database-backed rate limiter
-- The current implementation correctly handles the 5-attempts-per-15-minutes window
+**Status:** ⚠️ Known dev-environment quirk — not a production issue on the canonical domain. Ensure Clerk Dashboard has all preview URLs whitelisted.
 
 ---
 
-## Warning #7: Next.js 16 `turbopackFileSystemCacheForDev` is Experimental
+## Warning #5 — Tailwind CSS v4 `@import` Order
 
-**Status:** ✅ Intentional — Stable in Next.js 16.1+
+**Description:** Tailwind v4 requires `@import "tailwindcss"` to appear before any custom
+`@layer` or `@utility` blocks. Incorrect order produces cryptic CSS-variable warnings in
+the browser console.
 
-This flag is enabled in `next.config.ts`:
-```ts
-experimental: { turbopackFileSystemCacheForDev: true }
-```
+**Status:** ⚠️ Configuration-sensitive — verify `globals.css` import order after any Tailwind
+upgrade.
 
-While the property lives under `experimental`, it has been production-stable since Next.js 16.1. It provides persistent Turbopack cache across dev server restarts. If a future Next.js version deprecates or removes this, simply delete the line.
+---
+
+## Warning #6 — `motion` (Framer Motion v12) Bundle Size
+
+**Description:** `motion` v12 ships a larger bundle than v10/v11. Tree-shaking is not always
+reliable with Next.js App Router. Console warning:
+> "You are importing createProxy..."
+
+**Status:** ⚠️ Accepted — use `import { motion } from "motion/react"` (not `"framer-motion"`)
+for optimal tree-shaking.
+
+---
+
+## Warning #7 — `@dnd-kit` Inside React Strict Mode
+
+**Description:** `@dnd-kit` produces a console warning in React Strict Mode due to double
+`useEffect` invocations. The drag-and-drop works correctly in production; warning only
+appears in development.
+
+**Status:** ⚠️ Known `@dnd-kit` + Strict Mode behaviour — not actionable until upstream fix.
+
+---
+
+## Warning #8 — Clerk v7 React 19 Peer Dependency
+
+**Description:** Clerk v7 lists `react@^18` as peer but the project uses React 19. `npm install` may log: `WARN: peer react@"^18.0.0" from @clerk/nextjs`.
+
+**Status:** ⚠️ Non-blocking — Clerk v7 works with React 19 in practice. Will resolve when Clerk releases an official React 19 peer range.
+
+---
+
+## Warning #9 — Convex File Storage URLs Expire
+
+**Description:** Convex storage URLs generated by `ctx.storage.getUrl()` are signed and
+expire after ~1 hour. Caching them in the database or localStorage will cause broken
+images after expiry.
+
+**Status:** ⚠️ By-design Convex behaviour — always call `getUrl()` at render time through a
+`useQuery` hook; never persist the URL string.
+
+---
+
+## Warning #10 — `next-intl` RTL Detection Requires Manual Direction Setting
+
+**Description:** `next-intl` does not automatically set `dir="rtl"` on the `<html>` element.
+The `useDirection()` hook returns the direction from the cookie, not the locale. Arabic
+pages must explicitly set `dir="rtl"` in the root layout.
+
+**Affected files:** `src/app/[locale]/layout.tsx` — ensure `dir={isArabic ? "rtl" : "ltr"}`.
+**Status:** ⚠️ Expected — `dir` is set conditionally based on locale.
+
+---
+
+## Warning #11 — Arabic Translation Import
+
+**Description:** The `/ar` route required professional Arabic translations before launch.
+All P0+P1+P2 content needed translation by a native Egyptian F&B specialist.
+
+**Status:** ✅ RESOLVED — Professional Arabic translations imported on 2026-06-22.
+All P0+P1+P2 content translated by native Egyptian F&B specialist. Remaining external
+dependencies: gallery photos, real testimonials, menu pricing (Chef Mohamed action items).

@@ -1,0 +1,64 @@
+▌ Developing against deployment:
+▌ [Development] mustafa-sayed-saeed-ibrahim:portfolio-bakary:dev/mustafa-sayed-saeed-ibrahim (dev) (dashboard: https://dashboard.convex.dev/t/mustafa-sayed-saeed-ibrahim/portfolio-bakary/reliable-deer-270)
+▌ └─ https://reliable-deer-270.convex.cloud
+- Preparing Convex functions...
+
+Convex AI files are not installed. Run npx convex ai-files install to get started or npx convex ai-files disable to hide this message.
+[32m√[39m 17:23:05 Convex functions ready! (1.46s)
+6/23/2026, 5:24:38 PM [CONVEX M(mutations:updateHeroContent)] Uncaught ConvexError: Unauthorized: Not authenticated
+    at async handler (../convex/mutations.ts:170:4)
+
+6/23/2026, 5:24:59 PM [CONVEX M(mutations:updateHeroContent)] Uncaught ConvexError: Unauthorized: Not authenticated
+    at async handler (../convex/mutations.ts:170:4)
+
+6/23/2026, 5:27:48 PM [CONVEX M(mutations:updateHeroContent)] Uncaught ConvexError: Unauthorized: Not authenticated
+    at async handler (../convex/mutations.ts:170:4)
+
+- Preparing Convex functions...
+
+[32m√[39m Added table indexes:
+  [+] activityLogs.by_created   createdAt, _creationTime
+✔ 18:06:44 Convex functions ready! (1.84s)
+- Preparing Convex functions...
+
+[32m√[39m 18:06:54 Convex functions ready! (1.58s)
+- Preparing Convex functions...
+
+Temporary directory 'C:\Users\ASUS\AppData\Local\Temp' and project directory 'E:\abo_gabal\chef-bakery-portfolio\convex\_generated' are on different filesystems.
+  If you're running into errors with other tools watching the project directory, override the temporary directory location with the CONVEX_TMPDIR environment variable.
+  Be sure to pick a temporary directory that's on the same filesystem as your project.
+[32m√[39m 18:07:05 Convex functions ready! (1.52s)
+- Preparing Convex functions...
+
+[32m√[39m 18:08:14 Convex functions ready! (1.63s)
+- Preparing Convex functions...
+
+[32m√[39m 18:08:40 Convex functions ready! (1.7s)
+- Preparing Convex functions...
+
+[32m√[39m 18:08:57 Convex functions ready! (1.91s)
+- Preparing Convex functions...
+
+[32m√[39m 18:09:28 Convex functions ready! (1.84s)
+- Preparing Convex functions...
+
+[32m√[39m 18:09:46 Convex functions ready! (1.39s)
+- Preparing Convex functions...
+
+[32m√[39m 18:10:40 Convex functions ready! (1.79s)
+- Preparing Convex functions...
+
+[32m√[39m 18:10:49 Convex functions ready! (1.54s)
+6/23/2026, 6:12:12 PM [CONVEX M(mutations:updateHeroContent)] Uncaught ConvexError: Unauthorized: Not authenticated
+    at async handler (../convex/mutations.ts:192:9)
+
+- Preparing Convex functions...
+
+[32m√[39m 18:13:37 Convex functions ready! (1.48s)
+Filesystem changed during push, retrying...
+- Preparing Convex functions...
+
+[32m√[39m 18:13:39 Convex functions ready! (1.32s)
+- Preparing Convex functions...
+
+[32m√[39m 18:14:14 Convex functions ready! (1.3s)

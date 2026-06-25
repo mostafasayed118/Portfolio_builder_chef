@@ -1,13 +1,38 @@
 {
   "site": {
-    "title": "الشيف أميرة",
-    "tagline": "مخبوزات حرفية",
-    "description": "استمتع بأرقى أنواع الخبز الحرفي والمعجنات المصنوعة بشغف"
+    "title": "الشيف محمد",
+    "tagline": "مخبوزات فرنسية واستشارات",
+    "description": "استشارات مخبوزات فرنسية متخصصة، خبز العجين المخمر والكرواسون — الشيف محمد",
+    "setupInProgress": "جاري إعداد المخبز — تفضل بزيارتنا قريباً."
+  },
+  "metadata": {
+    "about": {
+      "title": "عن الشيف | الشيف محمد",
+      "description": "تعرف على رحلة الشيف محمد في عالم المخبوزات الفرنسية الحرفية — من مساعد شيف إلى شيف رئيسي، خبير في الخبز المخمر واستشاري مخابز."
+    },
+    "contact": {
+      "title": "اتصل بنا | الشيف محمد",
+      "description": "تواصل مع الشيف محمد لاستشارات المخبوزات الفرنسية والتموين وورش العمل التدريبية والطلبات الخاصة. مقرنا القاهرة ونعمل دوليًا."
+    },
+    "menu": {
+      "title": "القائمة | الشيف محمد",
+      "description": "تصفح قائمة الشيف محمد الحرفية — خبز العجين المخمر، كرواسون معجن باليد، معجنات فرنسية، ومخبوزات مخصصة."
+    },
+    "services": {
+      "title": "خدماتي | الشيف محمد",
+      "description": "استكشف خدمات الشيف محمد — المخبوزات الحرفية، والاستشارات، وتطوير القوائم، وتحسين الإنتاج، وتدريب الفرق."
+    },
+    "gallery": {
+      "title": "المعرض | الشيف محمد",
+      "description": "شاهد أعمال الشيف محمد — خبز العجين المخمر، والكرواسون المورّق، والمعجنات الفرنسية، والتحف المخبوزة."
+    }
   },
   "nav": {
     "home": "الرئيسية",
     "about": "عننا",
+    "services": "خدماتي",
     "menu": "القائمة",
+    "gallery": "المعرض",
     "contact": "اتصل بنا",
     "bookNow": "احجز تذوق"
   },
@@ -15,12 +40,16 @@
     "heading": "مخبوز بالحب،\nمشارك بالفرح",
     "subheading": "اكتشف خبزنا الحرفي ومعجناتنا المصنوعة يدويًا بأفضل المكونات",
     "ctaPrimary": "عرض القائمة",
-    "ctaSecondary": "احجز تذوق"
+    "ctaSecondary": "احجز تذوق",
+    "imagePlaceholder": "صورة الواجهة",
+    "emptyState": "أضف صورتك في Admin ← الترحيب في الصفحة الرئيسية"
   },
   "about": {
-    "heading": "قصتنا",
+    "heading": "مرحبًا، أنا الشيف محمد",
     "subheading": "شغف يُخبز في كل رغيف",
-    "readMore": "اقرأ المزيد"
+    "readMore": "اقرأ المزيد",
+    "imagePlaceholder": "صورة الشيف",
+    "emptyState": "أضف صورتك في Admin ← عني"
   },
   "menu": {
     "heading": "قائمتنا",
@@ -29,8 +58,12 @@
     "customOrderHeading": "طلبات خاصة",
     "customOrderDesc": "عندك مناسبة خاصة؟ بنصنعلك المعجنات والكيك المخصص لكل مناسبة.",
     "customOrderBtn": "اطلب طلب خاص",
+    "emptyState": "لا توجد عناصر متاحة",
+    "photoPlaceholder": "صورة",
+    "priceOnRequest": "عند الطلب",
     "categories": {
       "all": "الكل",
+      "breads": "الخبز",
       "cakes": "الكيك",
       "pastries": "المعجنات",
       "cookies": "البسكويت",
@@ -38,48 +71,223 @@
     }
   },
   "testimonials": {
-    "heading": "ماذا يقول عملاؤنا"
+    "heading": "ماذا يقول عملاؤنا",
+    "emptyState": "لا توجد آراء بعد"
+  },
+  "services": {
+    "title": "ماذا أقدم",
+    "emptyTitle": "الخدمات قريبًا",
+    "emptyDesc": "اعرض خدماتك في المخبوزات والاستشارات والتدريب. أضفها من لوحة التحكم.",
+    "emptyCta": "أضف أول خدمة لك",
+    "categories": {
+      "artisanal": "المخبوزات الحرفية",
+      "consulting": "الاستشارات والتطوير",
+      "training": "التدريب والخبرة"
+    }
   },
   "contact": {
     "heading": "تواصل معنا",
     "subheading": "يسعدنا سماعك",
     "btn": "إرسال الرسالة",
     "success": "تم إرسال الرسالة بنجاح!",
-    "error": "فشل إرسال الرسالة. حاول مرة أخرى."
+    "error": "فشل إرسال الرسالة. حاول مرة أخرى.",
+    "rateLimited": "يرجى الانتظار بضع دقائق قبل الإرسال مرة أخرى.",
+    "phoneLabel": "الهاتف",
+    "emailLabel": "البريد الإلكتروني",
+    "whatsappLabel": "واتساب",
+    "responseLabel": "وقت الاستجابة",
+    "addressLabel": "العنوان",
+    "instagramLabel": "إنستغرام",
+    "bookBtn": "احجز تذوق",
+    "businessHoursLabel": "ساعات العمل",
+    "form": {
+      "nameLabel": "الاسم",
+      "emailLabel": "البريد الإلكتروني",
+      "phoneLabel": "الهاتف (اختياري)",
+      "phonePlaceholder": "+٢٠ ...",
+      "messageLabel": "الرسالة",
+      "requestTypeLabel": "كيف يمكنني مساعدتك؟",
+      "requestTypePlaceholder": "اختر موضوعاً",
+      "requestTypes": {
+        "consulting": "استشارات",
+        "catering": "تموين حفلات",
+        "training": "تدريب",
+        "partnerships": "شراكات",
+        "other": "أخرى"
+      }
+    }
+  },
+  "cta": {
+    "heading": "مستعد لتجربة الكمال؟",
+    "subheading": "احجز جلسة تذوق أو اطلب طلب خاص. يسعدنا أن نخبز لك.",
+    "primary": "احجز تذوق",
+    "secondary": "عرض القائمة"
   },
   "footer": {
-    "rights": "جميع الحقوق محفوظة."
+    "rights": "جميع الحقوق محفوظة.",
+    "navigation": "التنقل"
+  },
+  "errors": {
+    "pageTitle": "حدث خطأ ما",
+    "pageMessage": "حدث خطأ غير متوقع. حاول مرة أخرى.",
+    "tryAgain": "حاول مرة أخرى",
+    "convexTitle": "تعذر تحميل البيانات",
+    "convexMessage": "حدثت مشكلة في الاتصال بالخادم. تحقق من اتصالك وحاول مرة أخرى.",
+    "notFoundTitle": "الصفحة غير موجودة",
+    "notFoundMessage": "عذرًا، الصفحة التي تبحث عنها غير موجودة أو تم نقلها",
+    "backHome": "العودة إلى الرئيسية"
   },
   "admin": {
     "login": {
       "heading": "تسجيل الدخول",
       "subheading": "سجل دخولك لإدارة المخبز",
-      "userLabel": "البريد الإلكتروني",
+      "userLabel": "اسم المستخدم",
       "passLabel": "كلمة المرور",
-      "userPlaceholder": "you@example.com",
+      "userPlaceholder": "أدخل اسم المستخدم",
       "passPlaceholder": "أدخل كلمة المرور",
       "btn": "تسجيل الدخول",
+      "signingIn": "جارٍ تسجيل الدخول...",
       "forgotText": "نسيت كلمة المرور؟",
-      "errorMsg": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+      "errorMsg": "اسم المستخدم أو كلمة المرور غير صحيحة. حاول مرة أخرى.",
+      "quote": "خبز بطيء، معجنات فرنسية — عشر سنوات خلف الطاولة.",
+      "quoteAuthor": "— الشيف محمد"
+    },
+    "topbar": {
+      "title": "لوحة التحكم"
     },
     "dashboard": {
-      "welcome": "لوحة التحكم",
+      "welcome": "مرحبًا بعودتك",
       "menuItems": "عناصر القائمة",
       "testimonials": "آراء العملاء",
       "galleryPhotos": "صور المعرض",
+      "quickActions": "إجراءات سريعة",
       "manageHeading": "إدارة",
       "recentChanges": "آخر التغييرات",
       "section": "القسم",
       "whatChanged": "التغيير",
       "date": "التاريخ",
-      "logoutBtn": "تسجيل الخروج"
+      "logoutBtn": "تسجيل الخروج",
+      "lastUpdated": "آخر تحديث",
+      "createdAt": "تاريخ الإنشاء",
+      "cards": {
+        "hero": { "label": "ترحيب الصفحة الرئيسية", "desc": "غيّر رسالة الترحيب الكبيرة التي يراها الزوار أولاً" },
+        "about": { "label": "عني", "desc": "حدّث قصتك وصورتك وتخصصاتك" },
+        "menu": { "label": "عناصر القائمة", "desc": "أضف مخبوزات جديدة أو غيّر الأسعار" },
+        "testimonials": { "label": "آراء العملاء", "desc": "أظهر ما يقوله عملاؤك" },
+        "gallery": { "label": "معرض الصور", "desc": "ارفع صور مخبزك ومخبوزاتك" },
+        "services": { "label": "الخدمات", "desc": "إدارة خدمات الاستشارات والتدريب والمخبوزات" },
+        "projects": { "label": "خبراتي العملية", "desc": "تعديل تاريخك المهني وخبرات العمل" },
+        "locations": { "label": "مناطق الخدمة", "desc": "إدارة مواقعك في القاهرة والدولية" },
+        "contact": { "label": "بيانات التواصل", "desc": "حدّث الهاتف والبريد والعنوان" }
+      }
+    },
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "hero": "ترحيب الصفحة الرئيسية",
+      "about": "عني",
+      "projects": "خبراتي العملية",
+      "menu": "عناصر القائمة",
+      "testimonials": "آراء العملاء",
+      "services": "الخدمات",
+      "gallery": "معرض الصور",
+      "locations": "مناطق الخدمة",
+      "contact": "بيانات التواصل",
+      "inbox": "صندوق الوارد",
+      "logout": "تسجيل الخروج"
+    },
+    "shell": {
+      "viewSite": "عرض في الموقع",
+      "saving": "جارٍ الحفظ...",
+      "saveChanges": "حفظ التغييرات",
+      "cancel": "إلغاء",
+      "unsavedConfirm": "لديك تغييرات غير محفوظة. هل تريد المغادرة بدون حفظ؟"
+    },
+    "image": {
+      "currentAlt": "الصورة الحالية",
+      "uploadBtn": "ارفع صورة",
+      "changeBtn": "تغيير الصورة",
+      "dropHint": "أو اسحب صورة هنا",
+      "helper": "الحد الأقصى ٥ ميجابايت · يُفضّل JPG أو PNG",
+      "uploadingPrefix": "جارٍ الرفع...",
+      "invalidFormat": "نوع الملف غير مدعوم. يُرجى استخدام صورة (JPG أو PNG).",
+      "tooLarge": "الصورة أكبر من ٥ ميجابايت. جرّب صورة أصغر أو غيّر حجمها من هاتفك أولاً.",
+      "uploaded": "تمت إضافة الصورة",
+      "uploadFailed": "الرفع لم يكتمل. تحقق من اتصال الإنترنت وحاول مرة أخرى."
     },
     "edit": {
       "saveBtn": "حفظ التغييرات",
       "cancelBtn": "إلغاء",
       "previewBtn": "معاينة",
       "successMsg": "تم حفظ التغييرات بنجاح",
-      "errorMsg": "حدث خطأ ما"
+      "errorMsg": "لم يتم الحفظ. تحقق من اتصال الإنترنت وحاول مرة أخرى."
+    },
+    "aboutEditor": {
+      "title": "عني",
+      "titleEn": "العنوان - بالإنجليزية",
+      "titleAr": "العنوان - بالعربية",
+      "storyEn": "قصتك - بالإنجليزية",
+      "storyAr": "قصتك - بالعربية",
+      "photoLabel": "صورتك",
+      "skillsLabel": "ما تتقنه",
+      "skillsEmpty": "أخبر الزوار بما تتقنه — مثلاً: السوردو، كعك الأفراح",
+      "skillsPlaceholder": "اكتب تخصصًا واضغط Enter",
+      "savedToast": "تم حفظ صفحة عني",
+      "saveFailedToast": "لم يتم الحفظ. تحقق من اتصال الإنترنت وحاول مرة أخرى.",
+      "labels": {
+        "taglineEn": "Tagline - English",
+        "taglineAr": "الشعار - العربية",
+        "educationEn": "Education (English)",
+        "educationAr": "التعليم - العربية",
+        "stats": "شارات الإحصائيات (مثل: \"أكثر من ١٠ سنوات خبرة\")"
+      },
+      "placeholders": {
+        "taglineEn": "French Bakery Consultant",
+        "taglineAr": "استشاري مخبوزات فرنسية",
+        "educationEn": "Technical Diploma — Mesta (2012–2016)",
+        "stats": "اكتب إحصائية واضغط Enter"
+      }
+    },
+    "heroEditor": {
+      "labels": {
+        "headingEn": "Big welcome message - English",
+        "headingAr": "رسالة الترحيب - بالعربية",
+        "subheadingEn": "Short description - English",
+        "subheadingAr": "وصف قصير - بالعربية",
+        "ctaEn": "Button text - English",
+        "ctaAr": "نص الزر - بالعربية"
+      },
+      "savedToast": "تم حفظ رسالة الترحيب",
+      "saveFailedToast": "لم يتم الحفظ. تحقق من اتصال الإنترنت وحاول مرة أخرى."
+    },
+    "contactEditor": {
+      "labels": {
+        "phonePrimary": "الهاتف (الرئيسي)",
+        "phoneSecondary": "الهاتف (الثانوي / واتساب)",
+        "email": "البريد الإلكتروني",
+        "whatsapp": "رابط واتساب",
+        "responseTimeEn": "Response Time - English",
+        "responseTimeAr": "وقت الاستجابة - العربية",
+        "instagram": "إنستغرام (بدون @)",
+        "addressEn": "Address - English",
+        "addressAr": "العنوان - العربية",
+        "bookingUrl": "رابط الحجز/التموين (اختياري)",
+        "businessHours": "ساعات العمل",
+        "hoursNoteEn": "Hours Note (English)",
+        "hoursNoteAr": "ملاحظة ساعات العمل - العربية",
+        "requestTypes": "خيارات نموذج التواصل"
+      },
+      "placeholders": {
+        "whatsapp": "https://wa.me/...",
+        "responseTimeEn": "24 hours guaranteed",
+        "instagram": "chefmohamed",
+        "bookingUrl": "https://",
+        "hoursNoteEn": "Available for consultations and custom orders",
+        "reqValue": "القيمة (مثال: استشارات)",
+        "reqLabelEn": "التسمية (إنجليزي)",
+        "reqLabelAr": "السمة (عربية)"
+      },
+      "savedToast": "تم حفظ معلومات التواصل",
+      "saveFailedToast": "فشل الحفظ"
     },
     "heroSection": "القسم الرئيسي",
     "aboutSection": "قسم عننا",
@@ -87,10 +295,275 @@
     "testimonials": "آراء العملاء",
     "gallery": "معرض الصور",
     "contactMessages": "رسائل التواصل",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "actions": {
+      "edit": "تعديل",
+      "delete": "حذف",
+      "toggle": "تبديل الظهور",
+      "reorder": "سحب لإعادة الترتيب",
+      "dragReorder": "اسحب لإعادة الترتيب"
+    },
+    "fields": {
+      "role_en": "الدور (إنجليزي)",
+      "role_ar": "الدور (عربي)",
+      "workplace_en": "مكان العمل (إنجليزي)",
+      "workplace_ar": "مكان العمل (عربي)",
+      "location_en": "الموقع (إنجليزي)",
+      "location_ar": "الموقع (عربي)",
+      "description_en": "الوصف (إنجليزي)",
+      "description_ar": "الوصف (عربي)",
+      "category": "مرحلة المسيرة",
+      "isHighlight": "مميز (إظهار شارة)"
+    },
+    "projects": {
+      "addExperience": "أضف خبرة",
+      "addFirst": "أضف أول خبرة لك",
+      "editTitle": "تعديل الخبرة",
+      "newTitle": "خبرة جديدة",
+      "emptyTitle": "تاريخك العملي",
+      "emptyDesc": "أضف وظائفك في المخابز، واستشاراتك، وتجاربك التدريبية.",
+      "noFilterMatch": "لا توجد مشاريع في هذا التصنيف بعد.",
+      "deleteTitle": "حذف هذه الخبرة؟",
+      "deleteDesc": "سيتم إزالتها من موقعك العام. لا يمكن التراجع عن هذا.",
+      "deleteConfirm": "حذف",
+      "deleteCancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "update": "تحديث",
+      "add": "أضف خبرة",
+      "saved": "تم تحديث المشروع",
+      "added": "تمت إضافة المشروع",
+      "saveFailed": "فشل الحفظ",
+      "deleted": "تم حذف المشروع",
+      "deleteFailed": "فشل الحذف",
+      "updateFailed": "فشل التحديث",
+      "featured": "مميز",
+      "showOnSite": "إظهار على الموقع",
+      "careerStage": "مرحلة المسيرة",
+      "filters": {
+        "all": "الكل",
+        "early": "بداية المسيرة",
+        "specialization": "التخصص",
+        "leadership": "القيادة",
+        "founder": "تأسيس",
+        "international": "دولي"
+      },
+      "labels": {
+        "roleEn": "Your Role (English)",
+        "roleAr": "الدور — العربية",
+        "workplaceEn": "Workplace (English)",
+        "workplaceAr": "مكان العمل — العربية",
+        "locationEn": "Location (English)",
+        "locationAr": "الموقع — العربية",
+        "descEn": "What you did there (English)",
+        "descAr": "ماذا فعلت هناك — العربية"
+      },
+      "placeholders": {
+        "role": "مثال: شيف رئيسي",
+        "workplace": "مثال: فورناليا بيكري",
+        "location": "مثال: التجمع الخامس، القاهرة"
+      }
+    },
+    "locations": {
+      "addLocation": "أضف موقعًا",
+      "addFirst": "أضف أول موقع لك",
+      "editTitle": "تعديل الموقع",
+      "newTitle": "موقع جديد",
+      "emptyTitle": "أين تعمل؟",
+      "emptyDesc": "أضف مقرك في القاهرة وأي مواقع دولية.",
+      "deleteTitle": "حذف هذا الموقع؟",
+      "deleteDesc": "سيتم إزالته من موقعك العام. لا يمكن التراجع عن هذا.",
+      "deleteConfirm": "حذف",
+      "deleteCancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "update": "تحديث",
+      "add": "أضف موقعًا",
+      "saved": "تم تحديث الموقع",
+      "added": "تمت إضافة الموقع",
+      "saveFailed": "فشل الحفظ",
+      "deleted": "تم حذف الموقع",
+      "deleteFailed": "فشل الحذف",
+      "updateFailed": "فشل التحديث",
+      "showOnSite": "إظهار على الموقع",
+      "labels": {
+        "nameEn": "Location Name (English)",
+        "nameAr": "اسم الموقع — العربية",
+        "region": "المنطقة",
+        "icon": "الأيقونة (إيموجي)",
+        "neighborhoodsEn": "Neighborhoods (comma-separated, English)",
+        "neighborhoodsAr": "الأحياء (مفصولة بفاصلة، عربية)"
+      },
+      "placeholders": {
+        "nameEn": "مثال: القاهرة الكبرى",
+        "neighborhoodsEn": "Maadi, Fifth Settlement, Nasr City",
+        "neighborhoodsAr": "المعادي، التجمع الخامس، مدينة نصر"
+      },
+      "regions": {
+        "cairo": "القاهرة",
+        "international": "دولي"
+      }
+    },
+    "services": {
+      "addService": "أضف خدمة",
+      "addFirst": "أضف أول خدمة لك",
+      "editTitle": "تعديل الخدمة",
+      "newTitle": "خدمة جديدة",
+      "emptyTitle": "ماذا تقدم؟",
+      "emptyDesc": "أضف خدمات المخبوزات والاستشارات والتدريب.",
+      "noFilterMatch": "لا توجد خدمات في هذا التصنيف بعد.",
+      "deleteTitle": "حذف هذه الخدمة؟",
+      "deleteDesc": "سيتم إزالتها من موقعك العام. لا يمكن التراجع عن هذا.",
+      "deleteConfirm": "حذف",
+      "deleteCancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "update": "تحديث الخدمة",
+      "add": "أضف خدمة",
+      "saved": "تم تحديث الخدمة",
+      "added": "تمت إضافة الخدمة",
+      "saveFailed": "فشل الحفظ",
+      "deleted": "تم حذف الخدمة",
+      "deleteFailed": "فشل الحذف",
+      "updateFailed": "فشل التحديث",
+      "validationRequired": "اسم الخدمة ووصفها (بالإنجليزية) مطلوبان.",
+      "saveError": "فشل حفظ الخدمة",
+      "showOnSite": "إظهار على الموقع",
+      "labels": {
+        "serviceType": "نوع الخدمة",
+        "nameEn": "Service Name - English",
+        "nameAr": "اسم الخدمة - العربية",
+        "descEn": "What this includes - English",
+        "descAr": "تفاصيل الخدمة - العربية",
+        "icon": "أيقونة (إيموجي)"
+      },
+      "placeholders": {
+        "nameEn": "مثال: كرواسون فرنسي",
+        "nameAr": "مثال: كرواسون فرنسي",
+        "descEn": "Describe the service...",
+        "icon": "مثال: 🥐 أو اتركه فارغًا"
+      },
+      "filters": {
+        "all": "الكل",
+        "artisanal": "المخبوزات الحرفية",
+        "consulting": "استشارات",
+        "training": "تدريب"
+      }
+    },
+    "menu": {
+      "addItem": "أضف عنصرًا",
+      "priceOnRequest": "عند الطلب",
+      "editTitle": "تعديل العنصر",
+      "newTitle": "عنصر جديد في القائمة",
+      "noItems": "لا توجد عناصر بعد",
+      "deleteTitle": "حذف العنصر؟",
+      "deleteDesc": "لا يمكن التراجع عن هذا.",
+      "deleteConfirm": "حذف",
+      "deleteCancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "update": "تحديث العنصر",
+      "add": "أضف عنصرًا",
+      "savedUpdated": "تم تحديث عنصر القائمة",
+      "savedAdded": "تمت إضافة عنصر القائمة",
+      "saveFailed": "فشل الحفظ",
+      "deleted": "تم حذف عنصر القائمة",
+      "deleteFailed": "فشل الحذف",
+      "updateFailed": "فشل التحديث",
+      "labels": {
+        "nameEn": "Name - English",
+        "nameAr": "الاسم - العربية",
+        "descEn": "Description - English",
+        "descAr": "الوصف - العربية",
+        "price": "السعر ($)",
+        "category": "التصنيف",
+        "available": "متوفر"
+      },
+      "placeholders": {
+        "price": "اتركه فارغًا لعبارة 'عند الطلب'"
+      },
+      "tableHeaders": {
+        "name": "الاسم",
+        "category": "التصنيف",
+        "price": "السعر",
+        "available": "متوفر",
+        "actions": "الإجراءات"
+      }
+    },
+    "testimonials": {
+      "addTestimonial": "أضف رأي عميل",
+      "editTitle": "تعديل الرأي",
+      "newTitle": "رأي جديد",
+      "noTestimonials": "لا توجد آراء بعد",
+      "deleteTitle": "حذف هذا الرأي؟",
+      "deleteDesc": "لا يمكن التراجع عن هذا.",
+      "deleteConfirm": "حذف",
+      "deleteCancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "update": "تحديث",
+      "add": "أضف رأي عميل",
+      "savedUpdated": "تم تحديث الرأي",
+      "savedAdded": "تمت إضافة الرأي",
+      "saveFailed": "فشل الحفظ",
+      "deleted": "تم حذف الرأي",
+      "deleteFailed": "فشل الحذف",
+      "updateFailed": "فشل التحديث",
+      "showOnSite": "إظهار على الموقع",
+      "labels": {
+        "customerName": "اسم العميل",
+        "rating": "التقييم",
+        "quoteEn": "Quote - English",
+        "quoteAr": "الاقتباس - العربية"
+      },
+      "tableHeaders": {
+        "customer": "العميل",
+        "rating": "التقييم",
+        "visible": "الظهور",
+        "actions": "الإجراءات"
+      }
+    },
+    "gallery": {
+      "addPhotos": "أضف صورًا",
+      "uploadTitle": "رفع الصور",
+      "noPhotos": "لا توجد صور بعد",
+      "emptyDesc": "انقر على \"أضف صورًا\" لرفع أول صورة لك",
+      "uploading": "جارٍ الرفع...",
+      "clickToChoose": "انقر لاختيار الصور",
+      "processing": "جارٍ المعالجة...",
+      "saved": "تمت إزالة الصورة",
+      "saveFailed": "فشل الحذف",
+      "uploadFailed": "فشل الرفع. حاول مرة أخرى.",
+      "uploadSuccess": "صورة (صور) مرفوعة",
+      "storageWarning": "تمت إزالة الصورة، لكن فشل تنظيف التخزين — اتصل بالدعم إذا كان استخدام التخزين مرتفعًا.",
+      "labels": {
+        "captionEn": "Caption - English",
+        "captionAr": "التعليق - العربية"
+      },
+      "placeholders": {
+        "captionEn": "Optional - applies to all",
+        "captionAr": "اختياري"
+      }
+    },
+    "inbox": {
+      "title": "صندوق الوارد",
+      "breadcrumb": "لوحة التحكم",
+      "emptyTitle": "لا توجد رسائل بعد",
+      "emptyDesc": "ستظهر رسائل نموذج التواصل هنا عندما يتواصل الزوار.",
+      "totalCount": "إجمالي {count} رسالة",
+      "unreadCount": "{count} غير مقروءة",
+      "markRead": "تحديد كمقروء",
+      "markUnread": "تحديد كغير مقروء",
+      "markedRead": "تم التحديد كمقروء",
+      "markedUnread": "تم التحديد كغير مقروء",
+      "updateFailed": "فشل التحديث",
+      "phoneLabel": "الهاتف",
+      "requestTypeLabel": "نوع الطلب",
+      "messageLabel": "الرسالة",
+      "receivedLabel": "تاريخ الاستلام"
+    }
   },
   "gallery": {
-    "heading": "معرض الصور"
+    "heading": "معرض الصور",
+    "emptyState": "المعرض قريبًا",
+    "emptyTitle": "مخبوزاتك في صور",
+    "emptyDesc": "أظهر خبرتك في الخبز والمعجنات. سجل الدخول إلى لوحة التحكم وأضف صورك الأولى.",
+    "emptyCta": "اذهب إلى لوحة التحكم ← المعرض"
   },
   "common": {
     "loading": "جارٍ التحميل...",
@@ -105,5 +578,43 @@
     "uploading": "جارٍ الرفع...",
     "uploadError": "فشل الرفع",
     "fileTooLarge": "الملف كبير جدًا"
+  },
+  "projects": {
+    "heading": "رحلتي",
+    "subheading": "من مساعد الطاولة إلى الشيف الرئيسي — عقد من الحرفية في القاهرة وما وراءها.",
+    "featured": "مميز",
+    "emptyTitle": "قصتك المهنية تبدأ هنا",
+    "emptyDesc": "أضف محطات مسيرتك — من أول مطبخ إلى مناصب الشيف الرئيسي. كل خبرة تُظهر خبرتك للزوار.",
+    "emptyCta": "أضف أول خبرة لك",
+    "categories": {
+      "early": "بداية المسيرة",
+      "specialization": "التخصص",
+      "leadership": "القيادة",
+      "founder": "تأسيس من الصفر",
+      "international": "دولي"
+    }
+  },
+  "locations": {
+    "heading": "مناطق الخدمة",
+    "subheading": "مقرنا في القاهرة الكبرى — متاحون دوليًا للاستشارات.",
+    "emptyTitle": "أين تعمل؟",
+    "emptyDesc": "أضف مناطق خدمتك — أحياء القاهرة والمواقع الدولية التي تغطيها.",
+    "emptyCta": "أضف أول موقع لك",
+    "regions": {
+      "cairo": "القاهرة، مصر",
+      "international": "دولي"
+    }
+  },
+  "hours": {
+    "closed": "مغلق"
+  },
+  "days": {
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة",
+    "saturday": "السبت",
+    "sunday": "الأحد"
   }
 }

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AdminSidebar } from "./AdminSidebar";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useUser } from "@clerk/nextjs";
 import { useDirection } from "@/hooks/useDirection";
 
 type Props = {
@@ -13,9 +13,9 @@ type Props = {
 };
 
 export function AdminTopbar({ title }: Props) {
-  const { username } = useAdminAuth();
+  const { user } = useUser();
   const { isRTL } = useDirection();
-  const initial = username?.charAt(0)?.toUpperCase() ?? "A";
+  const initial = user?.firstName?.charAt(0)?.toUpperCase() ?? "A";
 
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-border bg-background px-4 lg:hidden">
@@ -30,8 +30,8 @@ export function AdminTopbar({ title }: Props) {
       <h1 className="text-lg font-semibold text-foreground flex-1 truncate">
         {title}
       </h1>
-      <Avatar className="h-8 w-8 shrink-0 border border-border/50">
-        <AvatarFallback className="bg-accent/10 text-accent text-xs">
+      <Avatar className="h-8 w-8">
+        <AvatarFallback className="bg-accent/20 text-accent text-xs font-medium">
           {initial}
         </AvatarFallback>
       </Avatar>

@@ -1,13 +1,38 @@
 {
   "site": {
-    "title": "Chef Amira",
-    "tagline": "Artisan Breads & Pastries",
-    "description": "Experience the finest artisan breads and pastries crafted with passion"
+    "title": "Chef Mohamed",
+    "tagline": "French Bakery & Consulting",
+    "description": "French bakery consulting, sourdough, and croissants by Chef Mohamed — 10 years at the bench",
+    "setupInProgress": "Our bakery is being set up — check back soon."
+  },
+  "metadata": {
+    "about": {
+      "title": "About | Chef Mohamed",
+      "description": "Learn about Chef Mohamed's 10-year journey in artisan French baking — from bench assistant to head chef, sourdough specialist, and bakery consultant."
+    },
+    "contact": {
+      "title": "Contact | Chef Mohamed",
+      "description": "Get in touch with Chef Mohamed for French bakery consulting, catering, training workshops, and custom orders. Based in Cairo, available internationally."
+    },
+    "menu": {
+      "title": "Menu | Chef Mohamed",
+      "description": "Browse Chef Mohamed's artisan menu — sourdough bread, hand-laminated croissants, French pastries, and custom bakes."
+    },
+    "services": {
+      "title": "Services | Chef Mohamed",
+      "description": "Explore Chef Mohamed's services — artisanal baking, bakery consulting, menu development, production optimization, and team training programs."
+    },
+    "gallery": {
+      "title": "Gallery | Chef Mohamed",
+      "description": "See Chef Mohamed's work — artisan sourdough, hand-laminated croissants, French pastries, and bakery creations captured in photos."
+    }
   },
   "nav": {
     "home": "Home",
     "about": "About",
+    "services": "Services",
     "menu": "Menu",
+    "gallery": "Gallery",
     "contact": "Contact",
     "bookNow": "Book a Tasting"
   },
@@ -15,12 +40,16 @@
     "heading": "Baked with Love,\nShared with Joy",
     "subheading": "Discover our handcrafted artisan breads and pastries made with the finest ingredients",
     "ctaPrimary": "View Our Menu",
-    "ctaSecondary": "Book a Tasting"
+    "ctaSecondary": "Book a Tasting",
+    "imagePlaceholder": "Hero image",
+    "emptyState": "Add your photo in Admin → Homepage Welcome"
   },
   "about": {
-    "heading": "Our Story",
+    "heading": "Hi, I'm Chef Mohamed",
     "subheading": "Passion baked into every loaf",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "imagePlaceholder": "Chef photo",
+    "emptyState": "Add your portrait in Admin → About Me"
   },
   "menu": {
     "heading": "Our Menu",
@@ -29,8 +58,12 @@
     "customOrderHeading": "Custom Orders",
     "customOrderDesc": "Have something special in mind? We create bespoke pastries and cakes for every occasion.",
     "customOrderBtn": "Request a Custom Order",
+    "emptyState": "No items available",
+    "photoPlaceholder": "Photo",
+    "priceOnRequest": "On request",
     "categories": {
       "all": "All",
+      "breads": "Breads",
       "cakes": "Cakes",
       "pastries": "Pastries",
       "cookies": "Cookies",
@@ -38,48 +71,223 @@
     }
   },
   "testimonials": {
-    "heading": "What Our Customers Say"
+    "heading": "What Our Customers Say",
+    "emptyState": "No testimonials yet"
+  },
+  "services": {
+    "title": "What I Offer",
+    "emptyTitle": "Services coming soon",
+    "emptyDesc": "Showcase your baking, consulting, and training services. Add them from the admin panel.",
+    "emptyCta": "Add Your First Service",
+    "categories": {
+      "artisanal": "Artisanal Baking",
+      "consulting": "Consulting & Development",
+      "training": "Training & Expertise"
+    }
   },
   "contact": {
     "heading": "Get in Touch",
     "subheading": "We'd love to hear from you",
     "btn": "Send Message",
     "success": "Message sent successfully!",
-    "error": "Failed to send message. Please try again."
+    "error": "Failed to send message. Please try again.",
+    "rateLimited": "Please wait a few minutes before submitting again.",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "whatsappLabel": "WhatsApp",
+    "responseLabel": "Response Time",
+    "addressLabel": "Address",
+    "instagramLabel": "Instagram",
+    "bookBtn": "Book a Tasting",
+    "businessHoursLabel": "Business Hours",
+    "form": {
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone (optional)",
+      "phonePlaceholder": "+20 ...",
+      "messageLabel": "Message",
+      "requestTypeLabel": "What can I help you with?",
+      "requestTypePlaceholder": "Select a topic",
+      "requestTypes": {
+        "consulting": "Bakery Consulting",
+        "catering": "Catering",
+        "training": "Training & Workshops",
+        "partnerships": "Partnership",
+        "other": "Other"
+      }
+    }
+  },
+  "cta": {
+    "heading": "Ready to taste perfection?",
+    "subheading": "Book a tasting session or place a custom order. We'd love to bake for you.",
+    "primary": "Book a Tasting",
+    "secondary": "View Menu"
   },
   "footer": {
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "navigation": "Navigation"
+  },
+  "errors": {
+    "pageTitle": "Something went wrong",
+    "pageMessage": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try Again",
+    "convexTitle": "Could not load data",
+    "convexMessage": "There was a problem connecting to the server. Check your connection and try again.",
+    "notFoundTitle": "Page Not Found",
+    "notFoundMessage": "Sorry, the page you are looking for doesn't exist or has been moved",
+    "backHome": "Back to Home"
   },
   "admin": {
     "login": {
       "heading": "Admin Login",
       "subheading": "Sign in to manage your bakery",
-      "userLabel": "Email",
+      "userLabel": "Username",
       "passLabel": "Password",
-      "userPlaceholder": "you@example.com",
+      "userPlaceholder": "Enter your username",
       "passPlaceholder": "Enter your password",
       "btn": "Sign In",
+      "signingIn": "Signing in...",
       "forgotText": "Forgot password?",
-      "errorMsg": "Invalid email or password"
+      "errorMsg": "That username or password didn't work. Try again.",
+      "quote": "Slow bread, French pastry — ten years at the bench.",
+      "quoteAuthor": "— Chef Mohamed"
+    },
+    "topbar": {
+      "title": "Admin"
     },
     "dashboard": {
-      "welcome": "Dashboard",
+      "welcome": "Welcome back",
       "menuItems": "Menu Items",
       "testimonials": "Testimonials",
       "galleryPhotos": "Gallery Photos",
+      "quickActions": "Quick Actions",
       "manageHeading": "Manage",
       "recentChanges": "Recent Changes",
       "section": "Section",
       "whatChanged": "What changed",
       "date": "Date",
-      "logoutBtn": "Logout"
+      "logoutBtn": "Logout",
+      "lastUpdated": "Last updated",
+      "createdAt": "Created at",
+      "cards": {
+        "hero": { "label": "Homepage Welcome", "desc": "Change the big welcome message visitors see first" },
+        "about": { "label": "About Me", "desc": "Update your story, photo, and specialties" },
+        "menu": { "label": "Menu Items", "desc": "Add new bakes or change prices" },
+        "testimonials": { "label": "Customer Reviews", "desc": "Show off what your customers are saying" },
+        "gallery": { "label": "Photo Gallery", "desc": "Upload photos of your bakery and bakes" },
+        "services": { "label": "Services", "desc": "Manage your consulting, training, and baking services" },
+        "projects": { "label": "Work Experience", "desc": "Edit your career history and work experience" },
+        "locations": { "label": "Service Areas", "desc": "Manage your Cairo and international locations" },
+        "contact": { "label": "Contact Info", "desc": "Update your phone, email, and address" }
+      }
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "hero": "Homepage Welcome",
+      "about": "About Me",
+      "projects": "My Work Experience",
+      "menu": "Menu Items",
+      "testimonials": "Customer Reviews",
+      "services": "Services",
+      "gallery": "Photo Gallery",
+      "locations": "Service Areas",
+      "contact": "Contact Info",
+      "inbox": "Inbox",
+      "logout": "Logout"
+    },
+    "shell": {
+      "viewSite": "View on Site",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel",
+      "unsavedConfirm": "You have unsaved changes. Leave without saving?"
+    },
+    "image": {
+      "currentAlt": "Current photo",
+      "uploadBtn": "Upload a photo",
+      "changeBtn": "Change photo",
+      "dropHint": "or drop a photo here",
+      "helper": "Max 5 MB · JPG or PNG works best",
+      "uploadingPrefix": "Uploading...",
+      "invalidFormat": "That file type isn't supported. Please use a photo (JPG or PNG).",
+      "tooLarge": "That photo is over 5 MB. Try a smaller one or resize it on your phone first.",
+      "uploaded": "Photo added",
+      "uploadFailed": "Upload didn't work. Check your internet and try again."
     },
     "edit": {
       "saveBtn": "Save Changes",
       "cancelBtn": "Cancel",
       "previewBtn": "Preview",
       "successMsg": "Changes saved successfully",
-      "errorMsg": "Something went wrong"
+      "errorMsg": "Couldn't save. Check your internet and try again."
+    },
+    "aboutEditor": {
+      "title": "About Me",
+      "titleEn": "Title - English",
+      "titleAr": "Title - Arabic",
+      "storyEn": "Your Story - English",
+      "storyAr": "Your Story - Arabic",
+      "photoLabel": "Your photo",
+      "skillsLabel": "What you do best",
+      "skillsEmpty": "Tell visitors what you do best — e.g. Sourdough, Wedding Cakes",
+      "skillsPlaceholder": "Type a specialty and press Enter",
+      "savedToast": "About saved",
+      "saveFailedToast": "Couldn't save. Check your internet and try again.",
+      "labels": {
+        "taglineEn": "Tagline - English",
+        "taglineAr": "الشعار - العربية",
+        "educationEn": "Education (English)",
+        "educationAr": "التعليم - العربية",
+        "stats": "Stats Badges (e.g. \"10+ Years Professional\")"
+      },
+      "placeholders": {
+        "taglineEn": "French Bakery Consultant",
+        "taglineAr": "استشاري مخبوزات فرنسية",
+        "educationEn": "Technical Diploma — Mesta (2012–2016)",
+        "stats": "Type a stat and press Enter"
+      }
+    },
+    "heroEditor": {
+      "labels": {
+        "headingEn": "Big welcome message - English",
+        "headingAr": "رسالة الترحيب - بالعربية",
+        "subheadingEn": "Short description - English",
+        "subheadingAr": "وصف قصير - بالعربية",
+        "ctaEn": "Button text - English",
+        "ctaAr": "نص الزر - بالعربية"
+      },
+      "savedToast": "Welcome banner saved",
+      "saveFailedToast": "Couldn't save. Check your internet and try again."
+    },
+    "contactEditor": {
+      "labels": {
+        "phonePrimary": "Phone (Primary)",
+        "phoneSecondary": "Phone (Secondary / WhatsApp)",
+        "email": "Email",
+        "whatsapp": "WhatsApp Link",
+        "responseTimeEn": "Response Time - English",
+        "responseTimeAr": "وقت الاستجابة - العربية",
+        "instagram": "Instagram (without @)",
+        "addressEn": "Address - English",
+        "addressAr": "العنوان - العربية",
+        "bookingUrl": "Booking / Catering URL (optional)",
+        "businessHours": "Business Hours",
+        "hoursNoteEn": "Hours Note (English)",
+        "hoursNoteAr": "ملاحظة ساعات العمل - العربية",
+        "requestTypes": "Contact Form Options"
+      },
+      "placeholders": {
+        "whatsapp": "https://wa.me/...",
+        "responseTimeEn": "24 hours guaranteed",
+        "instagram": "chefmohamed",
+        "bookingUrl": "https://",
+        "hoursNoteEn": "Available for consultations and custom orders",
+        "reqValue": "Value (e.g. consulting)",
+        "reqLabelEn": "Label (English)",
+        "reqLabelAr": "السمة (عربية)"
+      },
+      "savedToast": "Contact info saved",
+      "saveFailedToast": "Failed to save"
     },
     "heroSection": "Hero Section",
     "aboutSection": "About Section",
@@ -87,10 +295,275 @@
     "testimonials": "Testimonials",
     "gallery": "Gallery",
     "contactMessages": "Contact Messages",
-    "logout": "Logout"
+    "logout": "Logout",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "toggle": "Toggle visibility",
+      "reorder": "Drag to reorder",
+      "dragReorder": "Drag to reorder"
+    },
+    "fields": {
+      "role_en": "Role (English)",
+      "role_ar": "Role (Arabic)",
+      "workplace_en": "Workplace (English)",
+      "workplace_ar": "Workplace (Arabic)",
+      "location_en": "Location (English)",
+      "location_ar": "Location (Arabic)",
+      "description_en": "Description (English)",
+      "description_ar": "Description (Arabic)",
+      "category": "Career Stage",
+      "isHighlight": "Featured (show badge)"
+    },
+    "projects": {
+      "addExperience": "Add Experience",
+      "addFirst": "Add Your First Experience",
+      "editTitle": "Edit Experience",
+      "newTitle": "New Experience",
+      "emptyTitle": "Your work history",
+      "emptyDesc": "Add your bakery positions, consulting gigs, and training experience.",
+      "noFilterMatch": "No projects in this category yet.",
+      "deleteTitle": "Delete this experience?",
+      "deleteDesc": "This will remove it from your public site. This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deleteCancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update",
+      "add": "Add Experience",
+      "saved": "Project updated",
+      "added": "Project added",
+      "saveFailed": "Failed to save",
+      "deleted": "Project deleted",
+      "deleteFailed": "Failed to delete",
+      "updateFailed": "Failed to update",
+      "featured": "Featured",
+      "showOnSite": "Show on site",
+      "careerStage": "Career Stage",
+      "filters": {
+        "all": "All",
+        "early": "Early Career",
+        "specialization": "Specialization",
+        "leadership": "Leadership",
+        "founder": "Founded",
+        "international": "International"
+      },
+      "labels": {
+        "roleEn": "Your Role (English)",
+        "roleAr": "الدور — العربية",
+        "workplaceEn": "Workplace (English)",
+        "workplaceAr": "مكان العمل — العربية",
+        "locationEn": "Location (English)",
+        "locationAr": "الموقع — العربية",
+        "descEn": "What you did there (English)",
+        "descAr": "ماذا فعلت هناك — العربية"
+      },
+      "placeholders": {
+        "role": "e.g. Head Chef",
+        "workplace": "e.g. Fornalia Bakery",
+        "location": "e.g. Fifth Settlement, Cairo"
+      }
+    },
+    "locations": {
+      "addLocation": "Add Location",
+      "addFirst": "Add Your First Location",
+      "editTitle": "Edit Location",
+      "newTitle": "New Location",
+      "emptyTitle": "Where do you work?",
+      "emptyDesc": "Add your Cairo base and any international locations.",
+      "deleteTitle": "Delete this location?",
+      "deleteDesc": "This will remove it from your public site. This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deleteCancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update",
+      "add": "Add Location",
+      "saved": "Location updated",
+      "added": "Location added",
+      "saveFailed": "Failed to save",
+      "deleted": "Location deleted",
+      "deleteFailed": "Failed to delete",
+      "updateFailed": "Failed to update",
+      "showOnSite": "Show on website",
+      "labels": {
+        "nameEn": "Location Name (English)",
+        "nameAr": "اسم الموقع — العربية",
+        "region": "Region",
+        "icon": "Icon (emoji)",
+        "neighborhoodsEn": "Neighborhoods (comma-separated, English)",
+        "neighborhoodsAr": "الأحياء (مفصولة بفاصلة، عربية)"
+      },
+      "placeholders": {
+        "nameEn": "e.g. Greater Cairo",
+        "neighborhoodsEn": "Maadi, Fifth Settlement, Nasr City",
+        "neighborhoodsAr": "المعادي، التجمع الخامس، مدينة نصر"
+      },
+      "regions": {
+        "cairo": "Cairo",
+        "international": "International"
+      }
+    },
+    "services": {
+      "addService": "Add Service",
+      "addFirst": "Add Your First Service",
+      "editTitle": "Edit Service",
+      "newTitle": "New Service",
+      "emptyTitle": "What do you offer?",
+      "emptyDesc": "Add your baking services, consulting packages, and training programs.",
+      "noFilterMatch": "No services in this category yet.",
+      "deleteTitle": "Delete this service?",
+      "deleteDesc": "This will remove it from your public site. This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deleteCancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update Service",
+      "add": "Add Service",
+      "saved": "Service updated",
+      "added": "Service added",
+      "saveFailed": "Failed to save",
+      "deleted": "Service deleted",
+      "deleteFailed": "Failed to delete",
+      "updateFailed": "Failed to update",
+      "validationRequired": "Service name and description (English) are required.",
+      "saveError": "Failed to save service",
+      "showOnSite": "Show on website",
+      "labels": {
+        "serviceType": "Service Type",
+        "nameEn": "Service Name - English",
+        "nameAr": "اسم الخدمة - العربية",
+        "descEn": "What this includes - English",
+        "descAr": "تفاصيل الخدمة - العربية",
+        "icon": "Emoji Icon"
+      },
+      "placeholders": {
+        "nameEn": "e.g. French Croissants",
+        "nameAr": "مثال: كرواسون فرنسي",
+        "descEn": "Describe the service...",
+        "icon": "e.g. 🥐 or leave empty"
+      },
+      "filters": {
+        "all": "All",
+        "artisanal": "Artisanal Baking",
+        "consulting": "Consulting",
+        "training": "Training"
+      }
+    },
+    "menu": {
+      "addItem": "Add Item",
+      "priceOnRequest": "On request",
+      "editTitle": "Edit Item",
+      "newTitle": "New Menu Item",
+      "noItems": "No items yet",
+      "deleteTitle": "Delete item?",
+      "deleteDesc": "This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deleteCancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update Item",
+      "add": "Add Item",
+      "savedUpdated": "Menu item updated",
+      "savedAdded": "Menu item added",
+      "saveFailed": "Failed to save",
+      "deleted": "Menu item deleted",
+      "deleteFailed": "Failed to delete",
+      "updateFailed": "Failed to update",
+      "labels": {
+        "nameEn": "Name - English",
+        "nameAr": "الاسم - العربية",
+        "descEn": "Description - English",
+        "descAr": "الوصف - العربية",
+        "price": "Price ($)",
+        "category": "Category",
+        "available": "Available"
+      },
+      "placeholders": {
+        "price": "Leave blank for 'On request'"
+      },
+      "tableHeaders": {
+        "name": "Name",
+        "category": "Category",
+        "price": "Price",
+        "available": "Available",
+        "actions": "Actions"
+      }
+    },
+    "testimonials": {
+      "addTestimonial": "Add Testimonial",
+      "editTitle": "Edit Testimonial",
+      "newTitle": "New Testimonial",
+      "noTestimonials": "No testimonials yet",
+      "deleteTitle": "Delete testimonial?",
+      "deleteDesc": "This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deleteCancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update",
+      "add": "Add Testimonial",
+      "savedUpdated": "Testimonial updated",
+      "savedAdded": "Testimonial added",
+      "saveFailed": "Failed to save",
+      "deleted": "Testimonial deleted",
+      "deleteFailed": "Failed to delete",
+      "updateFailed": "Failed to update",
+      "showOnSite": "Show on site",
+      "labels": {
+        "customerName": "Customer Name",
+        "rating": "Rating",
+        "quoteEn": "Quote - English",
+        "quoteAr": "الاقتباس - العربية"
+      },
+      "tableHeaders": {
+        "customer": "Customer",
+        "rating": "Rating",
+        "visible": "Visible",
+        "actions": "Actions"
+      }
+    },
+    "gallery": {
+      "addPhotos": "Add Photos",
+      "uploadTitle": "Upload Photos",
+      "noPhotos": "No photos yet",
+      "emptyDesc": "Click \"Add Photos\" to upload your first image",
+      "uploading": "Uploading...",
+      "clickToChoose": "Click to choose images",
+      "processing": "Processing...",
+      "saved": "Image removed",
+      "saveFailed": "Failed to delete",
+      "uploadFailed": "Upload failed. Please try again.",
+      "uploadSuccess": "image(s) uploaded",
+      "storageWarning": "Image removed, but storage cleanup failed — contact support if storage usage seems high.",
+      "labels": {
+        "captionEn": "Caption - English",
+        "captionAr": "التعليق - العربية"
+      },
+      "placeholders": {
+        "captionEn": "Optional - applies to all",
+        "captionAr": "اختياري"
+      }
+    },
+    "inbox": {
+      "title": "Inbox",
+      "breadcrumb": "Dashboard",
+      "emptyTitle": "No messages yet",
+      "emptyDesc": "Contact form submissions will appear here when visitors reach out.",
+      "totalCount": "{count} total messages",
+      "unreadCount": "{count} unread",
+      "markRead": "Mark read",
+      "markUnread": "Mark unread",
+      "markedRead": "Marked as read",
+      "markedUnread": "Marked as unread",
+      "updateFailed": "Failed to update",
+      "phoneLabel": "Phone",
+      "requestTypeLabel": "Request Type",
+      "messageLabel": "Message",
+      "receivedLabel": "Received"
+    }
   },
   "gallery": {
-    "heading": "Our Gallery"
+    "heading": "Our Gallery",
+    "emptyState": "Gallery coming soon",
+    "emptyTitle": "Your bakery in photos",
+    "emptyDesc": "Show off your sourdough, croissants, and cakes. Log in to the admin panel and add your first photos.",
+    "emptyCta": "Go to Admin → Gallery"
   },
   "common": {
     "loading": "Loading...",
@@ -105,5 +578,43 @@
     "uploading": "Uploading...",
     "uploadError": "Upload failed",
     "fileTooLarge": "File is too large"
+  },
+  "projects": {
+    "heading": "My Journey",
+    "subheading": "From bench assistant to head chef — a decade of craft across Cairo and beyond.",
+    "featured": "Featured",
+    "emptyTitle": "Your work story starts here",
+    "emptyDesc": "Add your career milestones — from first kitchen to head chef roles. Each entry shows visitors your expertise.",
+    "emptyCta": "Add Your First Experience",
+    "categories": {
+      "early": "Early Career",
+      "specialization": "Specialization",
+      "leadership": "Leadership",
+      "founder": "Founded from Scratch",
+      "international": "International"
+    }
+  },
+  "locations": {
+    "heading": "Service Areas",
+    "subheading": "Based in Greater Cairo — available internationally for consulting.",
+    "emptyTitle": "Where do you work?",
+    "emptyDesc": "Add your service areas — Cairo neighborhoods and international locations you cover.",
+    "emptyCta": "Add Your First Location",
+    "regions": {
+      "cairo": "Cairo, Egypt",
+      "international": "International"
+    }
+  },
+  "hours": {
+    "closed": "Closed"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
   }
 }

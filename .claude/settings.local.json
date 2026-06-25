@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"src/app/[locale]/\\(site\\)/menu\" \"src/app/[locale]/\\(site\\)/about\" \"src/app/[locale]/\\(site\\)/contact\")",
+      "Bash(git mv *)",
+      "Bash(rmdir \"src/app/[locale]/menu\" \"src/app/[locale]/about\" \"src/app/[locale]/contact\")",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(npx convex *)"
+    ]
+  }
+}

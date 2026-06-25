@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ArrowLeft } from "lucide-react";
 
@@ -27,6 +28,7 @@ export function SectionEditorShell({
   viewSiteHref,
 }: Props) {
   const router = useRouter();
+  const t = useTranslations("admin.shell");
 
   useEffect(() => {
     if (!hasUnsaved) return;
@@ -38,12 +40,16 @@ export function SectionEditorShell({
   }, [hasUnsaved]);
 
   const handleCancel = useCallback(() => {
+    if (hasUnsaved) {
+      const proceed = window.confirm(t("unsavedConfirm"));
+      if (!proceed) return;
+    }
     if (onCancel) {
       onCancel();
     } else {
-      router.back();
+      router.push("/admin/dashboard");
     }
-  }, [onCancel, router]);
+  }, [hasUnsaved, onCancel, router, t]);
 
   return (
     <div className="flex flex-col min-h-full">
@@ -69,7 +75,7 @@ export function SectionEditorShell({
               className="inline-flex items-center gap-1.5 text-sm text-accent hover:text-accent-hover transition-colors"
             >
               <ExternalLink className="h-4 w-4" />
-              View on Site
+              {t("viewSite")}
             </a>
           )}
         </div>
@@ -79,14 +85,14 @@ export function SectionEditorShell({
 
       <div className="sticky bottom-0 mt-8 -mx-6 p-4 bg-background border-t border-border flex items-center justify-end gap-3">
         <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
-          Cancel
+          {t("cancel")}
         </Button>
         <Button
           onClick={onSave}
           disabled={isSaving}
           className="bg-accent hover:bg-accent-hover text-background min-w-[120px]"
         >
-          {isSaving ? "Saving..." : "Save Changes"}
+          {isSaving ? t("saving") : t("saveChanges")}
         </Button>
       </div>
     </div>

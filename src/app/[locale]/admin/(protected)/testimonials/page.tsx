@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useOptimistic, startTransition } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import {
@@ -28,6 +28,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslations } from "next-intl";
+import { SectionEditorShell } from "@/components/admin/SectionEditorShell";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import type { Id } from "@convex/_generated/dataModel";
@@ -45,6 +47,9 @@ function StarPicker({ value, onChange }: { value: number; onChange: (v: number) 
 }
 
 export default function AdminTestimonialsPage() {
+  const t = useTranslations("admin.testimonials");
+  const tLabels = useTranslations("admin.testimonials.labels");
+  const tHeaders = useTranslations("admin.testimonials.tableHeaders");
   const testimonials = useQuery(api.queries.getAllTestimonials);
   const createItem = useMutation(api.mutations.createTestimonial);
   const updateItem = useMutation(api.mutations.updateTestimonial);
@@ -61,6 +66,14 @@ export default function AdminTestimonialsPage() {
   const [rating, setRating] = useState(5);
   const [visible, setVisible] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  const [optimisticTestimonials, setOptimisticToggle] = useOptimistic(
+    testimonials,
+    (prev, id: Id<"testimonials">) =>
+      prev?.map((item) =>
+        item._id === id ? { ...item, isVisible: !item.isVisible } : item,
+      ) ?? prev,
+  );
 
   function resetForm() {
     setQuoteEn("");
@@ -96,11 +109,11 @@ export default function AdminTestimonialsPage() {
       } else {
         await createItem({ quote_en: quoteEn, quote_ar: quoteAr, customerName, rating, isVisible: visible });
       }
-      toast.success(editingId ? "Testimonial updated" : "Testimonial added");
+      toast.success(editingId ? t("savedUpdated") : t("savedAdded"));
       setDialogOpen(false);
       resetForm();
     } catch {
-      toast.error("Failed to save");
+      toast.error(t("saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -109,61 +122,63 @@ export default function AdminTestimonialsPage() {
   async function handleDelete(id: string) {
     try {
       await deleteItem({ id: id as Id<"testimonials"> });
-      toast.success("Testimonial deleted");
+      toast.success(t("deleted"));
     } catch {
-      toast.error("Failed to delete");
+      toast.error(t("deleteFailed"));
     }
     setDeleteId(null);
   }
 
-  async function handleToggle(id: string) {
+  async function handleToggle(id: Id<"testimonials">) {
+    startTransition(() => {
+      setOptimisticToggle(id);
+    });
     try {
-      await toggleItem({ id: id as Id<"testimonials"> });
+      await toggleItem({ id });
     } catch {
-      toast.error("Failed to update");
+      toast.error(t("updateFailed"));
     }
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h1 className="text-2xl font-heading font-bold text-foreground">Testimonials</h1>
+    <SectionEditorShell title="Testimonials" breadcrumb="Dashboard" onSave={() => {}} isSaving={false} hasUnsaved={false}>
+      <div className="flex justify-end mb-4">
         <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
           <Button className="bg-accent hover:bg-accent-hover text-background" onClick={() => setDialogOpen(true)}>
             <Plus className="h-4 w-4 me-2" />
-            Add Testimonial
+            {t("addTestimonial")}
           </Button>
           <DialogContent className="bg-surface border-border/50 sm:max-w-lg">
             <DialogHeader>
               <DialogTitle className="text-foreground font-heading">
-                {editingId ? "Edit Testimonial" : "New Testimonial"}
+                {editingId ? t("editTitle") : t("newTitle")}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-foreground">Customer Name</Label>
+                <Label className="text-foreground">{tLabels("customerName")}</Label>
                 <Input value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="bg-surface-elevated border-border/50" />
               </div>
               <div className="space-y-2">
-                <Label className="text-foreground">Rating</Label>
+                <Label className="text-foreground">{tLabels("rating")}</Label>
                 <StarPicker value={rating} onChange={setRating} />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label className="text-foreground">Quote - English</Label>
+                  <Label className="text-foreground">{tLabels("quoteEn")}</Label>
                   <Textarea value={quoteEn} onChange={(e) => setQuoteEn(e.target.value)} rows={3} className="bg-surface-elevated border-border/50" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-foreground">الاقتباس - العربية</Label>
+                  <Label className="text-foreground">{tLabels("quoteAr")}</Label>
                   <Textarea value={quoteAr} onChange={(e) => setQuoteAr(e.target.value)} rows={3} dir="rtl" className="bg-surface-elevated border-border/50 text-right" />
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Switch checked={visible} onCheckedChange={setVisible} />
-                <Label className="text-foreground text-sm">Show on site</Label>
+                <Label className="text-foreground text-sm">{t("showOnSite")}</Label>
               </div>
               <Button onClick={handleSave} disabled={saving} className="w-full bg-accent hover:bg-accent-hover text-background">
-                {saving ? "Saving..." : editingId ? "Update" : "Add Testimonial"}
+                {saving ? t("saving") : editingId ? t("update") : t("add")}
               </Button>
             </div>
           </DialogContent>
@@ -172,7 +187,7 @@ export default function AdminTestimonialsPage() {
 
       <Card className="bg-surface border-border/50">
         <CardContent className="p-0">
-          {!testimonials ? (
+          {!optimisticTestimonials ? (
             <div className="p-6 space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} className="h-12 w-full" />
@@ -182,14 +197,14 @@ export default function AdminTestimonialsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="border-border/50">
-                  <TableHead className="text-foreground">Customer</TableHead>
-                  <TableHead className="text-foreground">Rating</TableHead>
-                  <TableHead className="text-foreground">Visible</TableHead>
-                  <TableHead className="w-[100px] text-foreground">Actions</TableHead>
+                  <TableHead className="text-foreground">{tHeaders("customer")}</TableHead>
+                  <TableHead className="text-foreground">{tHeaders("rating")}</TableHead>
+                  <TableHead className="text-foreground">{tHeaders("visible")}</TableHead>
+                  <TableHead className="w-[100px] text-foreground">{tHeaders("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {testimonials.map((item) => (
+                {optimisticTestimonials.map((item) => (
                   <TableRow key={item._id} className="bg-surface">
                     <TableCell className="font-medium text-foreground">{item.customerName}</TableCell>
                     <TableCell>
@@ -200,7 +215,7 @@ export default function AdminTestimonialsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Switch checked={item.isVisible} onCheckedChange={() => handleToggle(item._id)} />
+                      <Switch checked={item.isVisible} onCheckedChange={() => handleToggle(item._id as Id<"testimonials">)} />
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
@@ -214,10 +229,10 @@ export default function AdminTestimonialsPage() {
                     </TableCell>
                   </TableRow>
                 ))}
-                {testimonials.length === 0 && (
+                {optimisticTestimonials.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                      No testimonials yet
+                      {t("noTestimonials")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -230,15 +245,15 @@ export default function AdminTestimonialsPage() {
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <DialogContent className="bg-surface border-border/50 sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-foreground font-heading">Delete testimonial?</DialogTitle>
+            <DialogTitle className="text-foreground font-heading">{t("deleteTitle")}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">This cannot be undone.</p>
+          <p className="text-sm text-muted-foreground">{t("deleteDesc")}</p>
           <div className="flex gap-3 justify-end">
-            <Button variant="outline" onClick={() => setDeleteId(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={() => handleDelete(deleteId!)}>Delete</Button>
+            <Button variant="outline" onClick={() => setDeleteId(null)}>{t("deleteCancel")}</Button>
+            <Button variant="destructive" onClick={() => handleDelete(deleteId!)}>{t("deleteConfirm")}</Button>
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </SectionEditorShell>
   );
 }

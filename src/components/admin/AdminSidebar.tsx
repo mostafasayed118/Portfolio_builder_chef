@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LanguageToggle } from "@/components/shared/LanguageToggle";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -12,23 +13,33 @@ import {
   MessageSquare,
   Image,
   Mail,
+  Briefcase,
+  Cog,
+  MapPin,
+  Inbox,
   LogOut,
 } from "lucide-react";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useClerk } from "@clerk/nextjs";
 
 const sidebarLinks = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/hero", label: "Hero Section", icon: BookOpen },
-  { href: "/admin/about", label: "About Me", icon: User },
-  { href: "/admin/menu", label: "Menu Items", icon: Utensils },
-  { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
-  { href: "/admin/gallery", label: "Gallery", icon: Image },
-  { href: "/admin/contact", label: "Contact Info", icon: Mail },
-];
+  { href: "/admin/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+  { href: "/admin/hero", labelKey: "hero", icon: BookOpen },
+  { href: "/admin/about", labelKey: "about", icon: User },
+  { href: "/admin/projects", labelKey: "projects", icon: Briefcase },
+  { href: "/admin/menu", labelKey: "menu", icon: Utensils },
+  { href: "/admin/testimonials", labelKey: "testimonials", icon: MessageSquare },
+  { href: "/admin/services", labelKey: "services", icon: Cog },
+  { href: "/admin/gallery", labelKey: "gallery", icon: Image },
+  { href: "/admin/locations", labelKey: "locations", icon: MapPin },
+  { href: "/admin/contact", labelKey: "contact", icon: Mail },
+  { href: "/admin/inbox", labelKey: "inbox", icon: Inbox },
+] as const;
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const { logout } = useAdminAuth();
+  const { signOut } = useClerk();
+  const t = useTranslations("admin.nav");
+  const tSite = useTranslations("site");
 
   return (
     <aside className="flex h-full w-full flex-col bg-surface border-border border-s">
@@ -37,7 +48,7 @@ export function AdminSidebar() {
           href="/"
           className="font-heading text-lg font-bold tracking-tight text-foreground truncate"
         >
-          Chef Amira
+          {tSite("title")}
         </Link>
       </div>
 
@@ -57,7 +68,7 @@ export function AdminSidebar() {
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
-              <span className="truncate">{link.label}</span>
+              <span className="truncate">{t(link.labelKey)}</span>
             </Link>
           );
         })}
@@ -65,12 +76,13 @@ export function AdminSidebar() {
 
       <div className="border-t border-border p-3 space-y-2 shrink-0">
         <LanguageToggle variant="sidebar" />
+        <ThemeToggle variant="sidebar" />
         <button
-          onClick={logout}
+          onClick={() => signOut({ redirectUrl: "/" })}
           className="flex items-center gap-3 w-full min-h-[48px] px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-elevated/50 transition-colors"
         >
           <LogOut className="h-5 w-5 shrink-0" />
-          <span>Logout</span>
+          <span>{t("logout")}</span>
         </button>
       </div>
     </aside>
