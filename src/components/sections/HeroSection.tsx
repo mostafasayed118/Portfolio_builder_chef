@@ -11,7 +11,7 @@ import { useDirection } from "@/hooks/useDirection";
 import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { getBilingualField } from "@/lib/bilingual";
-import { ChefHat, Sparkles, ArrowRight } from "lucide-react";
+import { ChefHat, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
 
 function FloatingDecor({ shouldReduce }: { shouldReduce: boolean | null }) {
   if (shouldReduce) return null;
@@ -19,7 +19,7 @@ function FloatingDecor({ shouldReduce }: { shouldReduce: boolean | null }) {
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
       {/* Top-right decorative blob */}
       <motion.div
-        className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-20"
+        className="absolute -top-20 -end-20 w-72 h-72 rounded-full opacity-20"
         style={{
           background: "radial-gradient(circle, var(--accent-glow), transparent 70%)",
         }}
@@ -28,7 +28,7 @@ function FloatingDecor({ shouldReduce }: { shouldReduce: boolean | null }) {
       />
       {/* Bottom-left decorative blob */}
       <motion.div
-        className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full opacity-10"
+        className="absolute -bottom-32 -start-32 w-96 h-96 rounded-full opacity-10"
         style={{
           background: "radial-gradient(circle, var(--accent-glow), transparent 70%)",
         }}
@@ -37,17 +37,17 @@ function FloatingDecor({ shouldReduce }: { shouldReduce: boolean | null }) {
       />
       {/* Floating accent dots */}
       <motion.div
-        className="absolute top-1/4 right-1/4 w-2 h-2 rounded-full bg-accent/30"
+        className="absolute top-1/4 end-1/4 w-2 h-2 rounded-full bg-accent/30"
         animate={{ y: [0, -20, 0], opacity: [0.3, 0.6, 0.3] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute top-2/3 right-1/3 w-1.5 h-1.5 rounded-full bg-accent/20"
+        className="absolute top-2/3 end-1/3 w-1.5 h-1.5 rounded-full bg-accent/20"
         animate={{ y: [0, -15, 0], opacity: [0.2, 0.5, 0.2] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       />
       <motion.div
-        className="absolute bottom-1/3 left-1/4 w-1 h-1 rounded-full bg-accent/25"
+        className="absolute bottom-1/3 start-1/4 w-1 h-1 rounded-full bg-accent/25"
         animate={{ y: [0, -12, 0], opacity: [0.2, 0.4, 0.2] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
@@ -153,7 +153,11 @@ export function HeroSection() {
                   className="group bg-accent hover:bg-accent-hover text-background text-base px-8 shadow-accent cursor-pointer transition-all duration-300 hover:shadow-glow"
                 >
                   {ctaLabel}
-                  <ArrowRight className="h-4 w-4 ms-2 transition-transform duration-300 group-hover:translate-x-1" />
+                  {isRTL ? (
+                    <ArrowLeft className="h-4 w-4 ms-2 transition-transform duration-300 group-hover:-translate-x-1" />
+                  ) : (
+                    <ArrowRight className="h-4 w-4 ms-2 transition-transform duration-300 group-hover:translate-x-1" />
+                  )}
                 </Button>
               </Link>
               <Link href="/contact">

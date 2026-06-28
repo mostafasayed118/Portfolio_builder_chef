@@ -16,6 +16,7 @@ import { toast } from "sonner";
 export default function AdminHeroPage() {
   const t = useTranslations("admin.heroEditor.labels");
   const tHero = useTranslations("admin.heroEditor");
+  const tNav = useTranslations("admin.nav");
   const hero = useQuery(api.queries.getHeroContent);
   const updateHero = useMutation(api.mutations.updateHeroContent);
   const [saving, setSaving] = useState(false);
@@ -94,8 +95,8 @@ export default function AdminHeroPage() {
 
   return (
     <SectionEditorShell
-      title="Homepage Welcome"
-      breadcrumb="Dashboard"
+      title={tNav("hero")}
+      breadcrumb={tNav("dashboard")}
       onSave={handleSave}
       isSaving={saving}
       hasUnsaved={!!hasUnsaved}

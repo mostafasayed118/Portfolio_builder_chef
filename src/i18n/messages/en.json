@@ -25,6 +25,10 @@
     "gallery": {
       "title": "Gallery | Chef Mohamed",
       "description": "See Chef Mohamed's work — artisan sourdough, hand-laminated croissants, French pastries, and bakery creations captured in photos."
+    },
+    "craftPractice": {
+      "title": "Craft & Practice | Chef Mohamed",
+      "description": "Watch Chef Mohamed in action — product showcases, training sessions, and behind-the-scenes moments from the bakery."
     }
   },
   "nav": {
@@ -33,6 +37,7 @@
     "services": "Services",
     "menu": "Menu",
     "gallery": "Gallery",
+    "craftPractice": "Craft & Practice",
     "contact": "Contact",
     "bookNow": "Book a Tasting"
   },
@@ -100,15 +105,18 @@
     "instagramLabel": "Instagram",
     "bookBtn": "Book a Tasting",
     "businessHoursLabel": "Business Hours",
-    "form": {
-      "nameLabel": "Name",
-      "emailLabel": "Email",
-      "phoneLabel": "Phone (optional)",
-      "phonePlaceholder": "+20 ...",
-      "messageLabel": "Message",
-      "requestTypeLabel": "What can I help you with?",
-      "requestTypePlaceholder": "Select a topic",
-      "requestTypes": {
+  "form": {
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "your@email.com",
+    "phoneLabel": "Phone (optional)",
+    "phonePlaceholder": "+20 ...",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell us about your request...",
+    "requestTypeLabel": "What can I help you with?",
+    "requestTypePlaceholder": "Select a topic",
+    "requestTypes": {
         "consulting": "Bakery Consulting",
         "catering": "Catering",
         "training": "Training & Workshops",
@@ -138,6 +146,11 @@
     "backHome": "Back to Home"
   },
   "admin": {
+    "unauthorized": {
+      "title": "Access Denied",
+      "message": "This area is restricted to authorized administrators only.",
+      "backHome": "Back to Home"
+    },
     "login": {
       "heading": "Admin Login",
       "subheading": "Sign in to manage your bakery",
@@ -183,6 +196,9 @@
     },
     "nav": {
       "dashboard": "Dashboard",
+      "sections": "Manage Sections",
+      "theme": "Theme & Colors",
+      "seo": "SEO & Metadata",
       "hero": "Homepage Welcome",
       "about": "About Me",
       "projects": "My Work Experience",
@@ -190,10 +206,108 @@
       "testimonials": "Customer Reviews",
       "services": "Services",
       "gallery": "Photo Gallery",
+      "videos": "Craft & Practice",
       "locations": "Service Areas",
       "contact": "Contact Info",
       "inbox": "Inbox",
       "logout": "Logout"
+    },
+    "theme": {
+      "title": "Theme & Colors",
+      "description": "Customize your site's visual identity. Changes apply instantly.",
+      "presets": "Quick Presets",
+      "custom": "Custom Colors",
+      "autoDark": "Auto-generate dark mode",
+      "contrastPass": "WCAG AA Pass",
+      "contrastFail": "Low Contrast",
+      "saveDisabled": "Fix contrast issues before saving",
+      "resetConfirm": "Reset to default Bakery Gold theme?",
+      "exportTheme": "Export Theme",
+      "importTheme": "Import Theme",
+      "saved": "Theme saved successfully",
+      "saveFailed": "Failed to save theme",
+      "resetDone": "Theme reset to default",
+      "resetFailed": "Failed to reset theme",
+      "invalidImport": "Invalid theme file format",
+      "imported": "Theme imported successfully",
+      "baseColors": "Base Colors",
+      "accentColors": "Accent Colors",
+      "semanticColors": "Semantic Colors",
+      "darkModePreview": "Dark Mode Preview",
+      "lightModePreview": "Light Mode Preview",
+      "tokens": {
+        "background": "Background",
+        "foreground": "Text",
+        "accent": "Accent",
+        "accentForeground": "Accent Text",
+        "muted": "Muted Background",
+        "mutedForeground": "Muted Text",
+        "border": "Borders",
+        "card": "Card Background",
+        "destructive": "Error/Danger"
+      },
+      "preset": {
+        "bakeryGold": "Bakery Gold",
+        "chocolate": "Dark Chocolate",
+        "matcha": "Matcha Green",
+        "berry": "Berry Rose"
+      }
+    },
+    "sections": {
+      "title": "Manage Sections",
+      "description": "Drag to reorder sections. Toggle to show or hide.",
+      "required": "Required — cannot be hidden",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "dragHandle": "Drag to reorder",
+      "toggleLabel": "Toggle visibility for {section}",
+      "hero": "Hero",
+      "about": "About",
+      "services": "Services",
+      "projects": "Work Experience",
+      "craftPractice": "Craft & Practice",
+      "menu": "Menu",
+      "gallery": "Gallery",
+      "testimonials": "Testimonials",
+      "locations": "Service Areas",
+      "contact": "Contact",
+      "ctaBanner": "CTA Banner",
+      "reordered": "Section order updated",
+      "reorderFailed": "Couldn't update order. Try again.",
+      "toggled": "Section visibility updated",
+      "toggleFailed": "Couldn't update visibility. Try again."
+    },
+    "seo": {
+      "title": "SEO & Site Settings",
+      "description": "Control all site metadata, Open Graph, Twitter Cards, and business information.",
+      "save": "Save SEO Settings",
+      "saving": "Saving...",
+      "saved": "SEO settings saved successfully",
+      "saveFailed": "Failed to save SEO settings",
+      "pageSave": "Save",
+      "pageSaved": "Page metadata saved",
+      "noIndexWarning": "⚠️ This will hide your site from search engines!",
+      "charCount": "{current}/{max} characters",
+      "charWarning": "Too long — may be truncated in search results",
+      "serpPreview": "Search Result Preview",
+      "ogPreview": "Social Share Preview",
+      "templateHelp": "Use %s as placeholder for page title",
+      "tabs": {
+        "global": "Global SEO",
+        "og": "Open Graph & Social",
+        "pages": "Page Metadata",
+        "structured": "Structured Data"
+      },
+      "fields": {
+        "defaultTitle": "Default Title",
+        "titleTemplate": "Title Template",
+        "defaultDescription": "Default Description",
+        "businessName": "Business Name",
+        "googleAnalytics": "Google Analytics ID",
+        "sameAs": "Social Profiles",
+        "ogImage": "Default Share Image",
+        "twitterHandle": "Twitter Handle"
+      }
     },
     "shell": {
       "viewSite": "View on Site",
@@ -212,7 +326,8 @@
       "invalidFormat": "That file type isn't supported. Please use a photo (JPG or PNG).",
       "tooLarge": "That photo is over 5 MB. Try a smaller one or resize it on your phone first.",
       "uploaded": "Photo added",
-      "uploadFailed": "Upload didn't work. Check your internet and try again."
+      "uploadFailed": "Upload didn't work. Check your internet and try again.",
+      "remove": "Remove photo"
     },
     "edit": {
       "saveBtn": "Save Changes",
@@ -287,7 +402,8 @@
         "reqLabelAr": "السمة (عربية)"
       },
       "savedToast": "Contact info saved",
-      "saveFailedToast": "Failed to save"
+      "saveFailedToast": "Failed to save",
+      "removeRequestType": "Remove option"
     },
     "heroSection": "Hero Section",
     "aboutSection": "About Section",
@@ -528,6 +644,7 @@
       "processing": "Processing...",
       "saved": "Image removed",
       "saveFailed": "Failed to delete",
+      "deletePhoto": "Delete photo",
       "uploadFailed": "Upload failed. Please try again.",
       "uploadSuccess": "image(s) uploaded",
       "storageWarning": "Image removed, but storage cleanup failed — contact support if storage usage seems high.",
@@ -539,6 +656,61 @@
         "captionEn": "Optional - applies to all",
         "captionAr": "اختياري"
       }
+    },
+    "videos": {
+      "addVideo": "Add Video",
+      "addFirst": "Add Your First Video",
+      "editTitle": "Edit Video",
+      "newTitle": "New Video",
+      "emptyTitle": "No videos yet",
+      "emptyDesc": "Upload product showcases, training sessions, and behind-the-scenes clips.",
+      "noFilterMatch": "No videos in this category yet.",
+      "deleteTitle": "Delete this video?",
+      "deleteDesc": "This will permanently delete the video file and poster image. This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deleteCancel": "Cancel",
+      "saving": "Saving...",
+      "update": "Update Video",
+      "add": "Add Video",
+      "saved": "Video updated",
+      "added": "Video added",
+      "saveFailed": "Failed to save",
+      "deleted": "Video deleted",
+      "deleteFailed": "Failed to delete",
+      "updateFailed": "Failed to update",
+      "showOnSite": "Show on site",
+      "fileSizeWarning": "Videos over 50 MB will be optimized for streaming. For the best mobile experience, keep clips under 2 minutes.",
+      "filters": {
+        "all": "All",
+        "product": "Products",
+        "training": "Training",
+        "bts": "Behind the Scenes"
+      },
+      "labels": {
+        "titleEn": "Title - English",
+        "titleAr": "العنوان - العربية",
+        "descEn": "Description - English",
+        "descAr": "الوصف - العربية",
+        "category": "Category",
+        "duration": "Duration (seconds)",
+        "durationHint": "Auto-detected from the video file. Override manually if needed.",
+        "uploadVideo": "Video File",
+        "uploadPoster": "Poster Image (required)",
+        "videoRequired": "Please upload a video file.",
+        "posterRequired": "Please upload a poster image."
+      }
+    },
+    "videoUpload": {
+      "uploadBtn": "Upload a video",
+      "changeBtn": "Change video",
+      "dropHint": "or drop a video file here",
+      "helper": "Max 200 MB · MP4, MOV, or WebM",
+      "invalidFormat": "That file type isn't supported. Please use MP4, MOV, or WebM.",
+      "tooLarge": "That video is over 200 MB. Try a smaller file or compress it first.",
+      "largeFileWarning": "Large file — it may take a while to upload and will be optimized for streaming.",
+      "uploaded": "Video added",
+      "uploadFailed": "Upload didn't work. Check your internet and try again.",
+      "remove": "Remove video"
     },
     "inbox": {
       "title": "Inbox",
@@ -555,7 +727,27 @@
       "phoneLabel": "Phone",
       "requestTypeLabel": "Request Type",
       "messageLabel": "Message",
-      "receivedLabel": "Received"
+      "receivedLabel": "Received",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "selectedCount": "{count} selected",
+      "archive": "Archive",
+      "unarchive": "Unarchive",
+      "confirmArchive": "Archive {count} messages?",
+      "confirmArchiveDesc": "Archived messages will be hidden from the active inbox.",
+      "confirmUnarchive": "Unarchive {count} messages?",
+      "confirmUnarchiveDesc": "These messages will return to the active inbox.",
+      "activeTab": "Active",
+      "archivedTab": "Archived",
+      "batchMarkRead": "Mark as read",
+      "batchMarkUnread": "Mark as unread",
+      "batchReadSuccess": "{count} messages marked as read",
+      "batchUnreadSuccess": "{count} messages marked as unread",
+      "archiveSuccess": "{count} messages archived",
+      "unarchiveSuccess": "{count} messages unarchived",
+      "emptyArchived": "No archived messages",
+      "emptyArchivedDesc": "Archived messages will appear here.",
+      "deleteCancel": "Cancel"
     }
   },
   "gallery": {
@@ -564,6 +756,20 @@
     "emptyTitle": "Your bakery in photos",
     "emptyDesc": "Show off your sourdough, croissants, and cakes. Log in to the admin panel and add your first photos.",
     "emptyCta": "Go to Admin → Gallery"
+  },
+  "videos": {
+    "sectionTitle": "Craft & Practice",
+    "categories": {
+      "all": "All",
+      "product": "Products",
+      "training": "Training",
+      "bts": "Behind the Scenes"
+    },
+    "playLabel": "Play video",
+    "closePlayer": "Close player",
+    "durationLabel": "Duration",
+    "emptyTitle": "No videos yet",
+    "emptyDescription": "Add videos from Admin → Craft & Practice"
   },
   "common": {
     "loading": "Loading...",

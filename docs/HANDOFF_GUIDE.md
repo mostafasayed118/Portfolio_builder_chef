@@ -119,6 +119,44 @@ This is where you list your consulting, training, and baking services. Each serv
 
 ---
 
+### My Work Experience / خبراتي العملية
+
+This is where you showcase your career history. Each entry has:
+- **Role** (English + Arabic) — e.g. "Head Baker"
+- **Workplace** (English + Arabic) — e.g. "Cairo Grand Hotel"
+- **Period** — e.g. "2018 – 2022"
+- **Category** — Early Career, Specialization, Leadership, Founder, or International
+- **Show on Website** — toggle ON to display
+
+**To add an entry:**
+1. Click "Add Experience"
+2. Fill in the form
+3. Click "Add Experience"
+
+**To reorder:** Drag the ⋮⋮ handle up or down
+**To edit:** Click the ✏️ pencil icon on any entry
+**To delete:** Click the 🗑️ icon — confirm in the popup
+
+---
+
+### Service Areas / مناطق الخدمة
+
+This is where you list the cities and regions where you provide services. Each location has:
+- **City/Area** (English + Arabic) — e.g. "Cairo" / "القاهرة"
+- **Region** — Egypt, Middle East, Europe, or International
+- **Show on Website** — toggle ON to display
+
+**To add a location:**
+1. Click "Add Location"
+2. Fill in the form
+3. Click "Add Location"
+
+**To reorder:** Drag the ⋮⋮ handle up or down
+**To edit:** Click the ✏️ pencil icon on any entry
+**To delete:** Click the 🗑️ icon — confirm in the popup
+
+---
+
 ### Customer Reviews / تقييمات العملاء
 
 These are quotes from people who love your work. Each review has:

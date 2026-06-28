@@ -9,7 +9,7 @@ import { useDirection } from "@/hooks/useDirection";
 import { motion, useReducedMotion } from "motion/react";
 import { getBilingualField } from "@/lib/bilingual";
 import Image from "next/image";
-import { ChefHat, Award, Clock, Users } from "lucide-react";
+import { ChefHat } from "lucide-react";
 
 export function AboutSection() {
   const about = useQuery(api.queries.getAboutContent);
@@ -87,11 +87,11 @@ export function AboutSection() {
                 ) : (
                   <div className="flex flex-col items-center justify-center gap-4 p-8 text-center border-2 border-dashed border-accent/20 rounded-2xl m-2">
                     <motion.div
-                      className="h-20 w-20 rounded-full bg-accent/10 flex items-center justify-center"
+                      className="h-24 w-24 rounded-full bg-accent/10 flex items-center justify-center"
                       animate={shouldReduce ? {} : { scale: [1, 1.05, 1] }}
                       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                     >
-                      <ChefHat className="h-10 w-10 text-accent/40" />
+                      <ChefHat className="h-12 w-12 text-accent/40" />
                     </motion.div>
                     <p className="text-sm text-muted-foreground/70 max-w-[200px]">
                       {t("emptyState")}
@@ -126,23 +126,28 @@ export function AboutSection() {
 
             {/* Skill badges with enhanced design */}
             {about.skills.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
-                {about.skills.map((skill, i) => (
-                  <motion.div
-                    key={skill}
-                    initial={shouldReduce ? {} : { opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                  >
-                    <Badge
-                      variant="secondary"
-                      className="bg-accent/8 text-accent hover:bg-accent/15 border border-accent/15 transition-all duration-200 cursor-default text-sm px-3 py-1"
+              <div className="mb-6">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                  {isRTL ? "المهارات" : "Skills"}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {about.skills.map((skill, i) => (
+                    <motion.div
+                      key={skill}
+                      initial={shouldReduce ? {} : { opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
                     >
-                      {skill}
-                    </Badge>
-                  </motion.div>
-                ))}
+                      <Badge
+                        variant="secondary"
+                        className="bg-accent/8 text-accent hover:bg-accent/15 border border-accent/15 transition-all duration-200 cursor-default text-sm px-3 py-1"
+                      >
+                        {skill}
+                      </Badge>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -153,17 +158,21 @@ export function AboutSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex flex-wrap gap-3 pt-6 border-t border-border/30"
               >
-                {about.stats.map((stat) => (
-                  <Badge
-                    key={stat}
-                    variant="outline"
-                    className="bg-surface-elevated/60 text-muted-foreground border-border/40 text-xs px-3 py-1.5 hover:border-accent/20 transition-colors duration-200"
-                  >
-                    {stat}
-                  </Badge>
-                ))}
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                  {isRTL ? "الإنجازات" : "Highlights"}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {about.stats.map((stat) => (
+                    <Badge
+                      key={stat}
+                      variant="outline"
+                      className="bg-surface-elevated/60 text-muted-foreground border-border/40 text-xs px-3 py-1.5 hover:border-accent/20 transition-colors duration-200"
+                    >
+                      {stat}
+                    </Badge>
+                  ))}
+                </div>
               </motion.div>
             )}
           </motion.div>

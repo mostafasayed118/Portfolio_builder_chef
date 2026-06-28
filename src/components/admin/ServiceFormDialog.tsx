@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import type { Doc } from "@convex/_generated/dataModel";
 
 const CATEGORY_EMOJIS: Record<string, string> = {
   artisanal: "\u{1F9C0}",
@@ -34,7 +35,7 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editingId: string | null;
-  editingItem?: any;
+  editingItem?: Doc<"services"> | null;
   onSave: (data: {
     category: "artisanal" | "consulting" | "training";
     name_en: string;
@@ -61,6 +62,7 @@ export function ServiceFormDialog({ open, onOpenChange, editingId, editingItem, 
   const [isVisible, setIsVisible] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (editingItem) {
       setCategory(editingItem.category);
@@ -96,7 +98,7 @@ export function ServiceFormDialog({ open, onOpenChange, editingId, editingItem, 
         description_ar: descAr,
         icon: icon || null,
         isVisible,
-        order: 0,
+        order: editingItem?.order ?? 0,
       });
       onOpenChange(false);
     } catch {
@@ -137,7 +139,7 @@ export function ServiceFormDialog({ open, onOpenChange, editingId, editingItem, 
             </div>
             <div className="space-y-2">
               <Label className="text-foreground">{tLabels("nameAr")}</Label>
-              <Input value={nameAr} onChange={(e) => setNameAr(e.target.value)} dir="rtl" placeholder={tPlaceholders("nameAr")} className="bg-surface-elevated border-border/50 text-right" />
+              <Input value={nameAr} onChange={(e) => setNameAr(e.target.value)} dir="rtl" placeholder={tPlaceholders("nameAr")} className="bg-surface-elevated border-border/50 text-end" />
             </div>
           </div>
 
@@ -149,7 +151,7 @@ export function ServiceFormDialog({ open, onOpenChange, editingId, editingItem, 
             </div>
             <div className="space-y-2">
               <Label className="text-foreground">{tLabels("descAr")}</Label>
-              <Textarea value={descAr} onChange={(e) => setDescAr(e.target.value)} rows={3} maxLength={500} dir="rtl" className="bg-surface-elevated border-border/50 text-right" />
+              <Textarea value={descAr} onChange={(e) => setDescAr(e.target.value)} rows={3} maxLength={500} dir="rtl" className="bg-surface-elevated border-border/50 text-end" />
               <p className="text-xs text-muted-foreground text-end">{descAr.length}/500</p>
             </div>
           </div>

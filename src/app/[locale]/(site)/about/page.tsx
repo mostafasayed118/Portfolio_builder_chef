@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getTranslations } from "next-intl/server";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { LocationsSection } from "@/components/sections/LocationsSection";
+import { resolvePageMetadata } from "@/lib/metadata";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -12,11 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "en" | "ar", namespace: "metadata.about" });
-  return {
-    title: t("title"),
-    description: t("description"),
-  };
+  return await resolvePageMetadata(locale, "about");
 }
 
 export default function AboutPage() {

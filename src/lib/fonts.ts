@@ -23,6 +23,6 @@ export const cairo = Cairo({
 
 export const fontVariables = `${playfair.variable} ${inter.variable} ${cairo.variable}`;
 
-export function getFontClass(locale: string): string {
+export function getFontClass(): string {
   return fontVariables;
 }

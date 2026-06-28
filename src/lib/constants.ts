@@ -21,6 +21,7 @@ export const NAV_LINKS = [
   { href: "/", label: "nav.home" },
   { href: "/about", label: "nav.about" },
   { href: "/services", label: "nav.services" },
+  { href: "/craft-practice", label: "nav.craftPractice" },
   { href: "/menu", label: "nav.menu" },
   { href: "/gallery", label: "nav.gallery" },
   { href: "/contact", label: "nav.contact" },

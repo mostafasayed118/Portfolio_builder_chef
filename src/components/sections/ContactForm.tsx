@@ -81,7 +81,7 @@ export function ContactForm() {
           onChange={(e) => setName(e.target.value)}
           required
           className="bg-surface-elevated/50 border-border/40 focus:border-accent focus:ring-2 focus:ring-accent/15 h-11 transition-all duration-200 placeholder:text-muted-foreground/50"
-          placeholder="Your name"
+          placeholder={t("form.namePlaceholder")}
         />
       </div>
 
@@ -96,7 +96,7 @@ export function ContactForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           className="bg-surface-elevated/50 border-border/40 focus:border-accent focus:ring-2 focus:ring-accent/15 h-11 transition-all duration-200 placeholder:text-muted-foreground/50"
-          placeholder="your@email.com"
+          placeholder={t("form.emailPlaceholder")}
         />
       </div>
 
@@ -157,7 +157,7 @@ export function ContactForm() {
           rows={5}
           required
           className="bg-surface-elevated/50 border-border/40 focus:border-accent focus:ring-2 focus:ring-accent/15 transition-all duration-200 placeholder:text-muted-foreground/50 resize-none"
-          placeholder="Tell us about your request..."
+          placeholder={t("form.messagePlaceholder")}
         />
       </div>
 

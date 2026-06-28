@@ -53,8 +53,71 @@ export default defineSchema({
         }),
       ),
     }),
+    theme: v.optional(v.object({
+      preset: v.optional(v.string()),
+      light: v.object({
+        background: v.string(),
+        foreground: v.string(),
+        accent: v.string(),
+        accentForeground: v.string(),
+        muted: v.string(),
+        mutedForeground: v.string(),
+        border: v.string(),
+        card: v.string(),
+        destructive: v.string(),
+      }),
+      dark: v.optional(v.object({
+        background: v.string(),
+        foreground: v.string(),
+        accent: v.string(),
+        accentForeground: v.string(),
+        muted: v.string(),
+        mutedForeground: v.string(),
+        border: v.string(),
+        card: v.string(),
+        destructive: v.string(),
+      })),
+      updatedAt: v.number(),
+    })),
+    seo: v.optional(v.object({
+      defaultTitle_en: v.string(),
+      defaultTitle_ar: v.string(),
+      titleTemplate: v.optional(v.string()),
+      defaultDescription_en: v.string(),
+      defaultDescription_ar: v.string(),
+      businessName_en: v.string(),
+      businessName_ar: v.string(),
+      businessType: v.optional(v.string()),
+      sameAs: v.optional(v.array(v.string())),
+      logoStorageId: v.optional(v.id("_storage")),
+      googleAnalyticsId: v.optional(v.string()),
+      googleSiteVerification: v.optional(v.string()),
+      facebookPixelId: v.optional(v.string()),
+      robotsTxt: v.optional(v.string()),
+      noIndex: v.optional(v.boolean()),
+      updatedAt: v.number(),
+    })),
+    openGraph: v.optional(v.object({
+      defaultImageStorageId: v.optional(v.id("_storage")),
+      twitterHandle: v.optional(v.string()),
+      locale: v.optional(v.string()),
+      siteName_en: v.optional(v.string()),
+      siteName_ar: v.optional(v.string()),
+    })),
     updatedAt: v.number(),
   }).index("by_key", ["key"]),
+
+  pageMetadata: defineTable({
+    pageKey: v.string(),
+    title_en: v.optional(v.string()),
+    title_ar: v.optional(v.string()),
+    description_en: v.optional(v.string()),
+    description_ar: v.optional(v.string()),
+    ogImageStorageId: v.optional(v.id("_storage")),
+    canonicalUrl: v.optional(v.string()),
+    noIndex: v.optional(v.boolean()),
+    updatedAt: v.number(),
+  }).index("by_pageKey", ["pageKey"]),
 
   menuItems: defineTable({
     name_en: v.string(),
@@ -112,6 +175,36 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_order", ["order"]),
 
+  // "Craft & Practice" video section — adaptive streaming (HLS) with MP4 fallback.
+  // URL resolution follows the gallery pattern: videoUrl/posterUrl are resolved
+  // once at write-time via ctx.storage.getUrl() and stored alongside the
+  // storageIds (used for cleanup on delete). hlsUrl holds an external CDN
+  // manifest when HLS transcoding is configured; when absent the public player
+  // falls back to progressive MP4 via videoUrl + preload="metadata".
+  videos: defineTable({
+    title_en: v.string(),
+    title_ar: v.string(),
+    description_en: v.optional(v.string()),
+    description_ar: v.optional(v.string()),
+    category: v.union(
+      v.literal("product"),
+      v.literal("training"),
+      v.literal("bts"),
+    ),
+    storageId: v.id("_storage"),
+    videoUrl: v.nullable(v.string()),
+    hlsUrl: v.optional(v.string()),
+    posterStorageId: v.optional(v.id("_storage")),
+    posterUrl: v.optional(v.string()),
+    duration: v.optional(v.number()),
+    order: v.number(),
+    isVisible: v.boolean(),
+    createdAt: v.number(),
+  })
+    .index("by_order", ["order"])
+    .index("by_visible", ["isVisible"])
+    .index("by_category", ["category"]),
+
   projects: defineTable({
     role_en: v.string(),
     role_ar: v.string(),
@@ -150,6 +243,18 @@ export default defineSchema({
     createdAt: v.number(),
   }).index("by_order", ["order"]),
 
+  sectionConfigs: defineTable({
+    sectionKey: v.string(),
+    label_en: v.string(),
+    label_ar: v.string(),
+    isVisible: v.boolean(),
+    order: v.number(),
+    isRequired: v.optional(v.boolean()),
+    updatedAt: v.number(),
+  })
+    .index("by_order", ["order"])
+    .index("by_sectionKey", ["sectionKey"]),
+
   rateLimitEntries: defineTable({
     key: v.string(),
     attemptAt: v.number(),
@@ -169,10 +274,13 @@ export default defineSchema({
     message: v.string(),
     createdAt: v.number(),
     isRead: v.boolean(),
+    archived: v.optional(v.boolean()),
+    archivedAt: v.optional(v.number()),
   })
     .index("by_created", ["createdAt"])
     .index("by_email", ["email"])
-    .index("by_read", ["isRead"]),
+    .index("by_read", ["isRead"])
+    .index("by_archived", ["archived"]),
 
   activityLogs: defineTable({
     action: v.string(),

@@ -5,7 +5,7 @@
  * CLERK_FRONTEND_API_URL must be set in the Convex environment:
  *   npx convex env set CLERK_FRONTEND_API_URL=https://evolved-martin-67.clerk.accounts.dev
  */
-export default {
+const authConfig = {
   providers: [
     {
       domain: "evolved-martin-67.clerk.accounts.dev",
@@ -13,3 +13,5 @@ export default {
     },
   ],
 };
+
+export default authConfig;

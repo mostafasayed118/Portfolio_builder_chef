@@ -49,11 +49,15 @@ First-person brand story. The CV bio's third-person voice ("he is passionate abo
 
 ### `bio_en` (three paragraphs, multi-line string)
 ```
-For ten years I've been at a bakery bench. I started as a chef's assistant at Ralph's Cafe in Maadi, learning every station and every timing, then went deep into croissants and sourdough at the Croissant & Sourdough kitchen and later at Richius in Maadi Residences. I refined slow-fermented baking at Life Snacks — the kind of patient work that asks you to listen more than you push. When I moved into leadership, I took Assistant Head Chef at The Daily Need in Fifth Settlement, then stepped into my first head-chef role at Fornalia Bakery. Twice I've opened a bakery from scratch — Nabit Bakery in Nasr City and Rotoo Bakery — building the menu and operations from the first sack of flour onward.
+For ten years, I've built my career one bakery at a time — from assistant to head chef, from employee to founder.
 
-My formal training started with a Technical Diploma in Industrial Studies at Mesta (2012–2016), but everything I really know about baking I learned at the bench: the patience a French croissant demands, the long quiet of a sourdough levain, the small decisions that separate a good loaf from a great one.
+I started at Ralph's Cafe in Maadi, learning every station. Then specialized in croissants and sourdough at Croissant & Sourdough Kitchen and Richius. At Life Snacks, I mastered slow-fermented baking — the patient art of listening to dough.
 
-What you taste in my bakes is a blend of two worlds — the tradition I inherited from the masters who trained me, and the modern technique I keep refining. French baked goods and sourdough are where I'm strongest. Excellence is the only standard I bake to.
+Leadership came at The Daily Need as Assistant Head Chef, then my first head-chef role at Fornalia Bakery. I've since founded two bakeries from scratch — Nabit and Rotoo — building menus and operations from the first sack of flour.
+
+Internationally, I served as Consultant Bakery Chef at KUP in Saudi Arabia, adapting French techniques to Middle Eastern markets.
+
+What I've learned: excellence isn't a destination — it's the only standard I bake to.
 ```
 
 ### `bio_ar`

@@ -4,11 +4,32 @@ import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Globe, Mail, MessageCircle, Phone, ChefHat, Heart } from "lucide-react";
+import { Globe, Mail, MessageCircle, Phone, ChefHat } from "lucide-react";
+import { useMemo } from "react";
+
+const FOOTER_NAV = [
+  { href: "/about", labelKey: "nav.about", sectionKey: "about" },
+  { href: "/services", labelKey: "nav.services", sectionKey: "services" },
+  { href: "/craft-practice", labelKey: "nav.craftPractice", sectionKey: "craftPractice" },
+  { href: "/menu", labelKey: "nav.menu", sectionKey: "menu" },
+  { href: "/gallery", labelKey: "nav.gallery", sectionKey: "gallery" },
+  { href: "/contact", labelKey: "nav.contact", sectionKey: "contact" },
+];
 
 export function Footer() {
   const t = useTranslations();
   const contact = useQuery(api.queries.getContactInfo);
+  const visibleSections = useQuery(api.queries.getVisibleSections);
+
+  const visibleKeys = useMemo(() => {
+    if (!visibleSections) return null;
+    return new Set(visibleSections.map((s) => s.sectionKey));
+  }, [visibleSections]);
+
+  const filteredNav = useMemo(() => {
+    if (!visibleKeys) return FOOTER_NAV;
+    return FOOTER_NAV.filter((item) => visibleKeys.has(item.sectionKey));
+  }, [visibleKeys]);
 
   return (
     <footer className="border-t border-border/40 bg-surface relative">
@@ -33,21 +54,15 @@ export function Footer() {
           <div>
             <h4 className="font-medium mb-4 text-foreground font-heading">{t("footer.navigation")}</h4>
             <nav className="flex flex-col gap-3 text-sm text-muted-foreground">
-              <Link href="/about" className="hover:text-accent transition-colors duration-200 cursor-pointer">
-                {t("nav.about")}
-              </Link>
-              <Link href="/services" className="hover:text-accent transition-colors duration-200 cursor-pointer">
-                {t("nav.services")}
-              </Link>
-              <Link href="/menu" className="hover:text-accent transition-colors duration-200 cursor-pointer">
-                {t("nav.menu")}
-              </Link>
-              <Link href="/gallery" className="hover:text-accent transition-colors duration-200 cursor-pointer">
-                {t("nav.gallery")}
-              </Link>
-              <Link href="/contact" className="hover:text-accent transition-colors duration-200 cursor-pointer">
-                {t("nav.contact")}
-              </Link>
+              {filteredNav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="hover:text-accent transition-colors duration-200 cursor-pointer"
+                >
+                  {t(item.labelKey as "nav.about" | "nav.services" | "nav.craftPractice" | "nav.menu" | "nav.gallery" | "nav.contact")}
+                </Link>
+              ))}
             </nav>
           </div>
           <div>
@@ -61,7 +76,7 @@ export function Footer() {
                   <div className="h-8 w-8 rounded-lg bg-accent/8 flex items-center justify-center shrink-0 group-hover:bg-accent/12 transition-colors duration-200">
                     <Phone className="h-4 w-4 text-accent" />
                   </div>
-                  {contact.phone}
+                  <span dir="ltr">{contact.phone}</span>
                 </a>
               )}
               {contact?.whatsapp && (

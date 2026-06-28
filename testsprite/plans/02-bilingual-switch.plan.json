@@ -1,0 +1,56 @@
+﻿{
+    "projectId":  "7b7f8b9d-e98e-40bc-ada3-fda66bf9a0ce",
+    "type":  "frontend",
+    "name":  "Bilingual EN/AR switch",
+    "description":  "P0: Verify language toggle switches content between English and Arabic with RTL layout",
+    "planSteps":  [
+                      {
+                          "type":  "action",
+                          "action":  "navigate",
+                          "value":  "https://chef-mohamed.vercel.app",
+                          "description":  "Step 0"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027lang-toggle\u0027]",
+                          "description":  "Step 1"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "condition":  "url_contains",
+                          "value":  "/ar",
+                          "description":  "Step 2"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "html",
+                          "condition":  "attr_contains",
+                          "attr":  "dir",
+                          "value":  "rtl",
+                          "description":  "Step 3"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027hero-heading\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 4"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027lang-toggle\u0027]",
+                          "description":  "Step 5"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "condition":  "url_contains",
+                          "value":  "/en",
+                          "description":  "Step 6"
+                      }
+                  ]
+}

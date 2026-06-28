@@ -1,0 +1,68 @@
+﻿{
+    "projectId":  "7b7f8b9d-e98e-40bc-ada3-fda66bf9a0ce",
+    "type":  "frontend",
+    "name":  "Contact form — submission flow",
+    "description":  "P0: Verify contact form loads, validates input, submits successfully",
+    "planSteps":  [
+                      {
+                          "type":  "action",
+                          "action":  "navigate",
+                          "value":  "https://chef-mohamed.vercel.app/contact",
+                          "description":  "Step 0"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027contact-form\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 1"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027contact-submit\u0027]",
+                          "description":  "Step 2"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027form-error\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 3"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "fill",
+                          "selector":  "[data-testid=\u0027contact-name\u0027]",
+                          "value":  "Test User",
+                          "description":  "Step 4"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "fill",
+                          "selector":  "[data-testid=\u0027contact-email\u0027]",
+                          "value":  "test@example.com",
+                          "description":  "Step 5"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "fill",
+                          "selector":  "[data-testid=\u0027contact-message\u0027]",
+                          "value":  "This is a test message from TestSprite.",
+                          "description":  "Step 6"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027contact-submit\u0027]",
+                          "description":  "Step 7"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027success-toast\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 8"
+                      }
+                  ]
+}

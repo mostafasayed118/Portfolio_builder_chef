@@ -227,9 +227,11 @@ The `SectionEditorShell` wrapper provides:
 
 Usage:
 ```tsx
+const tNav = useTranslations("admin.nav");
+
 <SectionEditorShell
-  title="Section Title"
-  breadcrumb="Dashboard"
+  title={tNav("projects")}
+  breadcrumb={tNav("dashboard")}
   onSave={handleSave}
   isSaving={saving}
   hasUnsaved={!!hasUnsaved}
@@ -238,6 +240,8 @@ Usage:
   <Card>...</Card>
 </SectionEditorShell>
 ```
+
+> **Note:** Both `title` and `breadcrumb` props are now i18n-translated via `useTranslations("admin.nav")`. Never hardcode English strings for these props.
 
 ---
 
@@ -404,6 +408,8 @@ Source: `CHEF_PROFILE.md` Section 7 — reviewed and approved by Chef Mohamed.
 ## Arabic Labels — Live as of 2026-06-23
 
 All Arabic (`locale=ar`) labels in the admin panel are **now live**. Professional translations imported from `arabic-translations.json`.
+
+As of 2026-06-27, all admin page `title` and `breadcrumb` props are also i18n-translated via `useTranslations("admin.nav")`.
 
 | Admin Section | Arabic Nav Label | Status |
 |---|---|---|

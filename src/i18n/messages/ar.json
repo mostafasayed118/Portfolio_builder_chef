@@ -25,6 +25,10 @@
     "gallery": {
       "title": "المعرض | الشيف محمد",
       "description": "شاهد أعمال الشيف محمد — خبز العجين المخمر، والكرواسون المورّق، والمعجنات الفرنسية، والتحف المخبوزة."
+    },
+    "craftPractice": {
+      "title": "حرفة وخبرة | الشيف محمد",
+      "description": "شاهد الشيف محمد أثناء العمل — عروض المنتجات، جلسات التدريب، ولقطات من كواليس المخبز."
     }
   },
   "nav": {
@@ -34,7 +38,8 @@
     "menu": "القائمة",
     "gallery": "المعرض",
     "contact": "اتصل بنا",
-    "bookNow": "احجز تذوق"
+    "bookNow": "احجز تذوق",
+    "craftPractice": "حرفة وخبرة"
   },
   "hero": {
     "heading": "مخبوز بالحب،\nمشارك بالفرح",
@@ -42,21 +47,21 @@
     "ctaPrimary": "عرض القائمة",
     "ctaSecondary": "احجز تذوق",
     "imagePlaceholder": "صورة الواجهة",
-    "emptyState": "أضف صورتك في Admin ← الترحيب في الصفحة الرئيسية"
+    "emptyState": "أضف صورتك في لوحة التحكم ← الترحيب في الصفحة الرئيسية"
   },
   "about": {
     "heading": "مرحبًا، أنا الشيف محمد",
     "subheading": "شغف يُخبز في كل رغيف",
     "readMore": "اقرأ المزيد",
     "imagePlaceholder": "صورة الشيف",
-    "emptyState": "أضف صورتك في Admin ← عني"
+    "emptyState": "أضف صورتك في لوحة التحكم ← عني"
   },
   "menu": {
     "heading": "قائمتنا",
     "subheading": "طازج يوميًا كل صباح",
     "orderBtn": "اطلب الآن",
     "customOrderHeading": "طلبات خاصة",
-    "customOrderDesc": "عندك مناسبة خاصة؟ بنصنعلك المعجنات والكيك المخصص لكل مناسبة.",
+    "customOrderDesc": "لديك مناسبة خاصة؟ نصنع لك المعجنات والكيك المخصص لكل مناسبة.",
     "customOrderBtn": "اطلب طلب خاص",
     "emptyState": "لا توجد عناصر متاحة",
     "photoPlaceholder": "صورة",
@@ -100,15 +105,18 @@
     "instagramLabel": "إنستغرام",
     "bookBtn": "احجز تذوق",
     "businessHoursLabel": "ساعات العمل",
-    "form": {
-      "nameLabel": "الاسم",
-      "emailLabel": "البريد الإلكتروني",
-      "phoneLabel": "الهاتف (اختياري)",
-      "phonePlaceholder": "+٢٠ ...",
-      "messageLabel": "الرسالة",
-      "requestTypeLabel": "كيف يمكنني مساعدتك؟",
-      "requestTypePlaceholder": "اختر موضوعاً",
-      "requestTypes": {
+  "form": {
+    "nameLabel": "الاسم",
+    "namePlaceholder": "اسمك",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "your@email.com",
+    "phoneLabel": "الهاتف (اختياري)",
+    "phonePlaceholder": "+٢٠ ...",
+    "messageLabel": "الرسالة",
+    "messagePlaceholder": "أخبرنا عن طلبك...",
+    "requestTypeLabel": "كيف يمكنني مساعدتك؟",
+    "requestTypePlaceholder": "اختر موضوعاً",
+    "requestTypes": {
         "consulting": "استشارات",
         "catering": "تموين حفلات",
         "training": "تدريب",
@@ -138,6 +146,11 @@
     "backHome": "العودة إلى الرئيسية"
   },
   "admin": {
+    "unauthorized": {
+      "title": "تم رفض الوصول",
+      "message": "هذه المنطقة مخصصة للمسؤولين المصرح لهم فقط.",
+      "backHome": "العودة إلى الرئيسية"
+    },
     "login": {
       "heading": "تسجيل الدخول",
       "subheading": "سجل دخولك لإدارة المخبز",
@@ -183,6 +196,9 @@
     },
     "nav": {
       "dashboard": "لوحة التحكم",
+      "sections": "إدارة الأقسام",
+      "theme": "المظهر والألوان",
+      "seo": "تحسين محركات البحث",
       "hero": "ترحيب الصفحة الرئيسية",
       "about": "عني",
       "projects": "خبراتي العملية",
@@ -190,10 +206,108 @@
       "testimonials": "آراء العملاء",
       "services": "الخدمات",
       "gallery": "معرض الصور",
+      "videos": "حرفة وخبرة",
       "locations": "مناطق الخدمة",
       "contact": "بيانات التواصل",
       "inbox": "صندوق الوارد",
       "logout": "تسجيل الخروج"
+    },
+    "theme": {
+      "title": "المظهر والألوان",
+      "description": "خصّص الهوية البصرية لموقعك. التغييرات تطبّق فوراً.",
+      "presets": "قوالب جاهزة",
+      "custom": "ألوان مخصصة",
+      "autoDark": "توليد الوضع الداكن تلقائياً",
+      "contrastPass": "مطابق لمعايير WCAG AA",
+      "contrastFail": "تباين منخفض",
+      "saveDisabled": "أصلح مشاكل التباين قبل الحفظ",
+      "resetConfirm": "إعادة تعيين إلى قالب ذهبي المخبز الافتراضي؟",
+      "exportTheme": "تصدير المظهر",
+      "importTheme": "استيراد المظهر",
+      "saved": "تم حفظ المظهر بنجاح",
+      "saveFailed": "فشل حفظ المظهر",
+      "resetDone": "تم إعادة التعيين إلى الافتراضي",
+      "resetFailed": "فشل إعادة التعيين",
+      "invalidImport": "صيغة ملف مظهر غير صالحة",
+      "imported": "تم استيراد المظهر بنجاح",
+      "baseColors": "الألوان الأساسية",
+      "accentColors": "ألوان التمييز",
+      "semanticColors": "الألوان الدلالية",
+      "darkModePreview": "معاينة الوضع الداكن",
+      "lightModePreview": "معاينة الوضع الفاتح",
+      "tokens": {
+        "background": "الخلفية",
+        "foreground": "النصوص",
+        "accent": "اللون المميز",
+        "accentForeground": "نصوص اللون المميز",
+        "muted": "خلفية هادئة",
+        "mutedForeground": "نصوص هادئة",
+        "border": "الحدود",
+        "card": "خلفية البطاقات",
+        "destructive": "خطأ/خطر"
+      },
+      "preset": {
+        "bakeryGold": "ذهبي المخبز",
+        "chocolate": "شوكولاتة داكنة",
+        "matcha": "أخضر ماتشا",
+        "berry": "وردي التوت"
+      }
+    },
+    "sections": {
+      "title": "إدارة الأقسام",
+      "description": "اسحب لإعادة ترتيب الأقسام. بدّل لإظهار أو إخفاء.",
+      "required": "مطلوب — لا يمكن إخفاؤه",
+      "visible": "ظاهر",
+      "hidden": "مخفي",
+      "dragHandle": "اسحب لإعادة الترتيب",
+      "toggleLabel": "تبديل ظهور {section}",
+      "hero": "الواجهة الرئيسية",
+      "about": "عن الشيف",
+      "services": "الخدمات",
+      "projects": "الخبرات العملية",
+      "craftPractice": "حرفة وخبرة",
+      "menu": "القائمة",
+      "gallery": "المعرض",
+      "testimonials": "التوصيات",
+      "locations": "مناطق الخدمة",
+      "contact": "تواصل معنا",
+      "ctaBanner": "شريط الدعوة",
+      "reordered": "تم تحديث ترتيب الأقسام",
+      "reorderFailed": "لم يتم تحديث الترتيب. حاول مرة أخرى.",
+      "toggled": "تم تحديث ظهور القسم",
+      "toggleFailed": "لم يتم تحديث الظهور. حاول مرة أخرى."
+    },
+    "seo": {
+      "title": "إعدادات SEO والموقع",
+      "description": "تحكم في بيانات الموقع الوصفية، Open Graph، بطاقات تويتر، ومعلومات النشاط التجاري.",
+      "save": "حفظ إعدادات SEO",
+      "saving": "جارٍ الحفظ...",
+      "saved": "تم حفظ إعدادات SEO بنجاح",
+      "saveFailed": "فشل حفظ إعدادات SEO",
+      "pageSave": "حفظ",
+      "pageSaved": "تم حفظ بيانات الصفحة",
+      "noIndexWarning": "⚠️ سيؤدي هذا لإخفاء موقعك من محركات البحث!",
+      "charCount": "{current}/{max} حرف",
+      "charWarning": "طويل جداً — قد يُقتطع في نتائج البحث",
+      "serpPreview": "معاينة نتيجة البحث",
+      "ogPreview": "معاينة المشاركة الاجتماعية",
+      "templateHelp": "استخدم %s كعنصر نائب لعنوان الصفحة",
+      "tabs": {
+        "global": "SEO العام",
+        "og": "المشاركة الاجتماعية",
+        "pages": "بيانات الصفحات",
+        "structured": "البيانات المنظمة"
+      },
+      "fields": {
+        "defaultTitle": "العنوان الافتراضي",
+        "titleTemplate": "قالب العنوان",
+        "defaultDescription": "الوصف الافتراضي",
+        "businessName": "اسم النشاط التجاري",
+        "googleAnalytics": "معرف Google Analytics",
+        "sameAs": "الملفات الشخصية الاجتماعية",
+        "ogImage": "صورة المشاركة الافتراضية",
+        "twitterHandle": "حساب تويتر"
+      }
     },
     "shell": {
       "viewSite": "عرض في الموقع",
@@ -212,7 +326,8 @@
       "invalidFormat": "نوع الملف غير مدعوم. يُرجى استخدام صورة (JPG أو PNG).",
       "tooLarge": "الصورة أكبر من ٥ ميجابايت. جرّب صورة أصغر أو غيّر حجمها من هاتفك أولاً.",
       "uploaded": "تمت إضافة الصورة",
-      "uploadFailed": "الرفع لم يكتمل. تحقق من اتصال الإنترنت وحاول مرة أخرى."
+      "uploadFailed": "الرفع لم يكتمل. تحقق من اتصال الإنترنت وحاول مرة أخرى.",
+      "remove": "إزالة الصورة"
     },
     "edit": {
       "saveBtn": "حفظ التغييرات",
@@ -287,7 +402,8 @@
         "reqLabelAr": "السمة (عربية)"
       },
       "savedToast": "تم حفظ معلومات التواصل",
-      "saveFailedToast": "فشل الحفظ"
+      "saveFailedToast": "فشل الحفظ",
+      "removeRequestType": "إزالة الخيار"
     },
     "heroSection": "القسم الرئيسي",
     "aboutSection": "قسم عننا",
@@ -528,6 +644,7 @@
       "processing": "جارٍ المعالجة...",
       "saved": "تمت إزالة الصورة",
       "saveFailed": "فشل الحذف",
+      "deletePhoto": "حذف الصورة",
       "uploadFailed": "فشل الرفع. حاول مرة أخرى.",
       "uploadSuccess": "صورة (صور) مرفوعة",
       "storageWarning": "تمت إزالة الصورة، لكن فشل تنظيف التخزين — اتصل بالدعم إذا كان استخدام التخزين مرتفعًا.",
@@ -539,6 +656,61 @@
         "captionEn": "Optional - applies to all",
         "captionAr": "اختياري"
       }
+    },
+    "videos": {
+      "addVideo": "أضف فيديو",
+      "addFirst": "أضف أول فيديو",
+      "editTitle": "تعديل الفيديو",
+      "newTitle": "فيديو جديد",
+      "emptyTitle": "لا توجد فيديوهات بعد",
+      "emptyDesc": "ارفع عروض المنتجات، جلسات التدريب، ولقطات الكواليس.",
+      "noFilterMatch": "لا توجد فيديوهات في هذا التصنيف بعد.",
+      "deleteTitle": "حذف هذا الفيديو؟",
+      "deleteDesc": "سيؤدي هذا إلى حذف ملف الفيديو وصورة الملصق نهائيًا. لا يمكن التراجع.",
+      "deleteConfirm": "حذف",
+      "deleteCancel": "إلغاء",
+      "saving": "جارٍ الحفظ...",
+      "update": "تحديث الفيديو",
+      "add": "أضف فيديو",
+      "saved": "تم تحديث الفيديو",
+      "added": "تمت إضافة الفيديو",
+      "saveFailed": "فشل الحفظ",
+      "deleted": "تم حذف الفيديو",
+      "deleteFailed": "فشل الحذف",
+      "updateFailed": "فشل التحديث",
+      "showOnSite": "إظهار على الموقع",
+      "fileSizeWarning": "الفيديوهات التي تتجاوز ٥٠ ميجابايت سيتم تحسينها للبث. لأفضل تجربة على الجوال، اجعل المقاطع أقل من دقيقتين.",
+      "filters": {
+        "all": "الكل",
+        "product": "منتجات",
+        "training": "تدريب",
+        "bts": "كواليس"
+      },
+      "labels": {
+        "titleEn": "العنوان - English",
+        "titleAr": "العنوان - العربية",
+        "descEn": "الوصف - English",
+        "descAr": "الوصف - العربية",
+        "category": "التصنيف",
+        "duration": "المدة (بالثواني)",
+        "durationHint": "تُكتشف تلقائيًا من ملف الفيديو. عدّلها يدويًا عند الحاجة.",
+        "uploadVideo": "ملف الفيديو",
+        "uploadPoster": "صورة الملصق (مطلوبة)",
+        "videoRequired": "يرجى رفع ملف فيديو.",
+        "posterRequired": "يرجى رفع صورة الملصق."
+      }
+    },
+    "videoUpload": {
+      "uploadBtn": "ارفع فيديو",
+      "changeBtn": "تغيير الفيديو",
+      "dropHint": "أو أفلت ملف فيديو هنا",
+      "helper": "حد أقصى ٢٠٠ ميجابايت · MP4 أو MOV أو WebM",
+      "invalidFormat": "نوع الملف غير مدعوم. يرجى استخدام MP4 أو MOV أو WebM.",
+      "tooLarge": "هذا الفيديو يتجاوز ٢٠٠ ميجابايت. جرّب ملفًا أصغر أو اضغطه أولًا.",
+      "largeFileWarning": "ملف كبير — قد يستغرق الرفع وقتًا وسيتم تحسينه للبث.",
+      "uploaded": "تمت إضافة الفيديو",
+      "uploadFailed": "فشل الرفع. تحقق من الإنترنت وحاول مرة أخرى.",
+      "remove": "إزالة الفيديو"
     },
     "inbox": {
       "title": "صندوق الوارد",
@@ -555,7 +727,27 @@
       "phoneLabel": "الهاتف",
       "requestTypeLabel": "نوع الطلب",
       "messageLabel": "الرسالة",
-      "receivedLabel": "تاريخ الاستلام"
+      "receivedLabel": "تاريخ الاستلام",
+      "selectAll": "تحديد الكل",
+      "deselectAll": "إلغاء التحديد",
+      "selectedCount": "تم تحديد {count}",
+      "archive": "أرشفة",
+      "unarchive": "إلغاء الأرشفة",
+      "confirmArchive": "أرشفة {count} رسائل؟",
+      "confirmArchiveDesc": "ستُخفى الرسائل المؤرشفة من صندوق الوارد النشط.",
+      "confirmUnarchive": "إلغاء أرشفة {count} رسائل؟",
+      "confirmUnarchiveDesc": "ستعود هذه الرسائل إلى صندوق الوارد النشط.",
+      "activeTab": "النشطة",
+      "archivedTab": "المؤرشفة",
+      "batchMarkRead": "تحديد كمقروء",
+      "batchMarkUnread": "تحديد كغير مقروء",
+      "batchReadSuccess": "تم تحديد {count} رسائل كمقروءة",
+      "batchUnreadSuccess": "تم تحديد {count} رسائل كغير مقروءة",
+      "archiveSuccess": "تم أرشفة {count} رسائل",
+      "unarchiveSuccess": "تم إلغاء أرشفة {count} رسائل",
+      "emptyArchived": "لا توجد رسائل مؤرشفة",
+      "emptyArchivedDesc": "ستظهر الرسائل المؤرشفة هنا.",
+      "deleteCancel": "إلغاء"
     }
   },
   "gallery": {
@@ -564,6 +756,20 @@
     "emptyTitle": "مخبوزاتك في صور",
     "emptyDesc": "أظهر خبرتك في الخبز والمعجنات. سجل الدخول إلى لوحة التحكم وأضف صورك الأولى.",
     "emptyCta": "اذهب إلى لوحة التحكم ← المعرض"
+  },
+  "videos": {
+    "sectionTitle": "حرفة وخبرة",
+    "categories": {
+      "all": "الكل",
+      "product": "منتجات",
+      "training": "تدريب",
+      "bts": "كواليس"
+    },
+    "playLabel": "تشغيل الفيديو",
+    "closePlayer": "إغلاق المشغّل",
+    "durationLabel": "المدة",
+    "emptyTitle": "لا توجد فيديوهات بعد",
+    "emptyDescription": "أضف فيديوهات من لوحة التحكم ← حرفة وخبرة"
   },
   "common": {
     "loading": "جارٍ التحميل...",

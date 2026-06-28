@@ -42,12 +42,15 @@ export function ContactSection() {
     // Has data
     return (
       <>
-        <ContactCard
-          icon={Phone}
-          label={t("phoneLabel")}
-          href={`tel:${contact.phone}`}
-          value={contact.phone}
-        />
+        {contact.phone && (
+          <ContactCard
+            icon={Phone}
+            label={t("phoneLabel")}
+            href={`tel:${contact.phone}`}
+            value={contact.phone}
+            dir="ltr"
+          />
+        )}
         {contact.email && (
           <ContactCard
             icon={Mail}
@@ -62,6 +65,7 @@ export function ContactSection() {
             label={t("whatsappLabel")}
             href={contact.whatsapp}
             value={contact.secondaryPhone ?? "WhatsApp"}
+            dir={contact.secondaryPhone ? "ltr" : undefined}
           />
         )}
         {contact.responseTime_en && (
@@ -93,7 +97,7 @@ export function ContactSection() {
         )}
         {contact.whatsapp && (
           <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer">
-            <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-transparent gap-2 text-base py-6 cursor-pointer transition-all duration-300">
+            <Button className="w-full bg-success hover:bg-success text-background border-transparent gap-2 text-base py-6 cursor-pointer transition-all duration-300">
               <MessageCircle className="h-4 w-4" /> {t("whatsappLabel")}
               <ExternalLink className="h-3 w-3 ms-auto" />
             </Button>
@@ -136,7 +140,7 @@ export function ContactSection() {
 
         <div className="grid lg:grid-cols-5 gap-10 max-w-5xl mx-auto">
           <motion.div
-            initial={shouldReduce ? {} : { opacity: 0, x: -20 }}
+            initial={shouldReduce ? {} : { opacity: 0, x: isRTL ? 20 : -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -145,7 +149,7 @@ export function ContactSection() {
             {renderContactCards()}
           </motion.div>
           <motion.div
-            initial={shouldReduce ? {} : { opacity: 0, x: 20 }}
+            initial={shouldReduce ? {} : { opacity: 0, x: isRTL ? -20 : 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -174,11 +178,13 @@ function ContactCard({
   label,
   href,
   value,
+  dir,
 }: {
   icon: React.ElementType;
   label: string;
   href?: string;
   value: string;
+  dir?: "ltr" | "rtl";
 }) {
   return (
     <Card className="bg-surface border-border/40 hover:border-accent/20 hover:shadow-card transition-all duration-300 group cursor-pointer">
@@ -194,11 +200,12 @@ function ContactCard({
               target={href.startsWith("https://") ? "_blank" : undefined}
               rel={href.startsWith("https://") ? "noopener noreferrer" : undefined}
               className="text-sm font-medium text-foreground hover:text-accent transition-colors duration-200"
+              dir={dir}
             >
               {value}
             </a>
           ) : (
-            <p className="text-sm font-medium text-foreground">{value}</p>
+            <p className="text-sm font-medium text-foreground" dir={dir}>{value}</p>
           )}
         </div>
       </CardContent>

@@ -124,7 +124,7 @@ export function ProjectsSection() {
                   {catConfig && (
                     <div className="mt-4 pt-3 border-t border-border/30">
                       <Badge variant="outline" className="text-xs bg-accent/5 text-accent/70 border-accent/15">
-                        {t(catConfig.labelKey as any)}
+                        {t(catConfig.labelKey as unknown as Parameters<typeof t>[0])}
                       </Badge>
                     </div>
                   )}

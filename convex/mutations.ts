@@ -1,6 +1,8 @@
 import { mutation } from "./_generated/server";
+import type { MutationCtx } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
 import { requireAdmin } from "./auth";
+import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_ATTEMPTS } from "./lib/rateLimit";
 
 // ─── Field definitions ───────────────────────────────────────────────────────
 
@@ -138,9 +140,7 @@ const locationFields = {
 };
 
 // ─── Activity log helper ─────────────────────────────────────────────────────
-async function logActivityInternal(
-  ctx: any,
-  action: string,
+async function logActivityInternal(ctx: MutationCtx, action: string,
   tableName: string,
   actor: string | undefined,
   details?: string,
@@ -382,6 +382,153 @@ export const deleteGalleryImage = mutation({
 
 export const reorderGallery = mutation({
   args: { orderedIds: v.array(v.id("gallery")) },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    for (let i = 0; i < args.orderedIds.length; i++) {
+      await ctx.db.patch(args.orderedIds[i], { order: i });
+    }
+  },
+});
+
+// ─── Videos ("Craft & Practice") mutations ───────────────────────────────────
+
+const videoFields = {
+  title_en: v.string(),
+  title_ar: v.string(),
+  description_en: v.optional(v.string()),
+  description_ar: v.optional(v.string()),
+  category: v.union(
+    v.literal("product"),
+    v.literal("training"),
+    v.literal("bts"),
+  ),
+  storageId: v.id("_storage"),
+  videoUrl: v.nullable(v.string()),
+  hlsUrl: v.optional(v.string()),
+  posterStorageId: v.optional(v.id("_storage")),
+  posterUrl: v.optional(v.string()),
+  duration: v.optional(v.number()),
+  order: v.number(),
+  isVisible: v.boolean(),
+};
+
+export const createVideo = mutation({
+  args: videoFields,
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+
+    // Resolve the video URL once at write-time (gallery pattern).
+    const videoUrl = await ctx.storage.getUrl(args.storageId);
+    let posterUrl: string | undefined;
+    if (args.posterStorageId) {
+      posterUrl = await ctx.storage.getUrl(args.posterStorageId) ?? undefined;
+    }
+
+    return await ctx.db.insert("videos", {
+      title_en: args.title_en,
+      title_ar: args.title_ar,
+      description_en: args.description_en,
+      description_ar: args.description_ar,
+      category: args.category,
+      storageId: args.storageId,
+      videoUrl: videoUrl ?? null,
+      hlsUrl: args.hlsUrl,
+      posterStorageId: args.posterStorageId,
+      posterUrl,
+      duration: args.duration,
+      order: args.order,
+      isVisible: args.isVisible,
+      createdAt: Date.now(),
+    });
+  },
+});
+
+export const updateVideo = mutation({
+  args: {
+    id: v.id("videos"),
+    title_en: v.optional(v.string()),
+    title_ar: v.optional(v.string()),
+    description_en: v.optional(v.string()),
+    description_ar: v.optional(v.string()),
+    category: v.optional(
+      v.union(
+        v.literal("product"),
+        v.literal("training"),
+        v.literal("bts"),
+      ),
+    ),
+    storageId: v.optional(v.id("_storage")),
+    videoUrl: v.optional(v.nullable(v.string())),
+    hlsUrl: v.optional(v.string()),
+    posterStorageId: v.optional(v.id("_storage")),
+    posterUrl: v.optional(v.string()),
+    duration: v.optional(v.number()),
+    order: v.optional(v.number()),
+    isVisible: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+    const { id, ...fields } = args;
+
+    // If the video file changed, resolve the new URL at write-time.
+    if (fields.storageId) {
+      const url = await ctx.storage.getUrl(fields.storageId);
+      fields.videoUrl = url ?? null;
+    }
+    // If the poster changed, resolve its URL too.
+    if (fields.posterStorageId !== undefined) {
+      if (fields.posterStorageId === null) {
+        fields.posterUrl = undefined;
+      } else {
+        fields.posterUrl =
+          (await ctx.storage.getUrl(fields.posterStorageId)) ?? undefined;
+      }
+    }
+
+    await ctx.db.patch(id, fields);
+    await logActivityInternal(ctx, "update", "videos", admin.email, `Updated video ${id}`);
+  },
+});
+
+export const deleteVideo = mutation({
+  args: { id: v.id("videos") },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+    const item = await ctx.db.get(args.id);
+    if (!item) throw new ConvexError("Video not found");
+
+    // Clean up BOTH the video and poster storage before deleting the DB record.
+    // try/catch each independently — a missing file should not block deletion.
+    try {
+      await ctx.storage.delete(item.storageId);
+    } catch (e) {
+      console.warn(`Failed to delete video storage ${args.id}:`, e);
+    }
+    if (item.posterStorageId) {
+      try {
+        await ctx.storage.delete(item.posterStorageId);
+      } catch (e) {
+        console.warn(`Failed to delete poster storage ${args.id}:`, e);
+      }
+    }
+
+    await ctx.db.delete(args.id);
+    await logActivityInternal(ctx, "delete", "videos", admin.email, `Deleted video ${args.id}`);
+  },
+});
+
+export const toggleVideoVisibility = mutation({
+  args: { id: v.id("videos") },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const item = await ctx.db.get(args.id);
+    if (!item) throw new Error("Video not found");
+    await ctx.db.patch(args.id, { isVisible: !item.isVisible });
+  },
+});
+
+export const reorderVideos = mutation({
+  args: { orderedIds: v.array(v.id("videos")) },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
     for (let i = 0; i < args.orderedIds.length; i++) {
@@ -643,13 +790,13 @@ export const patchSiteSettingsTranslations = mutation({
  *
  * Run once: npx convex run mutations:migrateFixStaleSeedData
  *
- * SECURITY NOTE: This mutation intentionally skips requireAdmin() so it can
- * be run from the CLI. It only patches specific fields and is safe to leave
- * in place — calling it again is a no-op.
+ * SECURITY NOTE: This mutation requires admin authentication.
+ * It only patches specific fields and is safe to leave in place — calling it again is a no-op.
  */
 export const migrateFixStaleSeedData = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAdmin(ctx);
     const settings = await ctx.db
       .query("siteSettings")
       .filter((q) => q.eq(q.field("key"), "main"))
@@ -671,8 +818,8 @@ export const migrateFixStaleSeedData = mutation({
         heading_en: "Hi, I'm Chef Mohamed",
         heading_ar: "خبير في فنون المخبوزات الفرنسية الحرفية",
         bio_en:
-          "For ten years I've been at a bakery bench. I started as a chef's assistant at Ralph's Cafe in Maadi, learning every station and every timing, then went deep into croissants and sourdough at the Croissant & Sourdough kitchen and later at Richius in Maadi Residences. I refined slow-fermented baking at Life Snacks — the kind of patient work that asks you to listen more than you push. When I moved into leadership, I took Assistant Head Chef at The Daily Need in Fifth Settlement, then stepped into my first head-chef role at Fornalia Bakery. Twice I've opened a bakery from scratch — Nabit Bakery in Nasr City and Rotoo Bakery — building the menu and operations from the first sack of flour onward.\n\nI also brought my expertise internationally as a Consultant Bakery Chef at KUP in the Kingdom of Saudi Arabia, adapting French techniques to Middle Eastern markets.\n\nMy formal training started with a Technical Diploma in Industrial Studies at Mesta (2012–2016), but everything I really know about baking I learned at the bench: the patience a French croissant demands, the long quiet of a sourdough levain, the small decisions that separate a good loaf from a great one.\n\nWhat you taste in my bakes is a blend of two worlds — the tradition I inherited from the masters who trained me, and the modern technique I keep refining. French baked goods and sourdough are where I'm strongest. Excellence is the only standard I bake to.",
-        bio_ar: "محمد ممدوح هو استشاري مخبوزات فرنسية يمتلك أكثر من ١٠ سنوات من الخبرة المهنية في صناعة مخبوزات استثنائية. متخصص في الخبز المخمر الأصيل، الكرواسون، والمعجنات الفرنسية التقليدية، يجمع بين التقنيات الكلاسيكية والابتكار الحديث في كل إبداع.\n\nبفضل شغفه بالتميز الطهي والالتزام بالجودة، كرّس محمد مسيرته المهنية لإتقان فن المخبوزات الحرفية. تمتد خبرته من اختيار أجود المكونات إلى تتقين تقنيات التخمير، لضمان أن كل منتج يلبي أعلى معايير الطعم والحرفية.\n\nبعد العمل مع مخابز مرموقة وتأسيس مشاريع ناجحة، يجمع محمد بين الطرق الفرنسية التقليدية في الخبز والحنية التجارية الحديثة. متخصص في تطوير القوائم، تحسين خطوط الإنتاج، وتدريب فرق المخبز لتحقيق التميز.",
+          "For ten years, I've built my career one bakery at a time — from assistant to head chef, from employee to founder.\n\nI started at Ralph's Cafe in Maadi, learning every station. Then specialized in croissants and sourdough at Croissant & Sourdough Kitchen and Richius. At Life Snacks, I mastered slow-fermented baking — the patient art of listening to dough.\n\nLeadership came at The Daily Need as Assistant Head Chef, then my first head-chef role at Fornalia Bakery. I've since founded two bakeries from scratch — Nabit and Rotoo — building menus and operations from the first sack of flour.\n\nInternationally, I served as Consultant Bakery Chef at KUP in Saudi Arabia, adapting French techniques to Middle Eastern markets.\n\nWhat I've learned: excellence isn't a destination — it's the only standard I bake to.",
+        bio_ar: "على مدى عشر سنوات، بنيت مسيرتي مخبزًا تلو الآخر — من مساعد إلى شيف رئيسي، ومن موظف إلى مؤسس.\n\n بدأت في رالفز كافيه بالمعادي، تعلمت كل محطة. ثم تخصصت في الكرواسون والخبز المخمر في مطبخ الكرواسون والخبز المخمر وريشيوس. في لايف سناكس، أتقنت فن التخمير البطيء — فن الصبر والاستماع للعجين.\n\nجاءت القيادة في ذا ديلي نيد كمساعد شيف رئيسي، ثم أول دور كشيف رئيسي في فورناليا بيكري. أسست منذ ذلك مبخزين من الصفر — نابيت وروتو — بنت القائمة والعمليات من أول كيس دقيق.\n\n دوليًا، شغلت منصب مستشار مخبوزات في KUP بالمملكة العربية السعودية، وكيّفت التقنيات الفرنسية لأسواق الشرق الأوسط.\n\n ما تعلمته: التميز ليس وجهة — بل هو المعيار الوحيد الذي أخبز به.",
         skills: [
           "French Baked Goods",
           "Sourdough Fermentation",
@@ -808,6 +955,63 @@ export const markInquiryRead = mutation({
   },
 });
 
+export const unmarkInquiryRead = mutation({
+  args: { id: v.id("contactInquiries") },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    await ctx.db.patch(args.id, { isRead: false });
+  },
+});
+
+// ─── Archive / Unarchive mutations ────────────────────────────────────────────
+
+export const archiveInquiries = mutation({
+  args: { ids: v.array(v.id("contactInquiries")) },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    let count = 0;
+    for (const id of args.ids) {
+      const item = await ctx.db.get(id);
+      if (!item || item.archived) continue;
+      await ctx.db.patch(id, { archived: true, archivedAt: Date.now() });
+      count++;
+    }
+    return { archived: count };
+  },
+});
+
+export const unarchiveInquiries = mutation({
+  args: { ids: v.array(v.id("contactInquiries")) },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    let count = 0;
+    for (const id of args.ids) {
+      const item = await ctx.db.get(id);
+      if (!item || !item.archived) continue;
+      await ctx.db.patch(id, { archived: false, archivedAt: undefined });
+      count++;
+    }
+    return { unarchived: count };
+  },
+});
+
+export const batchMarkInquiriesRead = mutation({
+  args: { ids: v.array(v.id("contactInquiries")), isRead: v.boolean() },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    let count = 0;
+    for (const id of args.ids) {
+      const item = await ctx.db.get(id);
+      if (!item) continue;
+      if (item.isRead !== args.isRead) {
+        await ctx.db.patch(id, { isRead: args.isRead });
+        count++;
+      }
+    }
+    return { updated: count };
+  },
+});
+
 // ─── Activity log ─────────────────────────────────────────────────────────────
 
 export const logActivity = mutation({
@@ -896,8 +1100,8 @@ export const seedBakeryContent = mutation({
           heading_en: "Hi, I'm Chef Mohamed",
           heading_ar: "خبير في فنون المخبوزات الفرنسية الحرفية",
           bio_en:
-            "For ten years I've been at a bakery bench. I started as a chef's assistant at Ralph's Cafe in Maadi, learning every station and every timing, then went deep into croissants and sourdough at the Croissant & Sourdough kitchen and later at Richius in Maadi Residences. I refined slow-fermented baking at Life Snacks — the kind of patient work that asks you to listen more than you push. When I moved into leadership, I took Assistant Head Chef at The Daily Need in Fifth Settlement, then stepped into my first head-chef role at Fornalia Bakery. Twice I've opened a bakery from scratch — Nabit Bakery in Nasr City and Rotoo Bakery — building the menu and operations from the first sack of flour onward.\n\nI also brought my expertise internationally as a Consultant Bakery Chef at KUP in the Kingdom of Saudi Arabia, adapting French techniques to Middle Eastern markets.\n\nMy formal training started with a Technical Diploma in Industrial Studies at Mesta (2012–2016), but everything I really know about baking I learned at the bench: the patience a French croissant demands, the long quiet of a sourdough levain, the small decisions that separate a good loaf from a great one.\n\nWhat you taste in my bakes is a blend of two worlds — the tradition I inherited from the masters who trained me, and the modern technique I keep refining. French baked goods and sourdough are where I'm strongest. Excellence is the only standard I bake to.",
-          bio_ar: "محمد ممدوح هو استشاري مخبوزات فرنسية يمتلك أكثر من ١٠ سنوات من الخبرة المهنية في صناعة مخبوزات استثنائية. متخصص في الخبز المخمر الأصيل، الكرواسون، والمعجنات الفرنسية التقليدية، يجمع بين التقنيات الكلاسيكية والابتكار الحديث في كل إبداع.\n\nبفضل شغفه بالتميز الطهي والالتزام بالجودة، كرّس محمد مسيرته المهنية لإتقان فن المخبوزات الحرفية. تمتد خبرته من اختيار أجود المكونات إلى تتقين تقنيات التخمير، لضمان أن كل منتج يلبي أعلى معايير الطعم والحرفية.\n\nبعد العمل مع مخابز مرموقة وتأسيس مشاريع ناجحة، يجمع محمد بين الطرق الفرنسية التقليدية في الخبز والحنية التجارية الحديثة. متخصص في تطوير القوائم، تحسين خطوط الإنتاج، وتدريب فرق المخبز لتحقيق التميز.",
+            "For ten years, I've built my career one bakery at a time — from assistant to head chef, from employee to founder.\n\nI started at Ralph's Cafe in Maadi, learning every station. Then specialized in croissants and sourdough at Croissant & Sourdough Kitchen and Richius. At Life Snacks, I mastered slow-fermented baking — the patient art of listening to dough.\n\nLeadership came at The Daily Need as Assistant Head Chef, then my first head-chef role at Fornalia Bakery. I've since founded two bakeries from scratch — Nabit and Rotoo — building menus and operations from the first sack of flour.\n\nInternationally, I served as Consultant Bakery Chef at KUP in Saudi Arabia, adapting French techniques to Middle Eastern markets.\n\nWhat I've learned: excellence isn't a destination — it's the only standard I bake to.",
+          bio_ar: "على مدى عشر سنوات، بنيت مسيرتي مخبزًا تلو الآخر — من مساعد إلى شيف رئيسي، ومن موظف إلى مؤسس.\n\n بدأت في رالفز كافيه بالمعادي، تعلمت كل محطة. ثم تخصصت في الكرواسون والخبز المخمر في مطبخ الكرواسون والخبز المخمر وريشيوس. في لايف سناكس، أتقنت فن التخمير البطيء — فن الصبر والاستماع للعجين.\n\nجاءت القيادة في ذا ديلي نيد كمساعد شيف رئيسي، ثم أول دور كشيف رئيسي في فورناليا بيكري. أسست منذ ذلك مبخزين من الصفر — نابيت وروتو — بنت القائمة والعمليات من أول كيس دقيق.\n\n دوليًا، شغلت منصب مستشار مخبوزات في KUP بالمملكة العربية السعودية، وكيّفت التقنيات الفرنسية لأسواق الشرق الأوسط.\n\n ما تعلمته: التميز ليس وجهة — بل هو المعيار الوحيد الذي أخبز به.",
           imageUrl: null,
           skills: [
             "French Baked Goods",
@@ -1201,9 +1405,7 @@ export const seedBakeryContent = mutation({
 //
 // Setup: no extra env vars needed — these run entirely in Convex.
 // Called server-side from the Next.js login API via ConvexHttpClient.
-
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-const RATE_LIMIT_MAX_ATTEMPTS = 5;
+// Constants are imported from ./lib/rateLimit to stay in sync with queries.ts.
 
 /** Check and increment the attempt counter for the given key (e.g. "login:<ip>").
  *  Returns { allowed: true } if the request may proceed, { allowed: false } if blocked.
@@ -1253,24 +1455,23 @@ export const clearLoginAttempts = mutation({
   },
 });
 
-/** Record one failed login attempt for the given key. Public — no auth needed. */
+/** Record one failed login attempt for the given key. Public — no auth needed,
+ *  but validates key format and enforces a per-key write cap to prevent flooding. */
 export const incrementLoginAttempt = mutation({
   args: { key: v.string() },
   handler: async (ctx, args) => {
-    await ctx.db.insert("rateLimitEntries", { key: args.key, attemptAt: Date.now() });
-  },
-});
+    const key = args.key.trim();
+    if (key.length === 0 || key.length > 200) return;
 
-/** Clear rate-limit entries for the given key after a successful login.
- *  Safe to be public: clearing entries doesn't grant access, credentials still required. */
-export const clearLoginAttemptsPublic = mutation({
-  args: { key: v.string() },
-  handler: async (ctx, args) => {
-    const entries = await ctx.db
+    // Enforce a hard cap: no more than 50 entries per key total.
+    // This prevents a single attacker from flooding the table with junk.
+    const existing = await ctx.db
       .query("rateLimitEntries")
-      .withIndex("by_key_time", (q) => q.eq("key", args.key))
+      .withIndex("by_key_time", (q) => q.eq("key", key))
       .collect();
-    await Promise.all(entries.map((e) => ctx.db.delete(e._id)));
+    if (existing.length >= 50) return;
+
+    await ctx.db.insert("rateLimitEntries", { key, attemptAt: Date.now() });
   },
 });
 
@@ -1297,5 +1498,313 @@ export const clearOldActivityLogs = mutation({
     await Promise.all(old.map((e) => ctx.db.delete(e._id)));
     await logActivityInternal(ctx, "cleanup", "activityLogs", admin.email, `Cleared ${old.length} old logs`);
     return { deleted: old.length };
+  },
+});
+
+// ─── Section Config mutations ────────────────────────────────────────────────
+
+export const updateSectionVisibility = mutation({
+  args: {
+    sectionKey: v.string(),
+    isVisible: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+
+    const section = await ctx.db
+      .query("sectionConfigs")
+      .withIndex("by_sectionKey", (q) => q.eq("sectionKey", args.sectionKey))
+      .first();
+
+    if (!section) throw new ConvexError("Section config not found");
+
+    if (section.isRequired === true && !args.isVisible) {
+      throw new ConvexError("Cannot hide a required section");
+    }
+
+    await ctx.db.patch(section._id, {
+      isVisible: args.isVisible,
+      updatedAt: Date.now(),
+    });
+
+    await logActivityInternal(
+      ctx,
+      "update",
+      "sectionConfigs",
+      admin.email,
+      `${args.isVisible ? "Shown" : "Hidden"} section: ${args.sectionKey}`,
+    );
+  },
+});
+
+export const reorderSections = mutation({
+  args: {
+    orderedKeys: v.array(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+
+    for (let i = 0; i < args.orderedKeys.length; i++) {
+      const section = await ctx.db
+        .query("sectionConfigs")
+        .withIndex("by_sectionKey", (q) => q.eq("sectionKey", args.orderedKeys[i]))
+        .first();
+
+      if (section) {
+        await ctx.db.patch(section._id, { order: i, updatedAt: Date.now() });
+      }
+    }
+
+    await logActivityInternal(
+      ctx,
+      "reorder",
+      "sectionConfigs",
+      admin.email,
+      `Reordered ${args.orderedKeys.length} sections`,
+    );
+  },
+});
+
+export const seedSectionConfigs = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const existing = await ctx.db.query("sectionConfigs").take(1);
+    if (existing.length > 0) return { status: "already seeded" };
+
+    const now = Date.now();
+    const sections = [
+      { sectionKey: "hero", label_en: "Hero", label_ar: "الواجهة الرئيسية", isVisible: true, order: 0, isRequired: true },
+      { sectionKey: "menu", label_en: "Menu", label_ar: "القائمة", isVisible: true, order: 1, isRequired: false },
+      { sectionKey: "about", label_en: "About", label_ar: "عن الشيف", isVisible: true, order: 2, isRequired: false },
+      { sectionKey: "services", label_en: "Services", label_ar: "الخدمات", isVisible: true, order: 3, isRequired: false },
+      { sectionKey: "testimonials", label_en: "Testimonials", label_ar: "التوصيات", isVisible: true, order: 4, isRequired: false },
+      { sectionKey: "ctaBanner", label_en: "CTA Banner", label_ar: "شريط الدعوة", isVisible: true, order: 5, isRequired: false },
+      { sectionKey: "gallery", label_en: "Gallery", label_ar: "المعرض", isVisible: true, order: 6, isRequired: false },
+      { sectionKey: "contact", label_en: "Contact", label_ar: "تواصل معنا", isVisible: true, order: 7, isRequired: false },
+      { sectionKey: "projects", label_en: "Work Experience", label_ar: "الخبرات العملية", isVisible: true, order: 8, isRequired: false },
+      { sectionKey: "craftPractice", label_en: "Craft & Practice", label_ar: "حرفة وخبرة", isVisible: true, order: 9, isRequired: false },
+      { sectionKey: "locations", label_en: "Service Areas", label_ar: "مناطق الخدمة", isVisible: true, order: 10, isRequired: false },
+    ];
+
+    for (const section of sections) {
+      await ctx.db.insert("sectionConfigs", { ...section, updatedAt: now });
+    }
+
+    return { status: "inserted", count: sections.length };
+  },
+});
+
+// ─── Theme mutations ─────────────────────────────────────────────────────────
+
+const themeTokensFields = {
+  background: v.string(),
+  foreground: v.string(),
+  accent: v.string(),
+  accentForeground: v.string(),
+  muted: v.string(),
+  mutedForeground: v.string(),
+  border: v.string(),
+  card: v.string(),
+  destructive: v.string(),
+};
+
+const OKLCH_PATTERN = /^oklch\(\d+(\.\d+)?%\s+\d+(\.\d+)?\s+\d+(\.\d+)?\s*(\/\s*\d+(\.\d+)?)?\)$/;
+
+function validateOklch(value: string): boolean {
+  return OKLCH_PATTERN.test(value);
+}
+
+export const updateTheme = mutation({
+  args: {
+    theme: v.object({
+      preset: v.optional(v.string()),
+      light: v.object(themeTokensFields),
+      dark: v.optional(v.object(themeTokensFields)),
+      updatedAt: v.number(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+
+    const allTokens = [
+      ...Object.values(args.theme.light),
+      ...(args.theme.dark ? Object.values(args.theme.dark) : []),
+    ];
+    for (const token of allTokens) {
+      if (!validateOklch(token)) {
+        throw new ConvexError(`Invalid OKLCH value: ${token}`);
+      }
+    }
+
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+
+    if (!settings) throw new ConvexError("Site settings not found");
+
+    await ctx.db.patch(settings._id, {
+      theme: { ...args.theme, updatedAt: Date.now() },
+      updatedAt: Date.now(),
+    });
+
+    await logActivityInternal(ctx, "update", "siteSettings", admin.email, "Updated theme");
+    return { success: true };
+  },
+});
+
+export const resetTheme = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const admin = await requireAdmin(ctx);
+
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+
+    if (!settings) throw new ConvexError("Site settings not found");
+
+    await ctx.db.patch(settings._id, {
+      theme: undefined,
+      updatedAt: Date.now(),
+    });
+
+    await logActivityInternal(ctx, "update", "siteSettings", admin.email, "Reset theme to default");
+    return { success: true };
+  },
+});
+
+// ─── SEO mutations ───────────────────────────────────────────────────────────
+
+export const updateSeoSettings = mutation({
+  args: {
+    seo: v.object({
+      defaultTitle_en: v.string(),
+      defaultTitle_ar: v.string(),
+      titleTemplate: v.optional(v.string()),
+      defaultDescription_en: v.string(),
+      defaultDescription_ar: v.string(),
+      businessName_en: v.string(),
+      businessName_ar: v.string(),
+      businessType: v.optional(v.string()),
+      sameAs: v.optional(v.array(v.string())),
+      logoStorageId: v.optional(v.id("_storage")),
+      googleAnalyticsId: v.optional(v.string()),
+      googleSiteVerification: v.optional(v.string()),
+      facebookPixelId: v.optional(v.string()),
+      robotsTxt: v.optional(v.string()),
+      noIndex: v.optional(v.boolean()),
+      updatedAt: v.number(),
+    }),
+    openGraph: v.optional(v.object({
+      defaultImageStorageId: v.optional(v.id("_storage")),
+      twitterHandle: v.optional(v.string()),
+      locale: v.optional(v.string()),
+      siteName_en: v.optional(v.string()),
+      siteName_ar: v.optional(v.string()),
+    })),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+
+    // Validate title lengths
+    if (args.seo.defaultTitle_en.length > 70) {
+      throw new ConvexError("English title must be 70 characters or less");
+    }
+    if (args.seo.defaultTitle_ar.length > 70) {
+      throw new ConvexError("Arabic title must be 70 characters or less");
+    }
+    if (args.seo.defaultDescription_en.length > 170) {
+      throw new ConvexError("English description must be 170 characters or less");
+    }
+    if (args.seo.defaultDescription_ar.length > 170) {
+      throw new ConvexError("Arabic description must be 170 characters or less");
+    }
+
+    // Validate URL formats in sameAs
+    if (args.seo.sameAs) {
+      for (const url of args.seo.sameAs) {
+        try {
+          new URL(url);
+        } catch {
+          throw new ConvexError(`Invalid URL in social profiles: ${url}`);
+        }
+      }
+    }
+
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+
+    if (!settings) throw new ConvexError("Site settings not found");
+
+    const updateData: Record<string, unknown> = {
+      seo: { ...args.seo, updatedAt: Date.now() },
+      updatedAt: Date.now(),
+    };
+    if (args.openGraph) {
+      updateData.openGraph = args.openGraph;
+    }
+
+    await ctx.db.patch(settings._id, updateData);
+    await logActivityInternal(ctx, "update", "siteSettings", admin.email, "Updated SEO settings");
+    return { success: true };
+  },
+});
+
+export const updatePageMetadata = mutation({
+  args: {
+    pageKey: v.string(),
+    title_en: v.optional(v.string()),
+    title_ar: v.optional(v.string()),
+    description_en: v.optional(v.string()),
+    description_ar: v.optional(v.string()),
+    ogImageStorageId: v.optional(v.id("_storage")),
+    canonicalUrl: v.optional(v.string()),
+    noIndex: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+
+    // Validate lengths
+    if (args.title_en && args.title_en.length > 70) {
+      throw new ConvexError("Title must be 70 characters or less");
+    }
+    if (args.title_ar && args.title_ar.length > 70) {
+      throw new ConvexError("Arabic title must be 70 characters or less");
+    }
+    if (args.description_en && args.description_en.length > 170) {
+      throw new ConvexError("Description must be 170 characters or less");
+    }
+    if (args.description_ar && args.description_ar.length > 170) {
+      throw new ConvexError("Arabic description must be 170 characters or less");
+    }
+
+    // Validate canonical URL format
+    if (args.canonicalUrl) {
+      try {
+        new URL(args.canonicalUrl);
+      } catch {
+        throw new ConvexError("Invalid canonical URL format");
+      }
+    }
+
+    const existing = await ctx.db
+      .query("pageMetadata")
+      .withIndex("by_pageKey", (q) => q.eq("pageKey", args.pageKey))
+      .first();
+
+    const { pageKey, ...fields } = args;
+
+    if (existing) {
+      await ctx.db.patch(existing._id, { ...fields, updatedAt: Date.now() });
+    } else {
+      await ctx.db.insert("pageMetadata", { pageKey, ...fields, updatedAt: Date.now() });
+    }
+
+    await logActivityInternal(ctx, "update", "pageMetadata", admin.email, `Updated metadata for ${args.pageKey}`);
+    return { success: true };
   },
 });

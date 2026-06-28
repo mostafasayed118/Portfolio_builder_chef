@@ -1,20 +1,22 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 const STORAGE_KEY = "chef-bakery-theme";
 const DEFAULT_THEME = "dark";
 
+function getInitialTheme(): string {
+  if (typeof window === "undefined") return DEFAULT_THEME;
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored === "light" || stored === "dark" ? stored : DEFAULT_THEME;
+}
+
 export function useTheme() {
-  const [theme, setThemeState] = useState<string>(DEFAULT_THEME);
+  const [theme, setThemeState] = useState<string>(getInitialTheme);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const initial = stored === "light" || stored === "dark" ? stored : DEFAULT_THEME;
-    setThemeState(initial);
-    document.documentElement.classList.toggle("light", initial === "light");
-    document.documentElement.classList.toggle("dark", initial !== "light");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

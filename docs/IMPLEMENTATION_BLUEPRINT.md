@@ -555,7 +555,7 @@ The About page shows bio + skills + education. Stats are Hero-level visual eleme
 ## 37. CMS Content Boundaries
 
 The admin CMS controls ONLY content displayed on the public site. It does NOT control:
-- Navigation structure (hardcoded in code)
+- Navigation structure (i18n-translated labels in `admin.nav.*`, but routes are hardcoded)
 - Route structure (file-system based)
 - Theme/colors (OKLCH tokens in globals.css)
 - Authentication method (Clerk config via Clerk Dashboard)
@@ -750,7 +750,7 @@ This is required before the public ProjectsSection can render category badges.
 | Add Projects + Locations to admin sidebar nav | `src/components/admin/AdminSidebar.tsx` | P0 |
 | Enhance Contact editor with requestTypes + businessHours | `src/app/[locale]/admin/(protected)/contact/page.tsx` | P1 |
 | Enhance About editor with education fields | `src/app/[locale]/admin/(protected)/about/page.tsx` | P1 |
-| Add i18n keys for new admin nav + field labels | `src/i18n/messages/en.json`, `ar.json` | P0 |
+| Add i18n keys for new admin nav + field labels | `src/i18n/messages/en.json`, `ar.json` | P0 ✅ |
 
 **Verification:** All admin editors render correctly. CRUD operations persist to Convex.
 
@@ -765,7 +765,7 @@ This is required before the public ProjectsSection can render category badges.
 | Enhance `ContactSection.tsx` with WhatsApp CTA + Response Time badge | `src/components/sections/ContactSection.tsx` | P1 |
 | Enhance `ContactForm.tsx` with dynamic Request Type dropdown | `src/components/sections/ContactForm.tsx` | P1 |
 | Update About page to include ProjectsSection | `src/app/[locale]/(site)/about/page.tsx` | P0 |
-| Add i18n keys for project categories + location labels | `src/i18n/messages/en.json`, `ar.json` | P0 |
+| Add i18n keys for project categories + location labels | `src/i18n/messages/en.json`, `ar.json` | P0 ✅ |
 
 **Verification:** Public pages display all content correctly in EN and AR with RTL.
 

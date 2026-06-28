@@ -11,6 +11,7 @@
 import type * as auth from "../auth.js";
 import type * as files from "../files.js";
 import type * as lib_logger from "../lib/logger.js";
+import type * as lib_rateLimit from "../lib/rateLimit.js";
 import type * as lib_timezone from "../lib/timezone.js";
 import type * as mutations from "../mutations.js";
 import type * as queries from "../queries.js";
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   files: typeof files;
   "lib/logger": typeof lib_logger;
+  "lib/rateLimit": typeof lib_rateLimit;
   "lib/timezone": typeof lib_timezone;
   mutations: typeof mutations;
   queries: typeof queries;

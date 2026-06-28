@@ -1,0 +1,61 @@
+﻿{
+    "projectId":  "7b7f8b9d-e98e-40bc-ada3-fda66bf9a0ce",
+    "type":  "frontend",
+    "name":  "Hero Section — display and interaction",
+    "description":  "P0: Verify hero section loads with heading, CTA, stats badges",
+    "planSteps":  [
+                      {
+                          "type":  "action",
+                          "action":  "navigate",
+                          "value":  "https://chef-mohamed.vercel.app",
+                          "description":  "Step 0"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027hero\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 1"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027hero-heading\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 2"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027hero-cta\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 3"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027hero-cta\u0027]",
+                          "description":  "Step 4"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "condition":  "url_contains",
+                          "value":  "/menu",
+                          "description":  "Step 5"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "navigate",
+                          "value":  "https://chef-mohamed.vercel.app",
+                          "description":  "Step 6"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027stats-badge\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 7"
+                      }
+                  ]
+}

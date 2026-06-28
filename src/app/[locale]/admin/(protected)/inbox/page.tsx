@@ -1,16 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { SectionEditorShell } from "@/components/admin/SectionEditorShell";
 import { toast } from "sonner";
-import { Mail, MailOpen, ChevronDown, ChevronUp, Inbox } from "lucide-react";
+import {
+  Mail,
+  MailOpen,
+  ChevronDown,
+  ChevronUp,
+  Inbox,
+  Archive,
+  ArchiveRestore,
+  CheckSquare,
+  Square,
+  X,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import type { Id } from "@convex/_generated/dataModel";
 import { formatEgyptTime } from "@convex/lib/timezone";
 
@@ -23,20 +44,158 @@ const REQUEST_TYPE_KEYS = [
 ] as const;
 
 export default function AdminInboxPage() {
+  return (
+    <Suspense
+      fallback={
+        <SectionEditorShell
+          title="Inbox"
+          breadcrumb="Dashboard"
+          onSave={() => {}}
+          isSaving={false}
+          hasUnsaved={false}
+        >
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="bg-surface border-border/50">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-48" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </SectionEditorShell>
+      }
+    >
+      <AdminInboxContent />
+    </Suspense>
+  );
+}
+
+function AdminInboxContent() {
   const t = useTranslations("admin.inbox");
   const tTypes = useTranslations("contact.form.requestTypes");
   const locale = useLocale() as "en" | "ar";
-  const inquiries = useQuery(api.queries.getContactInquiries);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentView = searchParams.get("view") === "archived" ? "archived" : "active";
+  const isArchivedView = currentView === "archived";
+
+  const inquiries = useQuery(api.queries.getContactInquiries, {
+    showArchived: isArchivedView,
+  });
+
   const markRead = useMutation(api.mutations.markInquiryRead);
+  const unmarkRead = useMutation(api.mutations.unmarkInquiryRead);
+  const archiveMut = useMutation(api.mutations.archiveInquiries);
+  const unarchiveMut = useMutation(api.mutations.unarchiveInquiries);
+  const batchMarkMut = useMutation(api.mutations.batchMarkInquiriesRead);
+
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [confirmDialog, setConfirmDialog] = useState<{
+    type: "archive" | "unarchive";
+    count: number;
+  } | null>(null);
+
+  const setView = useCallback(
+    (view: "active" | "archived") => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (view === "archived") {
+        params.set("view", "archived");
+      } else {
+        params.delete("view");
+      }
+      router.replace(`${pathname}?${params.toString()}`);
+      setSelectedIds(new Set());
+      setExpandedId(null);
+    },
+    [router, pathname, searchParams],
+  );
+
+  const handleToggleSelect = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }, []);
+
+  const allIds = useMemo(
+    () => inquiries?.map((i) => i._id as string) ?? [],
+    [inquiries],
+  );
+
+  const allSelected = allIds.length > 0 && allIds.every((id) => selectedIds.has(id));
+
+  const handleToggleSelectAll = useCallback(() => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(allIds));
+    }
+  }, [allSelected, allIds]);
 
   async function handleToggleRead(id: string, currentRead: boolean) {
     try {
-      await markRead({ id: id as Id<"contactInquiries"> });
-      toast.success(currentRead ? t("markedUnread") : t("markedRead"));
+      if (currentRead) {
+        await unmarkRead({ id: id as Id<"contactInquiries"> });
+        toast.success(t("markedUnread"));
+      } else {
+        await markRead({ id: id as Id<"contactInquiries"> });
+        toast.success(t("markedRead"));
+      }
     } catch {
       toast.error(t("updateFailed"));
     }
+  }
+
+  async function handleBatchMarkRead(isRead: boolean) {
+    const ids = [...selectedIds] as Id<"contactInquiries">[];
+    if (ids.length === 0) return;
+    try {
+      await batchMarkMut({ ids, isRead });
+      toast.success(isRead ? t("batchReadSuccess", { count: ids.length }) : t("batchUnreadSuccess", { count: ids.length }));
+      setSelectedIds(new Set());
+    } catch {
+      toast.error(t("updateFailed"));
+    }
+  }
+
+  async function handleArchive() {
+    const ids = [...selectedIds] as Id<"contactInquiries">[];
+    if (ids.length === 0) return;
+    try {
+      await archiveMut({ ids });
+      toast.success(t("archiveSuccess", { count: ids.length }));
+      setSelectedIds(new Set());
+    } catch {
+      toast.error(t("updateFailed"));
+    }
+    setConfirmDialog(null);
+  }
+
+  async function handleUnarchive() {
+    const ids = [...selectedIds] as Id<"contactInquiries">[];
+    if (ids.length === 0) return;
+    try {
+      await unarchiveMut({ ids });
+      toast.success(t("unarchiveSuccess", { count: ids.length }));
+      setSelectedIds(new Set());
+    } catch {
+      toast.error(t("updateFailed"));
+    }
+    setConfirmDialog(null);
   }
 
   function getRequestTypeLabel(raw: string): string {
@@ -44,7 +203,12 @@ export default function AdminInboxPage() {
     return key ? tTypes(key) : raw;
   }
 
-  const unreadCount = inquiries?.filter((i) => !i.isRead).length ?? 0;
+  const unreadCount =
+    !isArchivedView ? (inquiries?.filter((i) => !i.isRead).length ?? 0) : 0;
+
+  const isAllRead = inquiries
+    ? inquiries.length > 0 && inquiries.every((i) => i.isRead)
+    : false;
 
   return (
     <SectionEditorShell
@@ -54,6 +218,95 @@ export default function AdminInboxPage() {
       isSaving={false}
       hasUnsaved={false}
     >
+      {/* ── Archive Tab Toggle ── */}
+      <div className="flex items-center gap-2 mb-4">
+        <button
+          onClick={() => setView("active")}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            !isArchivedView
+              ? "bg-accent text-background"
+              : "bg-surface-elevated text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          {t("activeTab")}
+        </button>
+        <button
+          onClick={() => setView("archived")}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            isArchivedView
+              ? "bg-accent text-background"
+              : "bg-surface-elevated text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          {t("archivedTab")}
+        </button>
+      </div>
+
+      {/* ── Batch Action Bar ── */}
+      {selectedIds.size > 0 && (
+        <div className="sticky top-0 z-30 mb-3 flex items-center gap-2 rounded-lg border border-accent/30 bg-surface p-3 shadow-md">
+          <span className="text-sm font-medium text-foreground">
+            {t("selectedCount", { count: selectedIds.size })}
+          </span>
+
+          <div className="ms-auto flex items-center gap-2">
+            {isArchivedView ? (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs"
+                onClick={() => handleUnarchive()}
+              >
+                <ArchiveRestore className="h-3.5 w-3.5 me-1" />
+                {t("unarchive")}
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={() =>
+                    setConfirmDialog({ type: "archive", count: selectedIds.size })
+                  }
+                >
+                  <Archive className="h-3.5 w-3.5 me-1" />
+                  {t("archive")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={() =>
+                    handleBatchMarkRead(
+                      isAllRead ? false : !inquiries?.every((i) => selectedIds.has(i._id as string) && !i.isRead),
+                    )
+                  }
+                >
+                  {isAllRead ? (
+                    <EyeOff className="h-3.5 w-3.5 me-1" />
+                  ) : (
+                    <Eye className="h-3.5 w-3.5 me-1" />
+                  )}
+                  {isAllRead ? t("batchMarkUnread") : t("batchMarkRead")}
+                </Button>
+              </>
+            )}
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 text-xs text-muted-foreground"
+              onClick={() => setSelectedIds(new Set())}
+            >
+              <X className="h-3.5 w-3.5 me-1" />
+              {t("deselectAll")}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Content ── */}
       {!inquiries ? (
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -75,10 +328,10 @@ export default function AdminInboxPage() {
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
             <Inbox className="h-16 w-16 text-muted-foreground/30 mb-6" />
             <h3 className="font-heading text-xl text-foreground mb-2">
-              {t("emptyTitle")}
+              {isArchivedView ? t("emptyArchived") : t("emptyTitle")}
             </h3>
             <p className="text-muted-foreground max-w-md">
-              {t("emptyDesc")}
+              {isArchivedView ? t("emptyArchivedDesc") : t("emptyDesc")}
             </p>
           </CardContent>
         </Card>
@@ -87,7 +340,7 @@ export default function AdminInboxPage() {
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
               {t("totalCount", { count: inquiries.length })}
-              {unreadCount > 0 && (
+              {!isArchivedView && unreadCount > 0 && (
                 <span className="ms-2">
                   <Badge variant="default" className="bg-accent text-accent-foreground text-xs">
                     {t("unreadCount", { count: unreadCount })}
@@ -95,19 +348,31 @@ export default function AdminInboxPage() {
                 </span>
               )}
             </p>
+            {!isArchivedView && (
+              <button
+                onClick={handleToggleSelectAll}
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {allSelected ? (
+                  <CheckSquare className="h-4 w-4" />
+                ) : (
+                  <Square className="h-4 w-4" />
+                )}
+                {allSelected ? t("deselectAll") : t("selectAll")}
+              </button>
+            )}
           </div>
 
           <div className="space-y-2">
             {inquiries.map((item) => {
               const isExpanded = expandedId === item._id;
+              const isSelected = selectedIds.has(item._id as string);
               return (
                 <Card
                   key={item._id}
                   className={`bg-surface border-border/50 transition-colors ${
-                    !item.isRead
-                      ? "border-s-[3px] border-s-accent"
-                      : ""
-                  }`}
+                    isSelected ? "border-accent/50 ring-1 ring-accent/20" : ""
+                  } ${!item.isRead && !isArchivedView ? "border-s-[3px] border-s-accent" : ""}`}
                 >
                   <CardContent className="p-0">
                     <div
@@ -122,19 +387,46 @@ export default function AdminInboxPage() {
                       }}
                       className="flex w-full items-center gap-3 p-4 text-start hover:bg-surface-elevated/30 transition-colors cursor-pointer"
                     >
-                      <div className={`shrink-0 ${!item.isRead ? "text-accent" : "text-muted-foreground"}`}>
-                        {item.isRead ? (
-                          <MailOpen className="h-5 w-5" />
+                      {/* ── Selection Checkbox ── */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleSelect(item._id as string);
+                        }}
+                        className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={isSelected ? t("deselectAll") : t("selectAll")}
+                      >
+                        {isSelected ? (
+                          <CheckSquare className="h-5 w-5 text-accent" />
                         ) : (
-                          <Mail className="h-5 w-5" />
+                          <Square className="h-5 w-5" />
                         )}
-                      </div>
+                      </button>
+
+                      {/* ── Read/Unread Icon ── */}
+                      {!isArchivedView && (
+                        <div className={`shrink-0 ${!item.isRead ? "text-accent" : "text-muted-foreground"}`}>
+                          {item.isRead ? (
+                            <MailOpen className="h-5 w-5" />
+                          ) : (
+                            <Mail className="h-5 w-5" />
+                          )}
+                        </div>
+                      )}
+
+                      {isArchivedView && (
+                        <div className="shrink-0 text-muted-foreground">
+                          <Archive className="h-5 w-5" />
+                        </div>
+                      )}
+
+                      {/* ── Content ── */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`font-medium truncate ${!item.isRead ? "text-foreground" : "text-muted-foreground"}`}>
+                          <span className={`font-medium truncate ${!item.isRead && !isArchivedView ? "text-foreground" : "text-muted-foreground"}`}>
                             {item.name}
                           </span>
-                          {!item.isRead && (
+                          {!item.isRead && !isArchivedView && (
                             <span className="h-2 w-2 rounded-full bg-accent shrink-0" />
                           )}
                         </div>
@@ -150,18 +442,22 @@ export default function AdminInboxPage() {
                           {formatEgyptTime(item.createdAt, locale)}
                         </p>
                       </div>
+
+                      {/* ── Actions ── */}
                       <div className="flex items-center gap-2 shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleToggleRead(item._id, item.isRead);
-                          }}
-                          className="h-8 text-xs text-muted-foreground hover:text-foreground"
-                        >
-                          {item.isRead ? t("markUnread") : t("markRead")}
-                        </Button>
+                        {!isArchivedView && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleRead(item._id, item.isRead);
+                            }}
+                            className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                          >
+                            {item.isRead ? t("markUnread") : t("markRead")}
+                          </Button>
+                        )}
                         {isExpanded ? (
                           <ChevronUp className="h-4 w-4 text-muted-foreground" />
                         ) : (
@@ -170,6 +466,7 @@ export default function AdminInboxPage() {
                       </div>
                     </div>
 
+                    {/* ── Expanded Detail ── */}
                     {isExpanded && (
                       <div className="border-t border-border/50 px-4 py-4 space-y-3">
                         {item.phone && (
@@ -177,7 +474,7 @@ export default function AdminInboxPage() {
                             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                               {t("phoneLabel")}
                             </span>
-                            <p className="text-sm text-foreground mt-0.5">
+                            <p className="text-sm text-foreground mt-0.5" dir="ltr">
                               {item.phone}
                             </p>
                           </div>
@@ -215,6 +512,48 @@ export default function AdminInboxPage() {
           </div>
         </div>
       )}
+
+      {/* ── Confirmation Dialogs ── */}
+      <Dialog
+        open={confirmDialog !== null}
+        onOpenChange={(open) => {
+          if (!open) setConfirmDialog(null);
+        }}
+      >
+        <DialogContent className="bg-surface border-border/50 sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-foreground font-heading">
+              {confirmDialog?.type === "archive"
+                ? t("confirmArchive", { count: confirmDialog?.count ?? 0 })
+                : t("confirmUnarchive", { count: confirmDialog?.count ?? 0 })}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {confirmDialog?.type === "archive"
+              ? t("confirmArchiveDesc")
+              : t("confirmUnarchiveDesc")}
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDialog(null)}>
+              {t("deleteCancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (confirmDialog?.type === "archive") {
+                  handleArchive();
+                } else {
+                  handleUnarchive();
+                }
+              }}
+            >
+              {confirmDialog?.type === "archive"
+                ? t("archive")
+                : t("unarchive")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SectionEditorShell>
   );
 }

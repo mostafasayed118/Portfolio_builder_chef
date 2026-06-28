@@ -127,23 +127,36 @@ Same applies to `DialogTrigger`.
 
 Auth uses Clerk for all three layers. No iron-session files exist.
 
-**Layer 1 — Middleware:** `src/proxy.ts` uses `clerkMiddleware` to protect `/admin(.*)` routes via `auth.protect()` + email enforcement against `ADMIN_EMAIL`.
+**Layer 1 — Middleware:** `src/proxy.ts` uses `clerkMiddleware` to protect `/admin(.*)` routes via `auth.protect()`. Email enforcement happens in Layer 2, not here — Clerk's default JWT template doesn't include email in `sessionClaims`, so the check cannot be done reliably at the middleware level.
 
-**Layer 2 — Layout Guard:** `admin/(protected)/layout.tsx` uses `auth()` from `@clerk/nextjs/server` + email check as defense-in-depth.
+**Layer 2 — Layout Guard:** `admin/(protected)/layout.tsx` uses `auth()` + `currentUser()` from `@clerk/nextjs/server` to get the full user profile (including emails) and enforces `ADMIN_EMAIL` as defense-in-depth.
 
 **Layer 3 — Convex Mutations:** `convex/auth.ts` `requireAdmin(ctx)` verifies Clerk identity via `ctx.auth.getUserIdentity()` + `ADMIN_EMAIL` enforcement.
 
 **✅ DO:**
 ```tsx
-// src/app/[locale]/admin/(protected)/layout.tsx
-import { auth } from "@clerk/nextjs/server";
+// src/proxy.ts — Layer 1: protect admin routes (email check deferred to Layer 2)
+export default clerkMiddleware(async (auth, request) => {
+  if (isAdminRoute(request) && !isPublicAuthRoute(request)) {
+    await auth.protect();
+    // Email enforcement happens in admin/(protected)/layout.tsx
+    // using currentUser() which provides full user profile including emails.
+    // Clerk's default JWT template doesn't include email in sessionClaims,
+    // so the check cannot be done reliably at the middleware level.
+  }
+  return intlMiddleware(request);
+});
+
+// src/app/[locale]/admin/(protected)/layout.tsx — Layer 2: email enforcement
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 const session = await auth();
 if (!session.userId) {
   redirect(`/${locale}/admin/login`);
 }
-const email = session.sessionClaims?.email as string | undefined;
-if (email !== process.env.ADMIN_EMAIL) {
+const user = await currentUser();
+const email = user?.emailAddresses[0]?.emailAddress;
+if (!email || email !== process.env.ADMIN_EMAIL) {
   redirect(`/${locale}/admin/unauthorized`);
 }
 ```
@@ -597,7 +610,7 @@ Geographic information (Cairo base, international experience) MUST be stored in 
 ## 36. CMS Content Boundaries
 
 The admin CMS controls ONLY content displayed on the public site. It does NOT control:
-- Navigation structure (hardcoded in code)
+- Navigation structure (i18n-translated labels in `admin.nav.*`, but routes are hardcoded)
 - Route structure (file-system based)
 - Theme/colors (OKLCH tokens in globals.css)
 - Authentication method (Clerk config via Clerk Dashboard)
@@ -632,7 +645,7 @@ Both locale files (`src/i18n/messages/en.json` and `ar.json`) MUST have identica
 - Do NOT add a key to only one locale file
 - Do NOT commit i18n changes without verifying both files are in sync
 
-**Rationale:** As of 2026-06-23, both files have 215 keys each. Differences cause runtime errors on the Arabic site (`t()` call returns undefined). See BUG_FIXES_REGISTRY.md Translation Import entry.
+**Rationale:** As of 2026-06-27, both files have 508 leaf keys each. Differences cause runtime errors on the Arabic site (`t()` call returns undefined). See BUG_FIXES_REGISTRY.md Translation Import entry.
 
 ---
 

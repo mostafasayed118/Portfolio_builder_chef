@@ -15,8 +15,8 @@ export async function CTABanner({ locale }: { locale: string }) {
 
       {/* Floating decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-primary-foreground/5 animate-float-slow" />
-        <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-primary-foreground/5 animate-float" />
+        <div className="absolute -top-20 -end-20 w-60 h-60 rounded-full bg-primary-foreground/5 animate-float-slow" />
+        <div className="absolute -bottom-16 -start-16 w-48 h-48 rounded-full bg-primary-foreground/5 animate-float" />
       </div>
 
       <div className="container mx-auto px-4 text-center relative z-10">
@@ -40,14 +40,14 @@ export async function CTABanner({ locale }: { locale: string }) {
               className="group bg-background text-foreground hover:bg-background/90 border border-accent-foreground/10 text-base px-8 cursor-pointer shadow-float hover:shadow-xl transition-all duration-300"
             >
               {t("primary")}
-              <ArrowRight className="h-4 w-4 ms-2 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 ms-2 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
             </Button>
           </Link>
           <Link href="/menu">
             <Button
               variant="outline"
               size="lg"
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-base px-8 cursor-pointer transition-all duration-300"
+              className="border-primary-foreground/30 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 text-base px-8 cursor-pointer transition-all duration-300"
             >
               {t("secondary")}
             </Button>

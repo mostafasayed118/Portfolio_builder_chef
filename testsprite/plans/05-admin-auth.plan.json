@@ -1,0 +1,21 @@
+﻿{
+    "projectId":  "7b7f8b9d-e98e-40bc-ada3-fda66bf9a0ce",
+    "type":  "frontend",
+    "name":  "Admin auth guard — redirect unauthenticated",
+    "description":  "P0: Verify unauthenticated users are redirected to Clerk login",
+    "planSteps":  [
+                      {
+                          "type":  "action",
+                          "action":  "navigate",
+                          "value":  "https://chef-mohamed.vercel.app/admin/dashboard",
+                          "description":  "Step 0"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "condition":  "url_contains",
+                          "value":  "/admin/login",
+                          "description":  "Step 1"
+                      }
+                  ]
+}

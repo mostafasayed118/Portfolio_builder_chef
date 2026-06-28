@@ -9,7 +9,7 @@ import { Link } from "@/i18n/navigation";
 import { useDirection } from "@/hooks/useDirection";
 import { motion, useReducedMotion } from "motion/react";
 import { getBilingualField } from "@/lib/bilingual";
-import { UtensilsCrossed, ChefHat, ClipboardList, GraduationCap, ArrowRight } from "lucide-react";
+import { UtensilsCrossed, ChefHat, ClipboardList, GraduationCap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const CATEGORY_CONFIG: Record<string, { labelKey: string; icon: LucideIcon }> = {
@@ -21,7 +21,7 @@ const CATEGORY_CONFIG: Record<string, { labelKey: string; icon: LucideIcon }> = 
 export function ServicesSection() {
   const allServices = useQuery(api.queries.getServices, {});
   const t = useTranslations("services");
-  const { isRTL, locale } = useDirection();
+  const { locale } = useDirection();
   const shouldReduce = useReducedMotion();
 
   if (allServices === undefined) {
@@ -101,7 +101,7 @@ export function ServicesSection() {
                       <config.icon className="h-6 w-6 text-accent" />
                     </div>
                     <h3 className="font-heading text-xl font-semibold text-foreground">
-                      {t(config.labelKey as any)}
+                      {t(config.labelKey as Parameters<typeof t>[0])}
                     </h3>
                   </div>
                   <ul className="space-y-4">

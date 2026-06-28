@@ -1,0 +1,53 @@
+﻿{
+    "projectId":  "7b7f8b9d-e98e-40bc-ada3-fda66bf9a0ce",
+    "type":  "frontend",
+    "name":  "Menu gallery — filter and display",
+    "description":  "P0: Verify menu page loads with category filters and product display",
+    "planSteps":  [
+                      {
+                          "type":  "action",
+                          "action":  "navigate",
+                          "value":  "https://chef-mohamed.vercel.app/menu",
+                          "description":  "Step 0"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027menu-grid\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 1"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027filter-cakes\u0027]",
+                          "description":  "Step 2"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027product-card\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 3"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027filter-pastries\u0027]",
+                          "description":  "Step 4"
+                      },
+                      {
+                          "type":  "action",
+                          "action":  "click",
+                          "selector":  "[data-testid=\u0027filter-all\u0027]",
+                          "description":  "Step 5"
+                      },
+                      {
+                          "type":  "assertion",
+                          "action":  "assert",
+                          "selector":  "[data-testid=\u0027product-card\u0027]",
+                          "condition":  "visible",
+                          "description":  "Step 6"
+                      }
+                  ]
+}

@@ -10,3 +10,5 @@ export function useDirection() {
     locale,
   };
 }
+
+export type Direction = ReturnType<typeof useDirection>;

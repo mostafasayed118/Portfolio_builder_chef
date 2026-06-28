@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useLocale, useTranslations } from "next-intl";
@@ -18,6 +19,7 @@ import {
   MapPin,
   Mail,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 
 const actionCards = [
@@ -35,9 +37,11 @@ const actionCards = [
 export default function AdminDashboardPage() {
   const stats = useQuery(api.queries.getDashboardStats);
   const locale = useLocale();
+  const isRTL = locale === "ar";
   const t = useTranslations("admin.dashboard");
 
-  const dateStr = formatEgyptFullDate(Date.now(), locale as "en" | "ar");
+  const [now] = useState(Date.now);
+  const dateStr = formatEgyptFullDate(now, locale as "en" | "ar");
   const lastUpdated = stats?.lastUpdated
     ? formatEgyptTime(stats.lastUpdated, locale as "en" | "ar")
     : null;
@@ -111,7 +115,11 @@ export default function AdminDashboardPage() {
                         {t(`cards.${card.key}.desc`)}
                       </p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground mt-1 shrink-0 group-hover:text-accent transition-colors" />
+                    {isRTL ? (
+                      <ArrowLeft className="h-4 w-4 text-muted-foreground mt-1 shrink-0 group-hover:text-accent transition-colors" />
+                    ) : (
+                      <ArrowRight className="h-4 w-4 text-muted-foreground mt-1 shrink-0 group-hover:text-accent transition-colors" />
+                    )}
                   </CardContent>
                 </Card>
               </Link>

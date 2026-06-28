@@ -25,7 +25,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { Id } from "@convex/_generated/dataModel";
+import type { Id, Doc } from "@convex/_generated/dataModel";
 
 const CATEGORIES = ["all", "artisanal", "consulting", "training"] as const;
 const CATEGORY_EMOJIS: Record<string, string> = {
@@ -37,6 +37,7 @@ const CATEGORY_EMOJIS: Record<string, string> = {
 export default function AdminServicesPage() {
   const t = useTranslations("admin.services");
   const tFilters = useTranslations("admin.services.filters");
+  const tNav = useTranslations("admin.nav");
   const services = useQuery(api.queries.getAllServices);
   const createService = useMutation(api.mutations.createService);
   const updateService = useMutation(api.mutations.updateService);
@@ -46,7 +47,7 @@ export default function AdminServicesPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<Doc<"services"> | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   const [optimisticServices, setOptimisticToggle] = useOptimistic(
@@ -59,13 +60,13 @@ export default function AdminServicesPage() {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
-  function openEdit(item: any) {
+  function openEdit(item: Doc<"services">) {
     setEditingItem(item);
     setEditingId(item._id);
     setDialogOpen(true);
   }
 
-  async function handleSave(data: any) {
+  async function handleSave(data: Omit<Doc<"services">, "_id" | "_creationTime" | "createdAt">) {
     if (editingId) {
       await updateService({ id: editingId as Id<"services">, ...data });
       toast.success(t("saved"));
@@ -109,7 +110,7 @@ export default function AdminServicesPage() {
   const filtered = optimisticServices ? categoryFilter === "all" ? optimisticServices : optimisticServices.filter((s) => s.category === categoryFilter) : [];
 
   return (
-    <SectionEditorShell title="Services" breadcrumb="Dashboard" onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/services">
+    <SectionEditorShell title={tNav("services")} breadcrumb={tNav("dashboard")} onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/services">
       <div className="flex justify-end mb-4">
         <Button className="bg-accent hover:bg-accent-hover text-background" onClick={() => { setEditingId(null); setEditingItem(null); setDialogOpen(true); }}>
           <Plus className="h-4 w-4 me-2" /> {t("addService")}
@@ -154,7 +155,7 @@ export default function AdminServicesPage() {
             <div className="space-y-3">
               {filtered.map((item) => (
                 <SortableItem key={item._id} id={item._id}
-                  className="flex items-center gap-3 rounded-lg border border-border/50 bg-surface p-4 transition-colors hover:bg-surface-elevated"
+                  className="flex items-center gap-3 overflow-hidden rounded-lg border border-border/50 bg-surface p-4 transition-colors hover:bg-surface-elevated"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-lg">
                     {item.icon || CATEGORY_EMOJIS[item.category] || "\u2728"}
@@ -166,8 +167,8 @@ export default function AdminServicesPage() {
                   <Badge variant="outline" className="border-accent/20 text-accent/80 text-xs shrink-0">{tFilters(item.category)}</Badge>
                   <Switch checked={item.isVisible} onCheckedChange={() => handleToggle(item._id as Id<"services">)} />
                   <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(item)} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(item)} aria-label={t("editTitle")} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} aria-label={t("deleteTitle")} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </SortableItem>
               ))}

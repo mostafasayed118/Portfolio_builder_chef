@@ -1,28 +1,36 @@
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { ChefHat } from "lucide-react";
-import Link from "next/link";
 
-export default function UnauthorizedPage() {
+export default async function UnauthorizedPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale: locale as "en" | "ar", namespace: "admin" });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-6">
-      <div className="w-full max-w-sm text-center">
-        <div className="flex justify-center mb-6">
-          <div className="h-16 w-16 rounded-xl bg-destructive/10 flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="max-w-md w-full text-center space-y-6">
+        <div className="flex justify-center">
+          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
             <ChefHat className="h-8 w-8 text-destructive" />
           </div>
         </div>
-
-        <h1 className="text-2xl font-heading font-bold text-foreground mb-2">
-          Access Denied
-        </h1>
-        <p className="text-muted-foreground mb-8">
-          This area is restricted to authorized administrators only.
-        </p>
-
+        <div className="space-y-2">
+          <h1 className="text-2xl font-heading font-bold text-foreground">
+            {t("unauthorized.title")}
+          </h1>
+          <p className="text-muted-foreground">
+            {t("unauthorized.message")}
+          </p>
+        </div>
         <Link
           href="/"
-          className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-sm font-medium text-background hover:bg-accent-hover transition-colors"
+          className="inline-flex items-center justify-center rounded-lg bg-accent hover:bg-accent-hover text-background px-6 py-3 text-sm font-medium transition-colors"
         >
-          Back to Home
+          {t("unauthorized.backHome")}
         </Link>
       </div>
     </div>

@@ -19,6 +19,7 @@ export default function AdminContactPage() {
   const t = useTranslations("admin.contactEditor.labels");
   const tPlaceholders = useTranslations("admin.contactEditor.placeholders");
   const tEditor = useTranslations("admin.contactEditor");
+  const tNav = useTranslations("admin.nav");
   const contact = useQuery(api.queries.getContactInfo);
   const updateContact = useMutation(api.mutations.updateContactInfo);
   const [saving, setSaving] = useState(false);
@@ -130,8 +131,8 @@ export default function AdminContactPage() {
 
   return (
     <SectionEditorShell
-      title="Contact Info"
-      breadcrumb="Dashboard"
+      title={tNav("contact")}
+      breadcrumb={tNav("dashboard")}
       onSave={handleSave}
       isSaving={saving}
       hasUnsaved={!!hasUnsaved}
@@ -141,11 +142,11 @@ export default function AdminContactPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label className="text-foreground">{t("phonePrimary")}</Label>
-              <Input value={phone} onChange={(e) => setPhone(e.target.value)} className="bg-surface-elevated border-border/50" />
+              <Input value={phone} onChange={(e) => setPhone(e.target.value)} dir="ltr" className="bg-surface-elevated border-border/50" />
             </div>
             <div className="space-y-2">
               <Label className="text-foreground">{t("phoneSecondary")}</Label>
-              <Input value={secondaryPhone} onChange={(e) => setSecondaryPhone(e.target.value)} className="bg-surface-elevated border-border/50" />
+              <Input value={secondaryPhone} onChange={(e) => setSecondaryPhone(e.target.value)} dir="ltr" className="bg-surface-elevated border-border/50" />
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -211,7 +212,7 @@ export default function AdminContactPage() {
                   <Badge variant="outline" className="border-accent/20 text-accent/80 text-xs shrink-0">{rt.value}</Badge>
                   <span className="text-sm text-foreground flex-1">{rt.label_en}</span>
                   <span className="text-sm text-muted-foreground" dir="rtl">{rt.label_ar}</span>
-                  <Button variant="ghost" size="icon" onClick={() => removeRequestType(rt.value)} className="h-8 w-8 text-error hover:text-error shrink-0">
+                  <Button variant="ghost" size="icon" onClick={() => removeRequestType(rt.value)} aria-label={tEditor("removeRequestType")} className="h-8 w-8 text-error hover:text-error shrink-0">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>

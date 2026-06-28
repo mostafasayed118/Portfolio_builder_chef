@@ -7,10 +7,22 @@ import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { NAV_LINKS } from "@/lib/constants";
 import { Menu, ChefHat } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useDirection } from "@/hooks/useDirection";
+import { useQuery } from "convex/react";
+import { api } from "@convex/_generated/api";
+
+const HREF_TO_SECTION_KEY: Record<string, string> = {
+  "/": "hero",
+  "/about": "about",
+  "/services": "services",
+  "/craft-practice": "craftPractice",
+  "/menu": "menu",
+  "/gallery": "gallery",
+  "/contact": "contact",
+};
 
 export function Navbar() {
   const t = useTranslations();
@@ -18,6 +30,20 @@ export function Navbar() {
   const { isRTL } = useDirection();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const visibleSections = useQuery(api.queries.getVisibleSections);
+
+  const visibleKeys = useMemo(() => {
+    if (!visibleSections) return null;
+    return new Set(visibleSections.map((s) => s.sectionKey));
+  }, [visibleSections]);
+
+  const filteredLinks = useMemo(() => {
+    if (!visibleKeys) return NAV_LINKS;
+    return NAV_LINKS.filter((item) => {
+      const sectionKey = HREF_TO_SECTION_KEY[item.href];
+      return sectionKey ? visibleKeys.has(sectionKey) : true;
+    });
+  }, [visibleKeys]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -47,7 +73,7 @@ export function Navbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map((item) => (
+            {filteredLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -82,7 +108,7 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side={isRTL ? "left" : "right"}>
               <nav className="flex flex-col gap-4 mt-8">
-                {NAV_LINKS.map((item) => (
+                {filteredLinks.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}

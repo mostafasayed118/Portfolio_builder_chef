@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { Id } from "@convex/_generated/dataModel";
+import type { Id, Doc } from "@convex/_generated/dataModel";
 
 const CATEGORIES = ["breads", "cakes", "pastries", "cookies", "seasonal"] as const;
 
@@ -32,6 +32,7 @@ export default function AdminMenuPage() {
   const tPlaceholders = useTranslations("admin.menu.placeholders");
   const tHeaders = useTranslations("admin.menu.tableHeaders");
   const tCat = useTranslations("menu.categories");
+  const tNav = useTranslations("admin.nav");
   const menuItems = useQuery(api.queries.getAllMenuItems);
   const locale = useLocale();
   const createItem = useMutation(api.mutations.createMenuItem);
@@ -61,7 +62,7 @@ export default function AdminMenuPage() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   function resetForm() { setNameEn(""); setNameAr(""); setDescEn(""); setDescAr(""); setPrice(""); setCategory("cakes"); setImageUrl(null); setAvailable(true); setEditingId(null); }
-  function openEdit(item: any) {
+  function openEdit(item: Doc<"menuItems">) {
     setNameEn(item.name_en); setNameAr(item.name_ar); setDescEn(item.description_en); setDescAr(item.description_ar);
     setPrice(item.price === null ? "" : String(item.price)); setCategory(item.category); setImageUrl(item.imageUrl ?? null); setAvailable(item.isAvailable);
     setEditingId(item._id); setDialogOpen(true);
@@ -74,7 +75,7 @@ export default function AdminMenuPage() {
       const data = { name_en: nameEn, name_ar: nameAr, description_en: descEn, description_ar: descAr,
         price: trimmedPrice === "" ? null : parseFloat(trimmedPrice),
         category: category as "breads" | "cakes" | "pastries" | "cookies" | "seasonal",
-        imageUrl, isAvailable: available, order: editingId ? 0 : (menuItems?.length ?? 0) };
+        imageUrl, isAvailable: available, order: editingId ? (menuItems?.find(m => m._id === editingId)?.order ?? 0) : (menuItems?.length ?? 0) };
       if (editingId) { await updateItem({ id: editingId as Id<"menuItems">, ...data }); } else { await createItem(data); }
       toast.success(editingId ? t("savedUpdated") : t("savedAdded"));
       setDialogOpen(false); resetForm();
@@ -115,7 +116,7 @@ export default function AdminMenuPage() {
     : [];
 
   return (
-    <SectionEditorShell title="Menu Items" breadcrumb="Dashboard" onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/menu">
+    <SectionEditorShell title={tNav("menu")} breadcrumb={tNav("dashboard")} onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/menu">
       <div className="flex justify-end mb-4">
         <Button className="bg-accent hover:bg-accent-hover text-background" onClick={() => { resetForm(); setDialogOpen(true); }}>
           <Plus className="h-4 w-4 me-2" /> {t("addItem")}
@@ -158,8 +159,8 @@ export default function AdminMenuPage() {
                         <TableCell><Switch checked={item.isAvailable} onCheckedChange={() => handleToggle(item._id as Id<"menuItems">)} /></TableCell>
                         <TableCell>
                           <div className="flex gap-1">
-                            <Button variant="ghost" size="icon" onClick={() => openEdit(item)} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
-                            <Button variant="ghost" size="icon" onClick={() => setDeleteDialog(item._id)} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
+                            <Button variant="ghost" size="icon" onClick={() => openEdit(item)} aria-label={t("editTitle")} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
+                            <Button variant="ghost" size="icon" onClick={() => setDeleteDialog(item._id)} aria-label={t("deleteTitle")} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
                           </div>
                         </TableCell>
                       </SortableItem>

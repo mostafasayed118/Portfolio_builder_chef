@@ -17,7 +17,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -32,7 +31,7 @@ import { useTranslations } from "next-intl";
 import { SectionEditorShell } from "@/components/admin/SectionEditorShell";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Star } from "lucide-react";
-import type { Id } from "@convex/_generated/dataModel";
+import type { Id, Doc } from "@convex/_generated/dataModel";
 
 function StarPicker({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   return (
@@ -50,6 +49,7 @@ export default function AdminTestimonialsPage() {
   const t = useTranslations("admin.testimonials");
   const tLabels = useTranslations("admin.testimonials.labels");
   const tHeaders = useTranslations("admin.testimonials.tableHeaders");
+  const tNav = useTranslations("admin.nav");
   const testimonials = useQuery(api.queries.getAllTestimonials);
   const createItem = useMutation(api.mutations.createTestimonial);
   const updateItem = useMutation(api.mutations.updateTestimonial);
@@ -84,7 +84,7 @@ export default function AdminTestimonialsPage() {
     setEditingId(null);
   }
 
-  function openEdit(item: any) {
+  function openEdit(item: Doc<"testimonials">) {
     setQuoteEn(item.quote_en);
     setQuoteAr(item.quote_ar);
     setCustomerName(item.customerName);
@@ -141,7 +141,7 @@ export default function AdminTestimonialsPage() {
   }
 
   return (
-    <SectionEditorShell title="Testimonials" breadcrumb="Dashboard" onSave={() => {}} isSaving={false} hasUnsaved={false}>
+    <SectionEditorShell title={tNav("testimonials")} breadcrumb={tNav("dashboard")} onSave={() => {}} isSaving={false} hasUnsaved={false}>
       <div className="flex justify-end mb-4">
         <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) resetForm(); }}>
           <Button className="bg-accent hover:bg-accent-hover text-background" onClick={() => setDialogOpen(true)}>
@@ -219,10 +219,10 @@ export default function AdminTestimonialsPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => openEdit(item)} className="h-8 w-8">
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(item)} aria-label={t("editTitle")} className="h-8 w-8">
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} className="h-8 w-8 text-error hover:text-error">
+                        <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} aria-label={t("deleteTitle")} className="h-8 w-8 text-error hover:text-error">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

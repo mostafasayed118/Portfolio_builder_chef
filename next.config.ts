@@ -43,7 +43,7 @@ const config: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
               "font-src 'self' https://fonts.gstatic.com; " +
               "img-src 'self' data: blob: https://*.convex.cloud https://*.convex.site https://img.clerk.com; " +
-              "connect-src 'self' https://*.convex.cloud https://*.convex.site wss://*.convex.cloud https://*.clerk.com https://*.clerk.accounts.dev; " +
+              "connect-src 'self' https://*.convex.cloud https://*.convex.site wss://*.convex.cloud https://storage.googleapis.com https://*.clerk.com https://*.clerk.accounts.dev; " +
               "frame-src 'self' https://*.clerk.com https://*.clerk.accounts.dev; " +
               "base-uri 'self'; " +
               "form-action 'self'; " +

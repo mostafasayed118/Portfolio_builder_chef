@@ -20,7 +20,7 @@ export function AdminTopbar({ title }: Props) {
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-border bg-background px-4 lg:hidden">
       <Sheet>
-        <SheetTrigger render={<Button variant="ghost" size="icon" className="shrink-0" />}>
+        <SheetTrigger render={<Button variant="ghost" size="icon" className="shrink-0" aria-label="Open menu" />}>
           <Menu className="h-5 w-5" />
         </SheetTrigger>
         <SheetContent side={isRTL ? "right" : "left"} className="p-0 w-72">

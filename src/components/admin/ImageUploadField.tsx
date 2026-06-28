@@ -5,10 +5,10 @@ import { useMutation } from "convex/react";
 import { useTranslations } from "next-intl";
 import { api } from "@convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Upload, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UploadProgress, type UploadStatus } from "@/components/admin/UploadProgress";
 
 const MAX_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
@@ -22,6 +22,8 @@ type Props = {
 export function ImageUploadField({ currentUrl, onUpload, onRemove }: Props) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>("uploading");
+  const [fileName, setFileName] = useState("");
   const [isDragOver, setIsDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
@@ -40,16 +42,21 @@ export function ImageUploadField({ currentUrl, onUpload, onRemove }: Props) {
     }
 
     setUploading(true);
-    setProgress(10);
+    setFileName(file.name);
+    setUploadStatus("uploading");
+    setProgress(0);
 
+    let wasError = false;
     try {
+      setProgress(5);
       const uploadUrl = await generateUploadUrl({});
-      setProgress(40);
+      setProgress(15);
 
       const xhr = new XMLHttpRequest();
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable) {
-          setProgress(40 + Math.round((e.loaded / e.total) * 50));
+          // Upload phase: 15% → 85%
+          setProgress(15 + Math.round((e.loaded / e.total) * 70));
         }
       };
 
@@ -63,29 +70,39 @@ export function ImageUploadField({ currentUrl, onUpload, onRemove }: Props) {
             } catch {
               resolve(raw);
             }
-            setProgress(95);
+            setProgress(90);
           } else {
             reject(new Error(`Upload failed with status ${xhr.status}`));
           }
         };
         xhr.onerror = () => reject(new Error("Network error during upload"));
         xhr.ontimeout = () => reject(new Error("Upload timed out"));
-        xhr.open("PUT", uploadUrl);
+        xhr.open("POST", uploadUrl);
         xhr.setRequestHeader("Content-Type", file.type);
         xhr.send(file);
       });
 
+      setUploadStatus("processing");
+      setProgress(95);
       const url = await getStorageUrl({ storageId: storageId as never });
       onUpload({ storageId, url });
       setProgress(100);
+      setUploadStatus("done");
       toast.success(t("uploaded"));
     } catch (err) {
       console.error("ImageUploadField error:", err);
+      setUploadStatus("error");
+      wasError = true;
       toast.error(t("uploadFailed"));
     } finally {
-      setUploading(false);
-      setProgress(0);
-      if (inputRef.current) inputRef.current.value = "";
+      // Keep the final state visible briefly, then reset
+      setTimeout(() => {
+        setUploading(false);
+        setProgress(0);
+        setFileName("");
+        setUploadStatus("uploading");
+        if (inputRef.current) inputRef.current.value = "";
+      }, wasError ? 3000 : 1200);
     }
   }
 
@@ -126,6 +143,7 @@ export function ImageUploadField({ currentUrl, onUpload, onRemove }: Props) {
               variant="destructive"
               size="icon"
               onClick={onRemove}
+              aria-label={t("remove")}
               className="absolute top-2 end-2 h-8 w-8"
             >
               <Trash2 className="h-4 w-4" />
@@ -135,17 +153,8 @@ export function ImageUploadField({ currentUrl, onUpload, onRemove }: Props) {
       )}
 
       {uploading ? (
-        <div className="space-y-2">
-          <Skeleton className="h-32 w-full rounded-lg" />
-          <div className="h-2 bg-surface-elevated rounded-full overflow-hidden">
-            <div
-              className="h-full bg-accent rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p className="text-xs text-muted-foreground text-center">
-            {t("uploadingPrefix")} {progress}%
-          </p>
+        <div className="rounded-lg border border-border/50 bg-surface-elevated/50 p-4">
+          <UploadProgress progress={progress} status={uploadStatus} fileName={fileName} />
         </div>
       ) : (
         <>

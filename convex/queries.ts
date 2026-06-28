@@ -1,5 +1,6 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_ATTEMPTS } from "./lib/rateLimit";
 
 export const getSiteSettings = query({
   args: {},
@@ -99,6 +100,30 @@ export const getAllMenuItems = query({
   },
 });
 
+// ─── Videos ("Craft & Practice") queries ─────────────────────────────────────
+
+export const getVisibleVideos = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("videos")
+      .withIndex("by_visible", (q) => q.eq("isVisible", true))
+      .collect()
+      .then((items) => items.sort((a, b) => a.order - b.order));
+  },
+});
+
+export const getAllVideos = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("videos")
+      .withIndex("by_order")
+      .order("asc")
+      .collect();
+  },
+});
+
 export const getAllTestimonials = query({
   args: {},
   handler: async (ctx) => {
@@ -130,13 +155,18 @@ export const getDashboardStats = query({
 });
 
 export const getContactInquiries = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db
+  args: { showArchived: v.optional(v.boolean()) },
+  handler: async (ctx, args) => {
+    const showArchived = args.showArchived ?? false;
+    const all = await ctx.db
       .query("contactInquiries")
       .withIndex("by_created")
       .order("desc")
       .collect();
+    return all.filter((item) => {
+      const isArchived = item.archived === true;
+      return showArchived ? isArchived : !isArchived;
+    });
   },
 });
 
@@ -215,9 +245,6 @@ export const getAllLocations = query({
   },
 });
 
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-const RATE_LIMIT_MAX_ATTEMPTS = 5;
-
 export const getRecentActivityLogs = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
@@ -240,5 +267,150 @@ export const checkLoginRateLimit = query({
       )
       .collect();
     return { allowed: recent.length < RATE_LIMIT_MAX_ATTEMPTS };
+  },
+});
+
+// ─── Section Config queries ──────────────────────────────────────────────────
+
+export const getVisibleSections = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("sectionConfigs")
+      .withIndex("by_order")
+      .order("asc")
+      .collect()
+      .then((items) =>
+        items
+          .filter((i) => i.isVisible)
+          .map((i) => ({
+            sectionKey: i.sectionKey,
+            label_en: i.label_en,
+            label_ar: i.label_ar,
+            order: i.order,
+          })),
+      );
+  },
+});
+
+export const getAllSectionConfigs = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("sectionConfigs")
+      .withIndex("by_order")
+      .order("asc")
+      .collect();
+  },
+});
+
+// ─── Theme queries ───────────────────────────────────────────────────────────
+
+export const getTheme = query({
+  args: {},
+  handler: async (ctx) => {
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+    return settings?.theme ?? null;
+  },
+});
+
+// ─── SEO queries ─────────────────────────────────────────────────────────────
+
+export const getSeoSettings = query({
+  args: {},
+  handler: async (ctx) => {
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+    return {
+      seo: settings?.seo ?? null,
+      openGraph: settings?.openGraph ?? null,
+    };
+  },
+});
+
+export const getPageMetadata = query({
+  args: { pageKey: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("pageMetadata")
+      .withIndex("by_pageKey", (q) => q.eq("pageKey", args.pageKey))
+      .first();
+  },
+});
+
+export const getAllPageMetadata = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("pageMetadata").collect();
+  },
+});
+
+export const getResolvedMetadata = query({
+  args: { pageKey: v.string(), locale: v.string() },
+  handler: async (ctx, args) => {
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+
+    const seo = settings?.seo;
+    const og = settings?.openGraph;
+
+    const pageMeta = await ctx.db
+      .query("pageMetadata")
+      .withIndex("by_pageKey", (q) => q.eq("pageKey", args.pageKey))
+      .first();
+
+    const isAr = args.locale === "ar";
+
+    // Resolution chain: page-specific → global SEO → hardcoded defaults
+    const title = (isAr ? pageMeta?.title_ar : pageMeta?.title_en)
+      ?? (isAr ? seo?.defaultTitle_ar : seo?.defaultTitle_en)
+      ?? (isAr ? "الشيف محمد | استشاري مخبوزات فرنسية" : "Chef Mohamed | French Bakery Consultant");
+
+    const description = (isAr ? pageMeta?.description_ar : pageMeta?.description_en)
+      ?? (isAr ? seo?.defaultDescription_ar : seo?.defaultDescription_en)
+      ?? (isAr
+        ? "استشارات مخبوزات فرنسية متخصصة — خبز العجين المخمر، الكرواسون، وتطوير القوائم بخبرة عشر سنوات"
+        : "French bakery consulting — sourdough, croissants, menu development, and team training by Chef Mohamed");
+
+    // Apply title template if page-specific title exists
+    let resolvedTitle = title;
+    const hasPageTitle = isAr ? pageMeta?.title_ar : pageMeta?.title_en;
+    if (hasPageTitle && seo?.titleTemplate) {
+      resolvedTitle = seo.titleTemplate.replace("%s", title);
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chefmohamed.com";
+
+    return {
+      title: resolvedTitle,
+      description,
+      openGraph: {
+        title: resolvedTitle,
+        description,
+        siteName: isAr ? (og?.siteName_ar ?? "الشيف محمد") : (og?.siteName_en ?? "Chef Mohamed"),
+        locale: og?.locale ?? (isAr ? "ar_EG" : "en_US"),
+        imageStorageId: pageMeta?.ogImageStorageId ?? og?.defaultImageStorageId,
+        type: "website" as const,
+        url: pageMeta?.canonicalUrl ?? `${baseUrl}/${args.locale}`,
+      },
+      twitter: {
+        handle: og?.twitterHandle ?? null,
+        card: "summary_large_image" as const,
+      },
+      canonical: pageMeta?.canonicalUrl ?? `${baseUrl}/${args.locale}`,
+      noIndex: pageMeta?.noIndex ?? seo?.noIndex ?? false,
+      googleAnalyticsId: seo?.googleAnalyticsId ?? null,
+      googleSiteVerification: seo?.googleSiteVerification ?? null,
+      facebookPixelId: seo?.facebookPixelId ?? null,
+      businessName: isAr ? seo?.businessName_ar : seo?.businessName_en,
+      sameAs: seo?.sameAs ?? [],
+    };
   },
 });

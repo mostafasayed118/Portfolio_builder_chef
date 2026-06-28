@@ -82,7 +82,7 @@
   --accent-hover: oklch(66% 0.120 60);
   --accent-glow: oklch(62% 0.110 60 / 0.2);
   --text-primary: oklch(22% 0.020 45);
-  --text-secondary: oklch(48% 0.018 45);
+  --text-secondary: oklch(35% 0.018 45);
   --text-muted: oklch(62% 0.015 45);
   --input-bg: oklch(93% 0.008 55);
   --success: oklch(55% 0.110 145);
@@ -217,6 +217,18 @@
     background-color: var(--background);
     color: var(--text-primary);
     @apply font-body;
+  }
+  html[dir="rtl"] {
+    @apply font-arabic;
+  }
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4,
+  [dir="rtl"] h5,
+  [dir="rtl"] h6 {
+    font-family: var(--font-cairo), sans-serif;
+    font-weight: 700;
   }
   body {
     @apply bg-background text-foreground;

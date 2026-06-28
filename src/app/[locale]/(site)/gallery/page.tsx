@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getTranslations } from "next-intl/server";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GallerySection } from "@/components/sections/GallerySection";
+import { resolvePageMetadata } from "@/lib/metadata";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -10,11 +10,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale: locale as "en" | "ar", namespace: "metadata.gallery" });
-  return {
-    title: t("title"),
-    description: t("description"),
-  };
+  return await resolvePageMetadata(locale, "gallery");
 }
 
 export default function GalleryPage() {
@@ -37,7 +33,7 @@ export default function GalleryPage() {
           </div>
         </section>
       }>
-        <GallerySection />
+        <GallerySection eagerFirst />
       </Suspense>
     </div>
   );

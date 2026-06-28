@@ -1,5 +1,3 @@
-type LogLevel = "debug" | "info" | "warn" | "error";
-
 function formatTimestamp(): string {
   return new Date().toISOString();
 }

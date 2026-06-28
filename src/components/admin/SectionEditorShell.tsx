@@ -3,8 +3,9 @@
 import { useCallback, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useDirection } from "@/hooks/useDirection";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, ArrowLeft } from "lucide-react";
+import { ExternalLink, ArrowLeft, ArrowRight } from "lucide-react";
 
 type Props = {
   title: string;
@@ -29,11 +30,13 @@ export function SectionEditorShell({
 }: Props) {
   const router = useRouter();
   const t = useTranslations("admin.shell");
+  const { isRTL } = useDirection();
 
   useEffect(() => {
     if (!hasUnsaved) return;
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
+      e.returnValue = "";
     };
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
@@ -59,7 +62,11 @@ export function SectionEditorShell({
             onClick={handleCancel}
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors w-fit mb-1"
           >
-            <ArrowLeft className="h-4 w-4" />
+            {isRTL ? (
+              <ArrowRight className="h-4 w-4" />
+            ) : (
+              <ArrowLeft className="h-4 w-4" />
+            )}
             {breadcrumb}
           </button>
         )}

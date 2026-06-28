@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -40,13 +39,14 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { Id } from "@convex/_generated/dataModel";
+import type { Id, Doc } from "@convex/_generated/dataModel";
 
 export default function AdminLocationsPage() {
   const t = useTranslations("admin.locations");
   const tLabels = useTranslations("admin.locations.labels");
   const tPlaceholders = useTranslations("admin.locations.placeholders");
   const tRegions = useTranslations("admin.locations.regions");
+  const tNav = useTranslations("admin.nav");
   const locations = useQuery(api.queries.getAllLocations);
   const createLocation = useMutation(api.mutations.createLocation);
   const updateLocation = useMutation(api.mutations.updateLocation);
@@ -74,7 +74,7 @@ export default function AdminLocationsPage() {
     setIsVisible(true); setEditingId(null);
   }
 
-  function openEdit(item: any) {
+  function openEdit(item: Doc<"locations">) {
     setNameEn(item.name_en); setNameAr(item.name_ar); setRegion(item.region);
     setNeighborhoods(item.neighborhoods.join(", "));
     setNeighborhoodsAr(item.neighborhoods_ar.join(", "));
@@ -92,7 +92,7 @@ export default function AdminLocationsPage() {
         region: region as "cairo" | "international",
         neighborhoods: hoodEn, neighborhoods_ar: hoodAr,
         markerIcon: markerIcon || "📍", isVisible,
-        order: editingId ? 0 : (locations?.length ?? 0),
+        order: editingId ? (locations?.find(l => l._id === editingId)?.order ?? 0) : (locations?.length ?? 0),
       };
       if (editingId) {
         await updateLocation({ id: editingId as Id<"locations">, ...data });
@@ -123,7 +123,7 @@ export default function AdminLocationsPage() {
   }
 
   return (
-    <SectionEditorShell title="Service Areas" breadcrumb="Dashboard" onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/contact">
+    <SectionEditorShell title={tNav("locations")} breadcrumb={tNav("dashboard")} onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/contact">
       <div className="flex justify-end mb-4">
         <Button className="bg-accent hover:bg-accent-hover text-background" onClick={() => { resetForm(); setDialogOpen(true); }}>
           <Plus className="h-4 w-4 me-2" /> {t("addLocation")}
@@ -147,7 +147,7 @@ export default function AdminLocationsPage() {
             <div className="space-y-3">
               {locations.map((item) => (
                 <SortableItem key={item._id} id={item._id}
-                  className="flex items-center gap-3 rounded-lg border border-border/50 bg-surface p-4 transition-colors hover:bg-surface-elevated">
+                  className="flex items-center gap-3 overflow-hidden rounded-lg border border-border/50 bg-surface p-4 transition-colors hover:bg-surface-elevated">
                   <span className="text-2xl shrink-0">{item.markerIcon}</span>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm text-foreground truncate">{item.name_en}</p>
@@ -161,8 +161,8 @@ export default function AdminLocationsPage() {
                     catch { toast.error(t("updateFailed")); }
                   }} />
                   <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(item)} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(item)} aria-label={t("editTitle")} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} aria-label={t("deleteTitle")} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </SortableItem>
               ))}

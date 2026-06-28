@@ -7,6 +7,9 @@ import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
+  LayoutGrid,
+  Palette,
+  Search,
   BookOpen,
   User,
   Utensils,
@@ -18,17 +21,22 @@ import {
   MapPin,
   Inbox,
   LogOut,
+  Video,
 } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 
 const sidebarLinks = [
   { href: "/admin/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+  { href: "/admin/sections", labelKey: "sections", icon: LayoutGrid },
+  { href: "/admin/theme", labelKey: "theme", icon: Palette },
+  { href: "/admin/seo", labelKey: "seo", icon: Search },
   { href: "/admin/hero", labelKey: "hero", icon: BookOpen },
   { href: "/admin/about", labelKey: "about", icon: User },
   { href: "/admin/projects", labelKey: "projects", icon: Briefcase },
   { href: "/admin/menu", labelKey: "menu", icon: Utensils },
   { href: "/admin/testimonials", labelKey: "testimonials", icon: MessageSquare },
   { href: "/admin/services", labelKey: "services", icon: Cog },
+  { href: "/admin/videos", labelKey: "videos", icon: Video },
   { href: "/admin/gallery", labelKey: "gallery", icon: Image },
   { href: "/admin/locations", labelKey: "locations", icon: MapPin },
   { href: "/admin/contact", labelKey: "contact", icon: Mail },

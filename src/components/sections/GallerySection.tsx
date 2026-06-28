@@ -13,7 +13,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { getBilingualField } from "@/lib/bilingual";
 
-export function GallerySection() {
+export function GallerySection({ eagerFirst = false }: { eagerFirst?: boolean } = {}) {
   const gallery = useQuery(api.queries.getGallery);
   const t = useTranslations("gallery");
   const { locale } = useDirection();
@@ -89,7 +89,7 @@ export function GallerySection() {
                     height={600}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     className="w-full h-auto rounded-xl transition-transform duration-700 ease-out group-hover:scale-105"
-                    loading="lazy"
+                    loading={eagerFirst && i === 0 ? "eager" : "lazy"}
                   />
                   {/* Premium hover overlay */}
                   <motion.div
@@ -99,7 +99,7 @@ export function GallerySection() {
                     className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/20 to-transparent flex flex-col items-center justify-end p-5 rounded-xl"
                   >
                     {/* Zoom icon */}
-                    <div className="absolute top-4 right-4 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute top-4 end-4 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <ZoomIn className="h-4 w-4 text-foreground" />
                     </div>
                     <p className="text-sm text-foreground font-medium line-clamp-2 text-center max-w-[90%]">

@@ -41,7 +41,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { Id } from "@convex/_generated/dataModel";
+import type { Id, Doc } from "@convex/_generated/dataModel";
 
 const CATEGORIES = ["all", "early", "specialization", "leadership", "founder", "international"] as const;
 
@@ -50,6 +50,7 @@ export default function AdminProjectsPage() {
   const tLabels = useTranslations("admin.projects.labels");
   const tPlaceholders = useTranslations("admin.projects.placeholders");
   const tFilters = useTranslations("admin.projects.filters");
+  const tNav = useTranslations("admin.nav");
   const projects = useQuery(api.queries.getAllProjects);
   const createProject = useMutation(api.mutations.createProject);
   const updateProject = useMutation(api.mutations.updateProject);
@@ -69,9 +70,9 @@ export default function AdminProjectsPage() {
   const [locationAr, setLocationAr] = useState("");
   const [descEn, setDescEn] = useState("");
   const [descAr, setDescAr] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageStorageId, setImageStorageId] = useState<string | null>(null);
-  const [category, setCategory] = useState<string>("bakery");
+  const [imageUrl, setImageUrl] = useState<Id<"_storage"> | null>(null);
+  const [imageUrlDisplay, setImageUrlDisplay] = useState<string | null>(null);
+  const [category, setCategory] = useState<string>("early");
   const [isVisible, setIsVisible] = useState(true);
   const [isHighlight, setIsHighlight] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -89,17 +90,18 @@ export default function AdminProjectsPage() {
   function resetForm() {
     setRoleEn(""); setRoleAr(""); setWorkplaceEn(""); setWorkplaceAr("");
     setLocationEn(""); setLocationAr(""); setDescEn(""); setDescAr("");
-    setImageUrl(null); setImageStorageId(null);
+    setImageUrl(null); setImageUrlDisplay(null);
     setCategory("early"); setIsVisible(true); setIsHighlight(false);
     setEditingId(null);
   }
 
-  function openEdit(item: any) {
+  function openEdit(item: Doc<"projects">) {
     setRoleEn(item.role_en); setRoleAr(item.role_ar);
     setWorkplaceEn(item.workplace_en); setWorkplaceAr(item.workplace_ar);
     setLocationEn(item.location_en); setLocationAr(item.location_ar);
     setDescEn(item.description_en ?? ""); setDescAr(item.description_ar ?? "");
-    setImageUrl(item.imageUrl ?? null); setImageStorageId(item.imageUrl ?? null);
+    setImageUrl(item.imageUrl as Id<"_storage"> | null);
+    setImageUrlDisplay(item.imageUrl ? `/api/storage/${item.imageUrl}` : null);
     setCategory(item.category); setIsVisible(item.isVisible);
     setIsHighlight(item.isHighlight ?? false); setEditingId(item._id);
     setDialogOpen(true);
@@ -113,8 +115,8 @@ export default function AdminProjectsPage() {
         workplace_en: workplaceEn, workplace_ar: workplaceAr || "",
         location_en: locationEn, location_ar: locationAr || "",
         description_en: descEn || undefined, description_ar: descAr || undefined,
-        category: category as any, isVisible, isHighlight,
-        imageUrl, order: editingId ? 0 : (projects?.length ?? 0),
+        category: category as "early" | "specialization" | "leadership" | "founder" | "international", isVisible, isHighlight,
+        imageUrl, order: editingId ? (projects?.find(p => p._id === editingId)?.order ?? 0) : (projects?.length ?? 0),
       };
       if (editingId) {
         await updateProject({ id: editingId as Id<"projects">, ...data });
@@ -160,7 +162,7 @@ export default function AdminProjectsPage() {
   const filtered = optimisticProjects ? categoryFilter === "all" ? optimisticProjects : optimisticProjects.filter((p) => p.category === categoryFilter) : [];
 
   return (
-    <SectionEditorShell title="My Work Experience" breadcrumb="Dashboard" onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/about">
+    <SectionEditorShell title={tNav("projects")} breadcrumb={tNav("dashboard")} onSave={() => {}} isSaving={false} hasUnsaved={false} viewSiteHref="/about">
       <div className="flex justify-end mb-4">
         <Button className="bg-accent hover:bg-accent-hover text-background" onClick={() => { resetForm(); setDialogOpen(true); }}>
           <Plus className="h-4 w-4 me-2" /> {t("addExperience")}
@@ -195,7 +197,7 @@ export default function AdminProjectsPage() {
             <div className="space-y-3">
               {filtered.map((item) => (
                 <SortableItem key={item._id} id={item._id}
-                  className="flex items-center gap-3 rounded-lg border border-border/50 bg-surface p-4 transition-colors hover:bg-surface-elevated">
+                  className="flex items-center gap-3 overflow-hidden rounded-lg border border-border/50 bg-surface p-4 transition-colors hover:bg-surface-elevated">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="font-medium text-sm text-foreground truncate">{item.role_en}</p>
@@ -206,8 +208,8 @@ export default function AdminProjectsPage() {
                   <Badge variant="outline" className="border-accent/20 text-accent/80 text-xs shrink-0">{tFilters(item.category)}</Badge>
                   <Switch checked={item.isVisible} onCheckedChange={() => handleToggle(item._id as Id<"projects">)} />
                   <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(item)} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(item)} aria-label={t("editTitle")} className="h-8 w-8"><Pencil className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(item._id)} aria-label={t("deleteTitle")} className="h-8 w-8 text-error hover:text-error"><Trash2 className="h-4 w-4" /></Button>
                   </div>
                 </SortableItem>
               ))}
@@ -264,9 +266,9 @@ export default function AdminProjectsPage() {
             <div className="space-y-2">
               <Label className="text-foreground">Photo</Label>
               <ImageUploadField
-                currentUrl={imageUrl}
-                onUpload={({ url }) => setImageUrl(url)}
-                onRemove={() => setImageUrl(null)}
+                currentUrl={imageUrlDisplay}
+                onUpload={({ storageId, url }) => { setImageUrl(storageId as Id<"_storage">); setImageUrlDisplay(url); }}
+                onRemove={() => { setImageUrl(null); setImageUrlDisplay(null); }}
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">

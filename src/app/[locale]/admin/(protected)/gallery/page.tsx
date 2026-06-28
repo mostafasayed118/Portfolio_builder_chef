@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@convex/_generated/api";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,8 +11,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import { SectionEditorShell } from "@/components/admin/SectionEditorShell";
 import { SortableItem } from "@/components/admin/SortableItem";
+import { UploadProgress, type UploadStatus } from "@/components/admin/UploadProgress";
 import { toast } from "sonner";
 import { Plus, Trash2, ImageIcon } from "lucide-react";
+import Image from "next/image";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { Id } from "@convex/_generated/dataModel";
@@ -21,10 +22,45 @@ import type { Id } from "@convex/_generated/dataModel";
 const MAX_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 
+function parseStorageId(raw: string): Id<"_storage"> {
+  try {
+    const parsed = JSON.parse(raw) as { storageId?: string };
+    return (parsed.storageId ?? raw) as Id<"_storage">;
+  } catch {
+    return raw.trim() as Id<"_storage">;
+  }
+}
+
+function uploadToConvex(
+  uploadUrl: string,
+  file: File,
+  onProgress?: (loaded: number, total: number) => void,
+): Promise<Id<"_storage">> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) onProgress(e.loaded, e.total);
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(parseStorageId(xhr.responseText));
+      } else {
+        reject(new Error(`Upload failed with status ${xhr.status}`));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Network error during upload"));
+    xhr.ontimeout = () => reject(new Error("Upload timed out"));
+    xhr.open("POST", uploadUrl);
+    xhr.setRequestHeader("Content-Type", file.type);
+    xhr.send(file);
+  });
+}
+
 export default function AdminGalleryPage() {
   const t = useTranslations("admin.gallery");
   const tLabels = useTranslations("admin.gallery.labels");
   const tPlaceholders = useTranslations("admin.gallery.placeholders");
+  const tNav = useTranslations("admin.nav");
   const gallery = useQuery(api.queries.getGallery);
   const saveImage = useMutation(api.files.saveGalleryImageFromStorage);
   const deleteImage = useMutation(api.mutations.deleteGalleryImage);
@@ -36,6 +72,9 @@ export default function AdminGalleryPage() {
   const [captionEn, setCaptionEn] = useState("");
   const [captionAr, setCaptionAr] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>("uploading");
+  const [uploadFileName, setUploadFileName] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
@@ -50,30 +89,31 @@ export default function AdminGalleryPage() {
     });
     if (valid.length === 0) return;
     setUploading(true);
+    setUploadStatus("uploading");
     try {
-      for (const file of valid) {
+      for (let i = 0; i < valid.length; i++) {
+        const file = valid[i];
+        setUploadFileName(file.name);
+        setUploadProgress(0);
+        setUploadStatus("uploading");
         const uploadUrl = await generateUploadUrl({});
-        const xhr = new XMLHttpRequest();
-        await new Promise<void>((resolve, reject) => {
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              const storageId = xhr.responseText.trim();
-              saveImage({ storageId: storageId as Id<"_storage">, caption_en: captionEn || file.name, caption_ar: captionAr || file.name, order: (gallery?.length ?? 0) })
-                .then(() => resolve())
-                .catch((err) => reject(err));
-            } else { reject(new Error(`Upload failed with status ${xhr.status}`)); }
-          };
-          xhr.onerror = () => reject(new Error("Network error during upload"));
-          xhr.ontimeout = () => reject(new Error("Upload timed out"));
-          xhr.open("PUT", uploadUrl);
-          xhr.setRequestHeader("Content-Type", file.type);
-          xhr.send(file);
+        const storageId = await uploadToConvex(uploadUrl, file, (loaded, total) => {
+          setUploadProgress(Math.round((loaded / total) * 100));
         });
+        setUploadStatus("processing");
+        await saveImage({ storageId, caption_en: captionEn || file.name, caption_ar: captionAr || file.name, order: (gallery?.length ?? 0) + i });
       }
+      setUploadStatus("done");
+      setUploadProgress(100);
       toast.success(`${valid.length} ${t("uploadSuccess")}`);
       setDialogOpen(false); setCaptionEn(""); setCaptionAr("");
-    } catch (err) { console.error("Gallery upload error:", err); toast.error(t("uploadFailed")); }
-    finally { setUploading(false); if (inputRef.current) inputRef.current.value = ""; }
+    } catch (err) { console.error("Gallery upload error:", err); setUploadStatus("error"); toast.error(t("uploadFailed")); }
+    finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+      // Reset progress UI after a short delay so the user sees the final state
+      setTimeout(() => { setUploadProgress(0); setUploadStatus("uploading"); setUploadFileName(""); }, 1500);
+    }
   }
 
   async function handleDelete(id: string) {
@@ -107,7 +147,7 @@ export default function AdminGalleryPage() {
   }
 
   return (
-    <SectionEditorShell title="Gallery" breadcrumb="Dashboard" onSave={() => {}} isSaving={false} hasUnsaved={false}>
+    <SectionEditorShell title={tNav("gallery")} breadcrumb={tNav("dashboard")} onSave={() => {}} isSaving={false} hasUnsaved={false}>
       <div className="flex justify-end mb-4">
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) { setCaptionEn(""); setCaptionAr(""); } }}>
           <Button className="bg-accent hover:bg-accent-hover text-background" onClick={() => setDialogOpen(true)}>
@@ -120,10 +160,16 @@ export default function AdminGalleryPage() {
                 <Input value={captionEn} onChange={(e) => setCaptionEn(e.target.value)} placeholder={tPlaceholders("captionEn")} className="bg-surface-elevated border-border/50" /></div>
               <div className="space-y-2"><Label className="text-foreground">{tLabels("captionAr")}</Label>
                 <Input value={captionAr} onChange={(e) => setCaptionAr(e.target.value)} placeholder={tPlaceholders("captionAr")} dir="rtl" className="bg-surface-elevated border-border/50 text-right" /></div>
-              <input ref={inputRef} type="file" accept="image/*" multiple onChange={handleFiles} className="hidden" id="gallery-upload" />
-              <label htmlFor="gallery-upload" className="flex items-center justify-center gap-2 w-full h-20 px-4 rounded-lg border-2 border-dashed border-border/50 hover:border-accent/50 bg-transparent text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
-                {uploading ? <span>{t("uploading")}</span> : <><ImageIcon className="h-5 w-5" /><span>{t("clickToChoose")}</span></>}
-              </label>
+              <input ref={inputRef} type="file" accept="image/*" multiple onChange={handleFiles} className="hidden" id="gallery-upload" disabled={uploading} />
+              {uploading ? (
+                <div className="rounded-lg border border-border/50 bg-surface-elevated/50 p-4">
+                  <UploadProgress progress={uploadProgress} status={uploadStatus} fileName={uploadFileName} />
+                </div>
+              ) : (
+                <label htmlFor="gallery-upload" className="flex items-center justify-center gap-2 w-full h-20 px-4 rounded-lg border-2 border-dashed border-border/50 hover:border-accent/50 bg-transparent text-sm text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
+                  <ImageIcon className="h-5 w-5" /><span>{t("clickToChoose")}</span>
+                </label>
+              )}
             </div>
           </DialogContent>
         </Dialog>
@@ -147,16 +193,16 @@ export default function AdminGalleryPage() {
                 <SortableItem key={item._id} id={item._id}
                   className="group relative aspect-square rounded-xl overflow-hidden bg-surface border border-border/50"
                 >
-                  <div className="w-full h-full">
+                  <div className="relative w-full h-full">
                     {item.url ? (
-                      <img src={item.url} alt={item.caption_en} className="w-full h-full object-cover" />
+                      <Image src={item.url} alt={item.caption_en} fill sizes="(max-width: 768px) 50vw, 25vw" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-surface-elevated text-muted-foreground text-sm">{t("processing")}</div>
                     )}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background/80 to-transparent p-3">
                       <p className="text-xs text-foreground truncate">{item.caption_en}</p>
                     </div>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(item._id)}
+                    <Button variant="destructive" size="icon" onClick={() => handleDelete(item._id)} aria-label={t("deletePhoto")}
                       className="absolute top-2 end-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Trash2 className="h-4 w-4" />
                     </Button>
