@@ -42,12 +42,15 @@
     "bookNow": "Book a Tasting"
   },
   "hero": {
-    "heading": "Baked with Love,\nShared with Joy",
-    "subheading": "Discover our handcrafted artisan breads and pastries made with the finest ingredients",
-    "ctaPrimary": "View Our Menu",
+    "heading": "Slow Bread, French Pastry,\nTen Years at the Bench",
+    "subheading": "Sourdough, croissants, and a blend of tradition with modern technique — by Chef Mohamed.",
+    "ctaPrimary": "Book a Free Consultation",
     "ctaSecondary": "Book a Tasting",
     "imagePlaceholder": "Hero image",
     "emptyState": "Add your photo in Admin → Homepage Welcome"
+  },
+  "trustedBy": {
+    "heading": "Trusted By"
   },
   "about": {
     "heading": "Hi, I'm Chef Mohamed",
@@ -57,15 +60,16 @@
     "emptyState": "Add your portrait in Admin → About Me"
   },
   "menu": {
-    "heading": "Our Menu",
-    "subheading": "Freshly baked every morning",
+    "heading": "Signature Creations",
+    "subheading": "A curated showcase of Chef Mohamed's craft — artisanal breads, French pastries, and bespoke bakery concepts.",
     "orderBtn": "Order Now",
     "customOrderHeading": "Custom Orders",
     "customOrderDesc": "Have something special in mind? We create bespoke pastries and cakes for every occasion.",
     "customOrderBtn": "Request a Custom Order",
-    "emptyState": "No items available",
+    "emptyState": "Craft showcase coming soon",
     "photoPlaceholder": "Photo",
     "priceOnRequest": "On request",
+    "customPricing": "Custom Pricing",
     "categories": {
       "all": "All",
       "breads": "Breads",
@@ -122,7 +126,179 @@
         "training": "Training & Workshops",
         "partnerships": "Partnership",
         "other": "Other"
+      },
+      "quickMessageTab": "Quick Message"
+    }
+  },
+  "booking": {
+    "tabLabel": "Book a Consultation",
+    "progress": {
+      "label": "Step {step} of {total}",
+      "stepOf": "Step {step} of {total}"
+    },
+    "steps": {
+      "1": {
+        "title": "Your Business",
+        "subtitle": "Tell us about your bakery or food business"
+      },
+      "2": {
+        "title": "Your Challenge",
+        "subtitle": "What do you need help with?"
+      },
+      "3": {
+        "title": "Contact & Preference",
+        "subtitle": "How can Chef Mohamed reach you?"
       }
+    },
+    "fields": {
+      "businessType": {
+        "label": "Business Type",
+        "placeholder": "What type of business?"
+      },
+      "teamSize": {
+        "label": "Team Size",
+        "placeholder": "How many people on your team?"
+      },
+      "governorate": {
+        "label": "Governorate",
+        "placeholder": "Where is your business located?"
+      },
+      "challengeType": {
+        "label": "Main Challenge",
+        "placeholder": "What's your biggest challenge?"
+      },
+      "budgetRange": {
+        "label": "Budget Range (EGP)",
+        "placeholder": "Estimated consulting budget"
+      },
+      "description": {
+        "label": "Describe Your Situation",
+        "placeholder": "Tell Chef Mohamed about your bakery, goals, and timeline..."
+      },
+      "name": {
+        "label": "Full Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "Phone (optional)",
+        "placeholder": "+20 ..."
+      },
+      "requestType": {
+        "label": "What do you need?",
+        "placeholder": "Select a topic"
+      },
+      "preferredMode": {
+        "label": "Preferred Meeting Mode",
+        "placeholder": "How would you like to meet?"
+      },
+      "preferredSlot": {
+        "label": "Preferred Time",
+        "placeholder": "When works best for you?"
+      }
+    },
+    "options": {
+      "businessType": {
+        "bakery": "Bakery",
+        "cafe": "Cafe",
+        "hotel": "Hotel",
+        "restaurant": "Restaurant",
+        "other": "Other"
+      },
+      "teamSize": {
+        "1-5": "1–5 people",
+        "6-20": "6–20 people",
+        "20+": "20+ people"
+      },
+      "governorate": {
+        "cairo": "Cairo",
+        "giza": "Giza",
+        "alexandria": "Alexandria",
+        "qalyubia": "Qalyubia",
+        "sharqia": "Sharqia",
+        "dakahlia": "Dakahlia",
+        "gharbia": "Gharbia",
+        "monufia": "Monufia",
+        "beheira": "Beheira",
+        "fayoum": "Fayoum",
+        "beniSuef": "Beni Suef",
+        "minya": "Minya",
+        "assiut": "Assiut",
+        "sohag": "Sohag",
+        "qena": "Qena",
+        "luxor": "Luxor",
+        "aswan": "Aswan",
+        "redSea": "Red Sea",
+        "northSinai": "North Sinai",
+        "southSinai": "South Sinai",
+        "portSaid": "Port Said",
+        "suez": "Suez",
+        "ismailia": "Ismailia",
+        "damietta": "Damietta",
+        "matrouh": "Matrouh",
+        "newValley": "New Valley",
+        "other": "Other"
+      },
+      "challengeType": {
+        "newOpening": "New Opening",
+        "menuOverhaul": "Menu Overhaul",
+        "qa": "Quality Assurance",
+        "training": "Team Training",
+        "costReduction": "Cost Reduction",
+        "other": "Other"
+      },
+      "budgetRange": {
+        "under50k": "Under 50,000 EGP",
+        "50k-200k": "50,000 – 200,000 EGP",
+        "200k+": "200,000+ EGP",
+        "notSure": "Not sure yet"
+      },
+      "preferredMode": {
+        "video": "Video Call",
+        "inPerson": "In-Person",
+        "whatsapp": "WhatsApp"
+      },
+      "preferredSlot": {
+        "morning": "Morning (9 AM – 12 PM)",
+        "afternoon": "Afternoon (12 PM – 5 PM)",
+        "evening": "Evening (5 PM – 9 PM)",
+        "flexible": "Flexible"
+      }
+    },
+    "navigation": {
+      "back": "Back",
+      "next": "Next",
+      "submit": "Send Consultation Request",
+      "sendViaWhatsApp": "Send via WhatsApp"
+    },
+    "whatsappToggle": {
+      "label": "Send via WhatsApp instead",
+      "description": "Skip the form and send your details directly via WhatsApp"
+    },
+    "whatsappPrefill": {
+      "title": "Consultation Request",
+      "businessType": "Business",
+      "teamSize": "Team Size",
+      "governorate": "Location",
+      "challenge": "Challenge",
+      "budget": "Budget",
+      "name": "Name",
+      "phone": "Phone"
+    },
+    "success": {
+      "title": "Request Sent!",
+      "description": "Chef Mohamed will review your request and get back to you within 24 hours.",
+      "whatsappFallback": "Or reach out via WhatsApp for faster response",
+      "sendAnother": "Send Another Request"
+    },
+    "errors": {
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email address",
+      "submitFailed": "Failed to send request. Please try again.",
+      "rateLimited": "Please wait a few minutes before submitting again."
     }
   },
   "cta": {
@@ -134,6 +310,15 @@
   "footer": {
     "rights": "All rights reserved.",
     "navigation": "Navigation"
+  },
+  "whatsapp": {
+    "ariaLabel": "Chat on WhatsApp",
+    "templates": {
+      "default": "Hi Chef Mohamed, I'd like to discuss working together.",
+      "services": "I'd like to consult on your services.",
+      "caseStudies": "I'm interested in similar results for my bakery.",
+      "contact": "Hi Chef Mohamed, I'd like to get in touch."
+    }
   },
   "errors": {
     "pageTitle": "Something went wrong",
@@ -182,6 +367,19 @@
       "logoutBtn": "Logout",
       "lastUpdated": "Last updated",
       "createdAt": "Created at",
+      "readiness": {
+        "title": "Content Readiness",
+        "items": {
+          "heroImage": "Hero image uploaded",
+          "aboutImage": "About section photo",
+          "galleryImages": "Gallery photos added",
+          "email": "Contact email configured",
+          "instagram": "Instagram profile linked",
+          "testimonials": "Visible testimonials",
+          "menuItems": "Signature creations listed",
+          "caseStudies": "Case studies / projects"
+        }
+      },
       "cards": {
         "hero": { "label": "Homepage Welcome", "desc": "Change the big welcome message visitors see first" },
         "about": { "label": "About Me", "desc": "Update your story, photo, and specialties" },
@@ -747,7 +945,40 @@
       "unarchiveSuccess": "{count} messages unarchived",
       "emptyArchived": "No archived messages",
       "emptyArchivedDesc": "Archived messages will appear here.",
-      "deleteCancel": "Cancel"
+      "deleteCancel": "Cancel",
+      "status": {
+        "label": "Status",
+        "all": "All",
+        "new": "New",
+        "contacted": "Contacted",
+        "quoted": "Quoted",
+        "won": "Won",
+        "lost": "Lost"
+      },
+      "statusUpdated": "Status updated",
+      "notes": "Notes",
+      "notesEmpty": "Click to add notes...",
+      "notesPlaceholder": "Add internal notes...",
+      "notesSave": "Save",
+      "notesCancel": "Cancel",
+      "notesSaved": "Notes saved",
+      "exportCsv": "Export CSV",
+      "exportSuccess": "{count} inquiries exported",
+      "exportFailed": "Export failed",
+      "exportEmpty": "No inquiries to export",
+      "staleAlert": "Unresponded 48h+",
+      "staleCount": "{count} stale",
+      "respondedIn": "Responded {hours}h",
+      "whatsappReply": "Reply via WhatsApp",
+      "whatsappReplyTemplate": "Hi {name}, Chef Mohamed here — I received your inquiry and would like to follow up.",
+      "sourcePage": "Source Page",
+      "businessType": "Business Type",
+      "teamSize": "Team Size",
+      "governorate": "Governorate",
+      "challengeType": "Challenge Type",
+      "budgetRange": "Budget Range",
+      "preferredMode": "Preferred Mode",
+      "preferredSlot": "Preferred Slot"
     }
   },
   "gallery": {

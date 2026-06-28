@@ -62,9 +62,9 @@ export function ServiceFormDialog({ open, onOpenChange, editingId, editingItem, 
   const [isVisible, setIsVisible] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (editingItem) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- form initialization from prop data when dialog opens
       setCategory(editingItem.category);
       setNameEn(editingItem.name_en);
       setNameAr(editingItem.name_ar);

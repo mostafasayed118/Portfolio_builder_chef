@@ -243,6 +243,7 @@ export default function AdminThemePage() {
 
   useEffect(() => {
     if (stored !== undefined && state === null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time initialization from server data
       setState(buildInitialTheme(stored));
     }
   }, [stored, state]);

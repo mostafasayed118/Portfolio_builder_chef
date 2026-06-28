@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion, useReducedMotion } from "motion/react";
-import { ShoppingBag, Eye } from "lucide-react";
+import { ShoppingBag, Eye, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { getBilingualField } from "@/lib/bilingual";
 import type { Id } from "@convex/_generated/dataModel";
@@ -39,6 +39,7 @@ function MenuItemCard({
     category: string;
     imageUrl: string | null;
     isAvailable: boolean;
+    isShowcase?: boolean | null | undefined;
   };
   index: number;
 }) {
@@ -47,7 +48,13 @@ function MenuItemCard({
   const shouldReduce = useReducedMotion();
   const name = getBilingualField(locale, item.name_ar, item.name_en);
   const description = getBilingualField(locale, item.description_ar, item.description_en);
-  const priceLabel = item.price === null ? t("priceOnRequest") : formatPrice(item.price, locale);
+
+  const isShowcase = item.isShowcase && !item.isAvailable;
+  const priceLabel = isShowcase
+    ? t("customPricing")
+    : item.price === null
+      ? t("priceOnRequest")
+      : formatPrice(item.price, locale);
 
   return (
     <motion.div
@@ -68,12 +75,11 @@ function MenuItemCard({
                 loading="lazy"
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
               />
-              {/* Hover overlay with quick action */}
               <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
                 <div className="flex gap-2">
                   <Button
                     size="sm"
-                    className="bg-accent/90 hover:bg-accent text-background backdrop-blur-sm cursor-pointer h-8 px-3 text-xs"
+                    className="bg-accent/90 hover:bg-accent text-backdrop backdrop-blur-sm cursor-pointer h-8 px-3 text-xs"
                   >
                     <Eye className="h-3.5 w-3.5 me-1.5" />
                     {t("orderBtn")}
@@ -84,8 +90,19 @@ function MenuItemCard({
           ) : (
             <span className="text-muted-foreground/40 font-heading text-sm">{t("photoPlaceholder")}</span>
           )}
-          {/* Availability indicator */}
-          {!item.isAvailable && (
+
+          {/* Showcase badge — visible when isShowcase and unavailable */}
+          {isShowcase && (
+            <div className="absolute top-3 start-3">
+              <Badge className="bg-accent/90 text-backdrop text-xs gap-1">
+                <Sparkles className="h-3 w-3" />
+                {t("customPricing")}
+              </Badge>
+            </div>
+          )}
+
+          {/* Sold Out overlay — only for unavailable non-showcase items */}
+          {!item.isAvailable && !isShowcase && (
             <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px] flex items-center justify-center">
               <Badge variant="secondary" className="bg-surface-elevated/90 text-muted-foreground text-xs">
                 Sold Out
@@ -98,7 +115,7 @@ function MenuItemCard({
             <h3 className="font-heading font-semibold text-foreground group-hover:text-accent transition-colors duration-200">
               {name}
             </h3>
-            <span className="text-accent font-bold whitespace-nowrap text-sm tabular-nums">
+            <span className={`whitespace-nowrap text-sm tabular-nums ${isShowcase ? "text-accent font-medium" : "text-accent font-bold"}`}>
               {priceLabel}
             </span>
           </div>
@@ -138,7 +155,6 @@ export function MenuSection() {
 
   return (
     <section className="py-24 relative" id="menu">
-      {/* Subtle section background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_oklch(68%_0.095_62_/_0.03),_transparent_70%)]" aria-hidden="true" />
 
       <div className="container mx-auto px-4 relative z-10">
@@ -155,7 +171,6 @@ export function MenuSection() {
           <p className="text-muted-foreground max-w-lg mx-auto">{t("subheading")}</p>
         </motion.div>
 
-        {/* Premium category pills */}
         <motion.div
           initial={shouldReduce ? {} : { opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}

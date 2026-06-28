@@ -133,6 +133,7 @@ export function ImageUploadField({ currentUrl, onUpload, onRemove }: Props) {
     <div className="space-y-3">
       {currentUrl && (
         <div className="relative aspect-video rounded-lg overflow-hidden border border-border/50 bg-surface-elevated">
+          {/* eslint-disable-next-line @next/next/no-img-element -- dynamic Convex storage URL, admin preview only */}
           <img
             src={currentUrl}
             alt={t("currentAlt")}

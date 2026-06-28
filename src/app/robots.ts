@@ -3,7 +3,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chefmohamed.com";
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://chefmohamed.com").replace(/\/+$/, "");
 
   try {
     const client = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
@@ -30,6 +30,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       sitemap: `${baseUrl}/sitemap.xml`,
     };
   } catch {
+    // Convex unreachable → default to allowing indexing
     return {
       rules: [
         {

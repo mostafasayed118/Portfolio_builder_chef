@@ -13,6 +13,7 @@ import { MenuSection } from "@/components/sections/MenuSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { GallerySection } from "@/components/sections/GallerySection";
 import { ContactSection } from "@/components/sections/ContactSection";
+import { TrustedBySection } from "@/components/sections/TrustedBySection";
 
 const ProjectsSection = lazy(() =>
   import("@/components/sections/ProjectsSection").then((m) => ({
@@ -34,6 +35,7 @@ const LocationsSection = lazy(() =>
 
 const SECTION_COMPONENTS: Record<string, ComponentType> = {
   hero: HeroSection,
+  trustedBy: TrustedBySection,
   about: AboutSection,
   services: ServicesSection,
   menu: MenuSection,

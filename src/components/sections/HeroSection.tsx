@@ -147,7 +147,7 @@ export function HeroSection() {
               {subheading}
             </p>
             <div className="flex gap-4 flex-wrap">
-              <Link href="/menu">
+              <Link href="/contact">
                 <Button
                   size="lg"
                   className="group bg-accent hover:bg-accent-hover text-background text-base px-8 shadow-accent cursor-pointer transition-all duration-300 hover:shadow-glow"

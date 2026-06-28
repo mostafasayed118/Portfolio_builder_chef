@@ -32,6 +32,7 @@ export default function AdminHeroPage() {
 
   useEffect(() => {
     if (hero && !loaded) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time form initialization from server data
       setHeadingEn(hero.heading_en ?? "");
       setHeadingAr(hero.heading_ar ?? "");
       setSubheadingEn(hero.subheading_en ?? "");

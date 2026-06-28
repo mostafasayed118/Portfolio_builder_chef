@@ -5,6 +5,8 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { LanguageToggle } from "@/components/shared/LanguageToggle";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { cn } from "@/lib/utils";
+import { useQuery } from "convex/react";
+import { api } from "@convex/_generated/api";
 import {
   LayoutDashboard,
   LayoutGrid,
@@ -48,6 +50,7 @@ export function AdminSidebar() {
   const { signOut } = useClerk();
   const t = useTranslations("admin.nav");
   const tSite = useTranslations("site");
+  const staleCount = useQuery(api.queries.getStaleInquiryCount);
 
   return (
     <aside className="flex h-full w-full flex-col bg-surface border-border border-s">
@@ -64,6 +67,8 @@ export function AdminSidebar() {
         {sidebarLinks.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
+          const isInbox = link.href === "/admin/inbox";
+          const showStale = isInbox && staleCount !== undefined && staleCount > 0;
           return (
             <Link
               key={link.href}
@@ -76,7 +81,10 @@ export function AdminSidebar() {
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
-              <span className="truncate">{t(link.labelKey)}</span>
+              <span className="truncate flex-1">{t(link.labelKey)}</span>
+              {showStale && (
+                <span className="h-2 w-2 rounded-full bg-destructive shrink-0" title={`${staleCount} stale`} />
+              )}
             </Link>
           );
         })}

@@ -1,7 +1,8 @@
-import { mutation } from "./_generated/server";
+import { mutation, internalMutation } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import { v, ConvexError } from "convex/values";
 import { requireAdmin } from "./auth";
+import { internal } from "./_generated/api";
 import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_ATTEMPTS } from "./lib/rateLimit";
 
 // ─── Field definitions ───────────────────────────────────────────────────────
@@ -80,6 +81,7 @@ const menuItemFields = {
   ),
   imageUrl: v.nullable(v.string()),
   isAvailable: v.boolean(),
+  isShowcase: v.optional(v.boolean()),
   order: v.number(),
 };
 
@@ -273,6 +275,7 @@ export const updateMenuItem = mutation({
     ),
     imageUrl: v.optional(v.nullable(v.string())),
     isAvailable: v.optional(v.boolean()),
+    isShowcase: v.optional(v.boolean()),
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -861,12 +864,12 @@ export const migrateFixStaleSeedData = mutation({
       patches.heroContent = {
         ...settings.heroContent,
         heading_en: "Slow Bread, French Pastry,\nTen Years at the Bench",
-        heading_ar: "محمد ممدوح",
+        heading_ar: "خبز بطيء، معجنات فرنسية،\nعشر سنوات على طاولة العمل",
         subheading_en:
           "Sourdough, croissants, and a blend of tradition with modern technique — by Chef Mohamed.",
         subheading_ar: "١٠ سنوات من التميز في المخبوزات الحرفية",
-        ctaLabel_en: "Explore the Menu",
-        ctaLabel_ar: "عرض أعمالي",
+        ctaLabel_en: "Book a Free Consultation",
+        ctaLabel_ar: "احجز استشارة مجانية",
       };
     }
 
@@ -914,14 +917,16 @@ export const submitContactInquiry = mutation({
     name: v.string(),
     email: v.string(),
     phone: v.optional(v.string()),
-    requestType: v.union(
-      v.literal("consulting"),
-      v.literal("catering"),
-      v.literal("training"),
-      v.literal("partnerships"),
-      v.literal("other"),
-    ),
+    requestType: v.string(),
     message: v.string(),
+    // Lead qualification fields (all optional, backward compatible)
+    businessType: v.optional(v.string()),
+    teamSize: v.optional(v.string()),
+    governorate: v.optional(v.string()),
+    challengeType: v.optional(v.string()),
+    budgetRange: v.optional(v.string()),
+    preferredMode: v.optional(v.string()),
+    preferredSlot: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     // Rate limit: same email may not submit more than once per 10 minutes
@@ -939,11 +944,28 @@ export const submitContactInquiry = mutation({
       });
     }
 
-    return await ctx.db.insert("contactInquiries", {
-      ...args,
+    const { businessType, teamSize, governorate, challengeType, budgetRange, preferredMode, preferredSlot, ...coreArgs } = args;
+
+    const inquiryId = await ctx.db.insert("contactInquiries", {
+      ...coreArgs,
+      businessType: businessType ?? undefined,
+      teamSize: teamSize ?? undefined,
+      governorate: governorate ?? undefined,
+      challengeType: challengeType ?? undefined,
+      budgetRange: budgetRange ?? undefined,
+      preferredMode: preferredMode ?? undefined,
+      preferredSlot: preferredSlot ?? undefined,
+      status: "new",
       createdAt: Date.now(),
       isRead: false,
     });
+
+    // Fire-and-forget: schedule email notification via Brevo
+    ctx.scheduler.runAfter(0, internal.actions.sendInquiryNotification, {
+      inquiryId,
+    });
+
+    return inquiryId;
   },
 });
 
@@ -1012,6 +1034,57 @@ export const batchMarkInquiriesRead = mutation({
   },
 });
 
+// ─── Lead pipeline mutations ──────────────────────────────────────────────────
+
+export const updateInquiryStatus = mutation({
+  args: {
+    id: v.id("contactInquiries"),
+    status: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const inquiry = await ctx.db.get(args.id);
+    if (!inquiry) throw new ConvexError("Inquiry not found");
+
+    const patches: Record<string, unknown> = {
+      status: args.status,
+    };
+
+    // Auto-set respondedAt when moving from "new" → "contacted"
+    if (inquiry.status === "new" || !inquiry.status) {
+      if (args.status === "contacted") {
+        patches.respondedAt = Date.now();
+      }
+    }
+
+    await ctx.db.patch(args.id, patches);
+
+    await logActivityInternal(ctx, "update", "contactInquiries", "admin", `Status changed: ${args.status}`);
+  },
+});
+
+export const updateInquiryNotes = mutation({
+  args: {
+    id: v.id("contactInquiries"),
+    notes: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    await ctx.db.patch(args.id, { notes: args.notes });
+  },
+});
+
+export const getInquiriesExport = mutation({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    return await ctx.db
+      .query("contactInquiries")
+      .order("desc")
+      .collect();
+  },
+});
+
 // ─── Activity log ─────────────────────────────────────────────────────────────
 
 export const logActivity = mutation({
@@ -1028,6 +1101,26 @@ export const logActivity = mutation({
       tableName: args.tableName,
       documentId: args.documentId ?? undefined,
       actor: admin.email ?? "unknown",
+      details: args.details ?? undefined,
+      createdAt: Date.now(),
+    });
+  },
+});
+
+// ─── Internal email activity log (called by actions, no admin auth) ──────────
+
+export const logEmailActivity = internalMutation({
+  args: {
+    action: v.string(),
+    inquiryId: v.id("contactInquiries"),
+    details: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert("activityLogs", {
+      action: args.action,
+      tableName: "contactInquiries",
+      documentId: args.inquiryId,
+      actor: "system:email",
       details: args.details ?? undefined,
       createdAt: Date.now(),
     });
@@ -1087,12 +1180,12 @@ export const seedBakeryContent = mutation({
 
         heroContent: {
           heading_en: "Slow Bread, French Pastry,\nTen Years at the Bench",
-          heading_ar: "محمد ممدوح",
+          heading_ar: "خبز بطيء، معجنات فرنسية،\nعشر سنوات على طاولة العمل",
           subheading_en:
             "Sourdough, croissants, and a blend of tradition with modern technique — by Chef Mohamed.",
           subheading_ar: "١٠ سنوات من التميز في المخبوزات الحرفية",
-          ctaLabel_en: "Explore the Menu",
-          ctaLabel_ar: "عرض أعمالي",
+          ctaLabel_en: "Book a Free Consultation",
+          ctaLabel_ar: "احجز استشارة مجانية",
           imageUrl: null,
         },
 
@@ -1184,8 +1277,8 @@ export const seedBakeryContent = mutation({
     if (existingMenu.length === 0) {
       const now = Date.now();
       const items = [
-        { name_en: "Signature Sourdough", name_ar: "الخبز المخمر المميز", description_en: "Slow-fermented levain bread, shaped by hand and baked dark for a deep, caramelized crust. The patience pays off in every slice.", description_ar: "خبز عجين مخمر ببطء، مشكل يدويًا ومخبوز بعمق للحصول على قشرة كراميلية عميقة. الصبر يعود في كل شريحة.", price: null, category: "breads" as const, isAvailable: false, order: 0 },
-        { name_en: "Classic Croissant", name_ar: "كرواسون كلاسيكي", description_en: "Hand-laminated French butter croissant with a shatteringly crisp shell and an open, airy crumb.", description_ar: "كرواسون فرنسي بالزبدة محضر يدويًا بقشرة مقرمشة بشكل مذهل ونسيج مفتوح بالهواء.", price: null, category: "pastries" as const, isAvailable: false, order: 1 },
+        { name_en: "Signature Sourdough", name_ar: "الخبز المخمر المميز", description_en: "Slow-fermented levain bread, shaped by hand and baked dark for a deep, caramelized crust. The patience pays off in every slice.", description_ar: "خبز عجين مخمر ببطء، مشكل يدويًا ومخبوز بعمق للحصول على قشرة كراميلية عميقة. الصبر يعود في كل شريحة.", price: null, category: "breads" as const, isAvailable: false, isShowcase: true, order: 0 },
+        { name_en: "Classic Croissant", name_ar: "كرواسون كلاسيكي", description_en: "Hand-laminated French butter croissant with a shatteringly crisp shell and an open, airy crumb.", description_ar: "كرواسون فرنسي بالزبدة محضر يدويًا بقشرة مقرمشة بشكل مذهل ونسيج مفتوح بالهواء.", price: null, category: "pastries" as const, isAvailable: false, isShowcase: true, order: 1 },
       ];
       for (const item of items) {
         await ctx.db.insert("menuItems", { ...item, imageUrl: null, createdAt: now });
@@ -1574,16 +1667,17 @@ export const seedSectionConfigs = mutation({
     const now = Date.now();
     const sections = [
       { sectionKey: "hero", label_en: "Hero", label_ar: "الواجهة الرئيسية", isVisible: true, order: 0, isRequired: true },
-      { sectionKey: "menu", label_en: "Menu", label_ar: "القائمة", isVisible: true, order: 1, isRequired: false },
-      { sectionKey: "about", label_en: "About", label_ar: "عن الشيف", isVisible: true, order: 2, isRequired: false },
-      { sectionKey: "services", label_en: "Services", label_ar: "الخدمات", isVisible: true, order: 3, isRequired: false },
-      { sectionKey: "testimonials", label_en: "Testimonials", label_ar: "التوصيات", isVisible: true, order: 4, isRequired: false },
-      { sectionKey: "ctaBanner", label_en: "CTA Banner", label_ar: "شريط الدعوة", isVisible: true, order: 5, isRequired: false },
-      { sectionKey: "gallery", label_en: "Gallery", label_ar: "المعرض", isVisible: true, order: 6, isRequired: false },
-      { sectionKey: "contact", label_en: "Contact", label_ar: "تواصل معنا", isVisible: true, order: 7, isRequired: false },
-      { sectionKey: "projects", label_en: "Work Experience", label_ar: "الخبرات العملية", isVisible: true, order: 8, isRequired: false },
-      { sectionKey: "craftPractice", label_en: "Craft & Practice", label_ar: "حرفة وخبرة", isVisible: true, order: 9, isRequired: false },
-      { sectionKey: "locations", label_en: "Service Areas", label_ar: "مناطق الخدمة", isVisible: true, order: 10, isRequired: false },
+      { sectionKey: "trustedBy", label_en: "Trusted By", label_ar: "موثوق من قِبل", isVisible: true, order: 1, isRequired: false },
+      { sectionKey: "menu", label_en: "Menu", label_ar: "القائمة", isVisible: true, order: 2, isRequired: false },
+      { sectionKey: "about", label_en: "About", label_ar: "عن الشيف", isVisible: true, order: 3, isRequired: false },
+      { sectionKey: "services", label_en: "Services", label_ar: "الخدمات", isVisible: true, order: 4, isRequired: false },
+      { sectionKey: "testimonials", label_en: "Testimonials", label_ar: "التوصيات", isVisible: true, order: 5, isRequired: false },
+      { sectionKey: "ctaBanner", label_en: "CTA Banner", label_ar: "شريط الدعوة", isVisible: true, order: 6, isRequired: false },
+      { sectionKey: "gallery", label_en: "Gallery", label_ar: "المعرض", isVisible: true, order: 7, isRequired: false },
+      { sectionKey: "contact", label_en: "Contact", label_ar: "تواصل معنا", isVisible: true, order: 8, isRequired: false },
+      { sectionKey: "projects", label_en: "Work Experience", label_ar: "الخبرات العملية", isVisible: true, order: 9, isRequired: false },
+      { sectionKey: "craftPractice", label_en: "Craft & Practice", label_ar: "حرفة وخبرة", isVisible: true, order: 10, isRequired: false },
+      { sectionKey: "locations", label_en: "Service Areas", label_ar: "مناطق الخدمة", isVisible: true, order: 11, isRequired: false },
     ];
 
     for (const section of sections) {

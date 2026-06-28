@@ -134,6 +134,7 @@ export default defineSchema({
     ),
     imageUrl: v.nullable(v.string()),
     isAvailable: v.boolean(),
+    isShowcase: v.optional(v.boolean()),
     order: v.number(),
     createdAt: v.number(),
   })
@@ -264,23 +265,37 @@ export default defineSchema({
     name: v.string(),
     email: v.string(),
     phone: v.optional(v.string()),
-    requestType: v.union(
-      v.literal("consulting"),
-      v.literal("catering"),
-      v.literal("training"),
-      v.literal("partnerships"),
-      v.literal("other"),
-    ),
+    requestType: v.string(),
     message: v.string(),
     createdAt: v.number(),
     isRead: v.boolean(),
     archived: v.optional(v.boolean()),
     archivedAt: v.optional(v.number()),
+    // Lead qualification fields (backward compatible — all optional)
+    businessType: v.optional(v.string()),
+    teamSize: v.optional(v.string()),
+    governorate: v.optional(v.string()),
+    challengeType: v.optional(v.string()),
+    budgetRange: v.optional(v.string()),
+    preferredMode: v.optional(v.string()),
+    preferredSlot: v.optional(v.string()),
+    status: v.optional(v.union(
+      v.literal("new"),
+      v.literal("contacted"),
+      v.literal("quoted"),
+      v.literal("won"),
+      v.literal("lost"),
+    )),
+    notes: v.optional(v.string()),
+    sourcePage: v.optional(v.string()),
+    quotedValue: v.optional(v.number()),
+    respondedAt: v.optional(v.number()),
   })
     .index("by_created", ["createdAt"])
     .index("by_email", ["email"])
     .index("by_read", ["isRead"])
-    .index("by_archived", ["archived"]),
+    .index("by_archived", ["archived"])
+    .index("by_status", ["status"]),
 
   activityLogs: defineTable({
     action: v.string(),

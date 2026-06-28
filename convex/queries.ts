@@ -1,4 +1,4 @@
-import { query } from "./_generated/server";
+import { query, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_ATTEMPTS } from "./lib/rateLimit";
 
@@ -48,22 +48,21 @@ export const getContactInfo = query({
 export const getMenuItems = query({
   args: { category: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    if (args.category) {
-      return await ctx.db
-        .query("menuItems")
-        .withIndex("by_category", (q) =>
-          q.eq("category", args.category as "breads" | "cakes" | "pastries" | "cookies" | "seasonal"),
-        )
-        .collect()
-        .then((items) =>
-          items.filter((i) => i.isAvailable).sort((a, b) => a.order - b.order),
-        );
-    }
-    return await ctx.db
+    const allItems = await ctx.db
       .query("menuItems")
-      .withIndex("by_available", (q) => q.eq("isAvailable", true))
-      .collect()
-      .then((items) => items.sort((a, b) => a.order - b.order));
+      .withIndex("by_order")
+      .order("asc")
+      .collect();
+
+    const filtered = allItems.filter((i) => i.isAvailable || i.isShowcase);
+
+    if (args.category) {
+      return filtered
+        .filter((i) => i.category === args.category)
+        .sort((a, b) => a.order - b.order);
+    }
+
+    return filtered.sort((a, b) => a.order - b.order);
   },
 });
 
@@ -154,6 +153,56 @@ export const getDashboardStats = query({
   },
 });
 
+export const getContentReadiness = query({
+  args: {},
+  handler: async (ctx) => {
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+
+    // Existence checks with take(1) for efficiency
+    const hasHeroImage = !!settings?.heroContent?.imageUrl;
+    const hasAboutImage = !!settings?.aboutContent?.imageUrl;
+    const hasEmail = !!settings?.contactInfo?.email;
+    const hasInstagram = !!settings?.contactInfo?.instagram;
+
+    const galleryExists =
+      (await ctx.db.query("gallery").take(1)).length > 0;
+
+    const visibleTestimonialExists =
+      (await ctx.db
+        .query("testimonials")
+        .withIndex("by_visible", (q) => q.eq("isVisible", true))
+        .take(1)).length > 0;
+
+    const hasVisibleMenuItems =
+      (await ctx.db
+        .query("menuItems")
+        .filter((q) =>
+          q.or(q.eq(q.field("isAvailable"), true), q.eq(q.field("isShowcase"), true)),
+        )
+        .take(1)).length > 0;
+
+    const hasCaseStudies =
+      (await ctx.db
+        .query("projects")
+        .withIndex("by_visible", (q) => q.eq("isVisible", true))
+        .take(1)).length > 0;
+
+    return {
+      hasHeroImage,
+      hasAboutImage,
+      hasGalleryImages: galleryExists,
+      hasEmail,
+      hasInstagram,
+      hasVisibleTestimonials: visibleTestimonialExists,
+      hasVisibleMenuItems,
+      hasCaseStudies,
+    };
+  },
+});
+
 export const getContactInquiries = query({
   args: { showArchived: v.optional(v.boolean()) },
   handler: async (ctx, args) => {
@@ -167,6 +216,28 @@ export const getContactInquiries = query({
       const isArchived = item.archived === true;
       return showArchived ? isArchived : !isArchived;
     });
+  },
+});
+
+export const getStaleInquiryCount = query({
+  args: {},
+  handler: async (ctx) => {
+    const fortyEightHoursAgo = Date.now() - 48 * 60 * 60 * 1000;
+    return await ctx.db
+      .query("contactInquiries")
+      .filter((q) =>
+        q.and(
+          q.neq(q.field("archived"), true),
+          q.or(
+            q.eq(q.field("status"), "new"),
+            q.eq(q.field("status"), undefined),
+            q.eq(q.field("status"), null),
+          ),
+          q.lt(q.field("createdAt"), fortyEightHoursAgo),
+        ),
+      )
+      .collect()
+      .then((items) => items.length);
   },
 });
 
@@ -411,6 +482,32 @@ export const getResolvedMetadata = query({
       facebookPixelId: seo?.facebookPixelId ?? null,
       businessName: isAr ? seo?.businessName_ar : seo?.businessName_en,
       sameAs: seo?.sameAs ?? [],
+    };
+  },
+});
+
+// ─── Internal queries (for actions, no admin auth) ──────────────────────────
+
+export const getInquiryById = internalQuery({
+  args: { id: v.id("contactInquiries") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
+export const getSiteSettingsForEmail = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const settings = await ctx.db
+      .query("siteSettings")
+      .withIndex("by_key", (q) => q.eq("key", "main"))
+      .first();
+    if (!settings) return null;
+    return {
+      contactInfo: {
+        email: settings.contactInfo.email,
+        whatsapp: settings.contactInfo.whatsapp ?? null,
+      },
     };
   },
 });

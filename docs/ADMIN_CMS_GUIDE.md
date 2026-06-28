@@ -187,8 +187,8 @@ Separate `locations` table with CRUD.
 
 ### Environment Variables
 ```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<YOUR_PK_TEST_KEY>
+CLERK_SECRET_KEY=<YOUR_SK_TEST_KEY>
 CLERK_FRONTEND_API_URL=https://<your-clerk-instance>.clerk.accounts.dev
 ADMIN_EMAIL=your-email@example.com
 ```
@@ -402,6 +402,71 @@ Source: `CHEF_PROFILE.md` Section 7 — reviewed and approved by Chef Mohamed.
 | `secondaryPhone` | Secondary Phone | هاتف ثانوي |
 
 **Rule:** When adding a new field to any admin editor, look up its Convex field name in the table above. Use the English label verbatim. Never invent a new label without adding it to this table first.
+
+---
+
+## Email Notifications (Brevo)
+
+Contact inquiry notifications are sent via [Brevo](https://www.brevo.com/) (formerly Sendinblue) — free tier, 300 emails/day, no credit card required.
+
+### What happens on new inquiry
+
+1. Visitor submits the contact form → `submitContactInquiry` mutation inserts into `contactInquiries`
+2. Mutation schedules `sendInquiryNotification` action (fire-and-forget, never blocks submission)
+3. Action sends **notification email** to Chef Mohamed's configured email
+4. Action sends **auto-reply** to the inquirer confirming receipt (24h response time)
+5. All email events are logged to `activityLogs` (success and failure)
+
+### Setup steps
+
+1. Create a free Brevo account at https://app.brevo.com
+2. **Verify sender domain/email**: Settings → Senders & IPs → Senders → add `noreply@chefmohamed.com` (or your domain)
+   - Brevo requires sender verification to prevent spam
+   - For quick testing, verify a single email address instead of a full domain
+3. **Generate API key**: Settings → SMTP & API → API Keys → Create a new key
+   - Name it `chef-portfolio-notifications`
+   - Copy the key immediately (shown only once)
+4. **Add to Convex environment variables**:
+   - Go to Convex Dashboard → Settings → Environment Variables
+   - Add `BREVO_API_KEY` = your Brevo API key
+5. **Add to local `.env.local`** (for local dev):
+   - Add `BREVO_API_KEY=your_brevo_api_key_here`
+
+### Configuration requirements
+
+| Setting | Where | Required |
+|---|---|---|
+| `BREVO_API_KEY` | Convex env + `.env.local` | Yes |
+| Chef email (`contactInfo.email`) | Admin → Contact | Yes — notifications go here |
+| Sender domain | Brevo dashboard | Yes — must be verified |
+| `NEXT_PUBLIC_SITE_URL` | `.env.local` | Yes — admin inbox link in emails |
+
+### Email behavior
+
+- **Locale detection**: Automatic — Arabic if name/message contains Arabic characters, otherwise English
+- **Notification email**: Sent to Chef's email with inquiry summary + direct admin inbox link
+- **Auto-reply**: Sent to inquirer with thank you message + WhatsApp link (if configured)
+- **Missing chef email**: Logged as `email_skipped`, inquiry still created
+- **Brevo API failure**: Logged as `email_failed`, inquiry still created
+- **Missing BREVO_API_KEY**: Logged as `email_skipped`, no emails sent
+
+### Activity log events
+
+All email events are recorded in `activityLogs` with `actor: "system:email"`:
+
+| Action | Meaning |
+|---|---|
+| `email_sent` | Notification delivered to Chef |
+| `email_failed` | Brevo API returned error |
+| `email_skipped` | BREVO_API_KEY missing or Chef email empty |
+| `auto_reply_sent` | Auto-reply delivered to inquirer |
+| `auto_reply_failed` | Auto-reply delivery failed |
+
+### Sender email
+
+Default: `noreply@chefmohamed.com` (hardcoded in `convex/actions.ts` → `SENDER` constant).
+
+To change: update the `SENDER` object in `convex/actions.ts`. The new sender **must be verified** in Brevo dashboard.
 
 ---
 

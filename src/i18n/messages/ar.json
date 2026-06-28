@@ -42,12 +42,15 @@
     "craftPractice": "حرفة وخبرة"
   },
   "hero": {
-    "heading": "مخبوز بالحب،\nمشارك بالفرح",
-    "subheading": "اكتشف خبزنا الحرفي ومعجناتنا المصنوعة يدويًا بأفضل المكونات",
-    "ctaPrimary": "عرض القائمة",
+    "heading": "خبز بطيء، معجنات فرنسية،\nعشر سنوات على طاولة العمل",
+    "subheading": "خبز مخمر، كرواسون، ومزيج من التقاليد مع التقنية الحديثة — بواسطة الشيف محمد.",
+    "ctaPrimary": "احجز استشارة مجانية",
     "ctaSecondary": "احجز تذوق",
     "imagePlaceholder": "صورة الواجهة",
     "emptyState": "أضف صورتك في لوحة التحكم ← الترحيب في الصفحة الرئيسية"
+  },
+  "trustedBy": {
+    "heading": "موثوق من قِبل"
   },
   "about": {
     "heading": "مرحبًا، أنا الشيف محمد",
@@ -57,15 +60,16 @@
     "emptyState": "أضف صورتك في لوحة التحكم ← عني"
   },
   "menu": {
-    "heading": "قائمتنا",
-    "subheading": "طازج يوميًا كل صباح",
+    "heading": "إبداعاتي الحرفية",
+    "subheading": "عرض مختار من حرفية الشيف محمد — خبز حرفي، معجنات فرنسية، ومفاهيم مخابز مخصصة.",
     "orderBtn": "اطلب الآن",
     "customOrderHeading": "طلبات خاصة",
     "customOrderDesc": "لديك مناسبة خاصة؟ نصنع لك المعجنات والكيك المخصص لكل مناسبة.",
     "customOrderBtn": "اطلب طلب خاص",
-    "emptyState": "لا توجد عناصر متاحة",
+    "emptyState": "معرض الحرفية قريباً",
     "photoPlaceholder": "صورة",
     "priceOnRequest": "عند الطلب",
+    "customPricing": "تسعير مخصص",
     "categories": {
       "all": "الكل",
       "breads": "الخبز",
@@ -122,7 +126,179 @@
         "training": "تدريب",
         "partnerships": "شراكات",
         "other": "أخرى"
+      },
+      "quickMessageTab": "رسالة سريعة"
+    }
+  },
+  "booking": {
+    "tabLabel": "احجز استشارة",
+    "progress": {
+      "label": "الخطوة {step} من {total}",
+      "stepOf": "الخطوة {step} من {total}"
+    },
+    "steps": {
+      "1": {
+        "title": "نشاطك التجاري",
+        "subtitle": "أخبرنا عن مخبزك أو نشاطك الغذائي"
+      },
+      "2": {
+        "title": "تحديك",
+        "subtitle": "ما الذي تحتاج مساعدة فيه؟"
+      },
+      "3": {
+        "title": "التواصل والتفضيل",
+        "subtitle": "كيف يمكن للشيف محمد التواصل معك؟"
       }
+    },
+    "fields": {
+      "businessType": {
+        "label": "نوع النشاط",
+        "placeholder": "ما نوع نشاطك؟"
+      },
+      "teamSize": {
+        "label": "حجم الفريق",
+        "placeholder": "كم عدد فريقك؟"
+      },
+      "governorate": {
+        "label": "المحافظة",
+        "placeholder": "أين يقع نشاطك؟"
+      },
+      "challengeType": {
+        "label": "التحدي الرئيسي",
+        "placeholder": "ما أكبر تحدٍ تواجهه؟"
+      },
+      "budgetRange": {
+        "label": "الميزانية (جنيه مصري)",
+        "placeholder": "الميزانية التقديرية للاستشارة"
+      },
+      "description": {
+        "label": "وصف situتك",
+        "placeholder": "أخبر الشيف محمد عن مخبزك وأهدافك والجدول الزمني..."
+      },
+      "name": {
+        "label": "الاسم الكامل",
+        "placeholder": "اسمك"
+      },
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "your@email.com"
+      },
+      "phone": {
+        "label": "الهاتف (اختياري)",
+        "placeholder": "+٢٠ ..."
+      },
+      "requestType": {
+        "label": "ما الذي تحتاجه؟",
+        "placeholder": "اختر موضوعاً"
+      },
+      "preferredMode": {
+        "label": "طريقة الاجتماع المفضلة",
+        "placeholder": "كيف تفضل الاجتماع؟"
+      },
+      "preferredSlot": {
+        "label": "الوقت المفضل",
+        "placeholder": "ما الوقت المناسب لك؟"
+      }
+    },
+    "options": {
+      "businessType": {
+        "bakery": "مخبز",
+        "cafe": "مقهى",
+        "hotel": "فندق",
+        "restaurant": "مطعم",
+        "other": "أخرى"
+      },
+      "teamSize": {
+        "1-5": "١–٥ أشخاص",
+        "6-20": "٦–٢٠ شخص",
+        "20+": "أكثر من ٢٠"
+      },
+      "governorate": {
+        "cairo": "القاهرة",
+        "giza": "الجيزة",
+        "alexandria": "الإسكندرية",
+        "qalyubia": "القليوبية",
+        "sharqia": "الشرقية",
+        "dakahlia": "الدقهلية",
+        "gharbia": "الغربية",
+        "monufia": "المنوفية",
+        "beheira": "البحيرة",
+        "fayoum": "الفيوم",
+        "beniSuef": "بني سويف",
+        "minya": "المنيا",
+        "assiut": "أسيوط",
+        "sohag": "سوهاج",
+        "qena": "قنا",
+        "luxor": "الأقصر",
+        "aswan": "أسوان",
+        "redSea": "البحر الأحمر",
+        "northSinai": "شمال سيناء",
+        "southSinai": "جنوب سيناء",
+        "portSaid": "بورسعيد",
+        "suez": "السويس",
+        "ismailia": "الإسماعيلية",
+        "damietta": "دمياط",
+        "matrouh": "مطروح",
+        "newValley": "الوادي الجديد",
+        "other": "أخرى"
+      },
+      "challengeType": {
+        "newOpening": "افتتاح جديد",
+        "menuOverhaul": "تجديد القائمة",
+        "qa": "ضمان الجودة",
+        "training": "تدريب الفريق",
+        "costReduction": "تخليص التكاليف",
+        "other": "أخرى"
+      },
+      "budgetRange": {
+        "under50k": "أقل من ٥٠,٠٠٠ جنيه",
+        "50k-200k": "٥٠,٠٠٠ – ٢٠٠,٠٠٠ جنيه",
+        "200k+": "أكثر من ٢٠٠,٠٠٠ جنيه",
+        "notSure": "غير متأكد بعد"
+      },
+      "preferredMode": {
+        "video": "مكالمة فيديو",
+        "inPerson": "حضور شخصي",
+        "whatsapp": "واتساب"
+      },
+      "preferredSlot": {
+        "morning": "صباحاً (٩ صباحاً – ١٢ ظهراً)",
+        "afternoon": "ظهراً (١٢ ظهراً – ٥ مساءً)",
+        "evening": "مساءً (٥ مساءً – ٩ مساءً)",
+        "flexible": "مرن"
+      }
+    },
+    "navigation": {
+      "back": "رجوع",
+      "next": "التالي",
+      "submit": "إرسال طلب الاستشارة",
+      "sendViaWhatsApp": "إرسال عبر واتساب"
+    },
+    "whatsappToggle": {
+      "label": "إرسال عبر واتساب بدلاً من ذلك",
+      "description": "تخطى النموذج وأرسل بياناتك مباشرة عبر واتساب"
+    },
+    "whatsappPrefill": {
+      "title": "طلب استشارة",
+      "businessType": "النشاط",
+      "teamSize": "حجم الفريق",
+      "governorate": "الموقع",
+      "challenge": "التحدي",
+      "budget": "الميزانية",
+      "name": "الاسم",
+      "phone": "الهاتف"
+    },
+    "success": {
+      "title": "تم الإرسال!",
+      "description": "سيراجع الشيف محمد طلبك ويرد عليك خلال ٢٤ ساعة.",
+      "whatsappFallback": "أو تواصل عبر واتساب لاستجابة أسرع",
+      "sendAnother": "إرسال طلب آخر"
+    },
+    "errors": {
+      "required": "هذا الحقل مطلوب",
+      "invalidEmail": "يرجى إدخال بريد إلكتروني صالح",
+      "submitFailed": "فشل إرسال الطلب. حاول مرة أخرى.",
+      "rateLimited": "يرجى الانتظار بضع دقائق قبل الإرسال مرة أخرى."
     }
   },
   "cta": {
@@ -134,6 +310,15 @@
   "footer": {
     "rights": "جميع الحقوق محفوظة.",
     "navigation": "التنقل"
+  },
+  "whatsapp": {
+    "ariaLabel": "تواصل عبر واتساب",
+    "templates": {
+      "default": "مرحباً شيف محمد، أود التحدث حول العمل معاً.",
+      "services": "أرغب في استشارة حول خدماتك.",
+      "caseStudies": "أهتم بتحقيق نتائج مشابهة لمخبزي.",
+      "contact": "مرحباً شيف محمد، أود التواصل معك."
+    }
   },
   "errors": {
     "pageTitle": "حدث خطأ ما",
@@ -182,6 +367,19 @@
       "logoutBtn": "تسجيل الخروج",
       "lastUpdated": "آخر تحديث",
       "createdAt": "تاريخ الإنشاء",
+      "readiness": {
+        "title": "جاهزية المحتوى",
+        "items": {
+          "heroImage": "تم رفع صورة الواجهة",
+          "aboutImage": "صورة قسم عن الشيف",
+          "galleryImages": "تمت إضافة صور المعرض",
+          "email": "تم إعداد البريد الإلكتروني",
+          "instagram": "ربط حساب إنستغرام",
+          "testimonials": "آراء العملاء الظاهرة",
+          "menuItems": "الإبداعات الحرفية المدرجة",
+          "caseStudies": "دراسات الحالة / المشاريع"
+        }
+      },
       "cards": {
         "hero": { "label": "ترحيب الصفحة الرئيسية", "desc": "غيّر رسالة الترحيب الكبيرة التي يراها الزوار أولاً" },
         "about": { "label": "عني", "desc": "حدّث قصتك وصورتك وتخصصاتك" },
@@ -747,7 +945,40 @@
       "unarchiveSuccess": "تم إلغاء أرشفة {count} رسائل",
       "emptyArchived": "لا توجد رسائل مؤرشفة",
       "emptyArchivedDesc": "ستظهر الرسائل المؤرشفة هنا.",
-      "deleteCancel": "إلغاء"
+      "deleteCancel": "إلغاء",
+      "status": {
+        "label": "الحالة",
+        "all": "الكل",
+        "new": "جديد",
+        "contacted": "تم التواصل",
+        "quoted": "عرض سعر",
+        "won": "تم الاتفاق",
+        "lost": "ملغي"
+      },
+      "statusUpdated": "تم تحديث الحالة",
+      "notes": "ملاحظات",
+      "notesEmpty": "انقر لإضافة ملاحظات...",
+      "notesPlaceholder": "أضف ملاحظات داخلية...",
+      "notesSave": "حفظ",
+      "notesCancel": "إلغاء",
+      "notesSaved": "تم حفظ الملاحظات",
+      "exportCsv": "تصدير CSV",
+      "exportSuccess": "تم تصدير {count} استفسار",
+      "exportFailed": "فشل التصدير",
+      "exportEmpty": "لا توجد استفسارات للتصدير",
+      "staleAlert": "لم يتم الرد ٤٨ ساعة+",
+      "staleCount": "{count} متأخر",
+      "respondedIn": "تم الرد خلال {hours} ساعة",
+      "whatsappReply": "الرد عبر واتساب",
+      "whatsappReplyTemplate": "مرحباً {name}، الشيف محمد هنا — تلقيت استفسارك وأود متابعته.",
+      "sourcePage": "صفحة المصدر",
+      "businessType": "نوع النشاط",
+      "teamSize": "حجم الفريق",
+      "governorate": "المحافظة",
+      "challengeType": "نوع التحدي",
+      "budgetRange": "الميزانية",
+      "preferredMode": "طريقة التواصل",
+      "preferredSlot": "الوقت المفضل"
     }
   },
   "gallery": {

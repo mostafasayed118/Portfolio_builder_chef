@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/navigation";
 import { formatEgyptFullDate, formatEgyptTime } from "@convex/lib/timezone";
+import { ContentReadinessCard } from "./ContentReadinessCard";
 import {
   BookOpen,
   User,
@@ -60,37 +61,40 @@ export default function AdminDashboardPage() {
         )}
       </div>
 
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-        <Card className="bg-surface border-border/50">
-          <CardContent className="p-5">
-            <p className="text-xs text-muted-foreground mb-1">{t("menuItems")}</p>
-            {stats ? (
-              <p className="text-3xl font-bold text-foreground">{stats.menuCount}</p>
-            ) : (
-              <Skeleton className="h-9 w-16" />
-            )}
-          </CardContent>
-        </Card>
-        <Card className="bg-surface border-border/50">
-          <CardContent className="p-5">
-            <p className="text-xs text-muted-foreground mb-1">{t("testimonials")}</p>
-            {stats ? (
-              <p className="text-3xl font-bold text-foreground">{stats.testimonialCount}</p>
-            ) : (
-              <Skeleton className="h-9 w-16" />
-            )}
-          </CardContent>
-        </Card>
-        <Card className="bg-surface border-border/50">
-          <CardContent className="p-5">
-            <p className="text-xs text-muted-foreground mb-1">{t("galleryPhotos")}</p>
-            {stats ? (
-              <p className="text-3xl font-bold text-foreground">{stats.galleryCount}</p>
-            ) : (
-              <Skeleton className="h-9 w-16" />
-            )}
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+        <ContentReadinessCard />
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 content-start">
+          <Card className="bg-surface border-border/50">
+            <CardContent className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">{t("menuItems")}</p>
+              {stats ? (
+                <p className="text-3xl font-bold text-foreground">{stats.menuCount}</p>
+              ) : (
+                <Skeleton className="h-9 w-16" />
+              )}
+            </CardContent>
+          </Card>
+          <Card className="bg-surface border-border/50">
+            <CardContent className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">{t("testimonials")}</p>
+              {stats ? (
+                <p className="text-3xl font-bold text-foreground">{stats.testimonialCount}</p>
+              ) : (
+                <Skeleton className="h-9 w-16" />
+              )}
+            </CardContent>
+          </Card>
+          <Card className="bg-surface border-border/50">
+            <CardContent className="p-5">
+              <p className="text-xs text-muted-foreground mb-1">{t("galleryPhotos")}</p>
+              {stats ? (
+                <p className="text-3xl font-bold text-foreground">{stats.galleryCount}</p>
+              ) : (
+                <Skeleton className="h-9 w-16" />
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <div>

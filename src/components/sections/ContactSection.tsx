@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@convex/_generated/api";
 import { useTranslations } from "next-intl";
@@ -7,17 +8,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ContactForm } from "./ContactForm";
+import { BookingForm } from "./BookingForm";
 import { useDirection } from "@/hooks/useDirection";
 import { motion, useReducedMotion } from "motion/react";
-import { Phone, Mail, Globe, MapPin, Calendar, MessageCircle, Clock, ExternalLink, Send } from "lucide-react";
+import { Phone, Mail, Globe, MapPin, Calendar, MessageCircle, Clock, ExternalLink, Send, ClipboardList } from "lucide-react";
 import { getBilingualField } from "@/lib/bilingual";
 
 export function ContactSection() {
   const contact = useQuery(api.queries.getContactInfo);
   const t = useTranslations("contact");
   const tSite = useTranslations("site");
+  const tBooking = useTranslations("booking");
   const { isRTL, locale } = useDirection();
   const shouldReduce = useReducedMotion();
+  const [activeTab, setActiveTab] = useState<"booking" | "quick">("booking");
 
   function renderContactCards() {
     // Loading
@@ -157,13 +161,35 @@ export function ContactSection() {
           >
             <Card className="bg-surface border-border/40 hover:border-accent/15 transition-colors duration-300 shadow-card">
               <CardContent className="p-6 md:p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                    <Send className="h-5 w-5 text-accent" />
-                  </div>
-                  <h3 className="font-heading text-lg font-semibold text-foreground">{t("heading")}</h3>
+                {/* Tab switcher */}
+                <div className="flex items-center gap-1 rounded-lg bg-surface-elevated/50 p-1 mb-6">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("booking")}
+                    className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2.5 px-4 text-sm font-medium transition-all duration-200 cursor-pointer ${
+                      activeTab === "booking"
+                        ? "bg-accent text-background shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <ClipboardList className="h-4 w-4" />
+                    {tBooking("tabLabel")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("quick")}
+                    className={`flex-1 flex items-center justify-center gap-2 rounded-md py-2.5 px-4 text-sm font-medium transition-all duration-200 cursor-pointer ${
+                      activeTab === "quick"
+                        ? "bg-accent text-background shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Send className="h-4 w-4" />
+                    {t("form.quickMessageTab")}
+                  </button>
                 </div>
-                <ContactForm />
+
+                {activeTab === "booking" ? <BookingForm /> : <ContactForm />}
               </CardContent>
             </Card>
           </motion.div>

@@ -44,6 +44,7 @@ export default function AdminContactPage() {
 
   useEffect(() => {
     if (contact && !loaded) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time form initialization from server data
       setPhone(contact.phone ?? "");
       setSecondaryPhone(contact.secondaryPhone ?? "");
       setWhatsapp(contact.whatsapp ?? "");

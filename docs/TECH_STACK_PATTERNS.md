@@ -451,8 +451,8 @@ The project uses Clerk for authentication. No iron-session files exist (`session
 ### Environment Variables Required
 ```bash
 # .env.local
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<YOUR_PK_TEST_KEY>
+CLERK_SECRET_KEY=<YOUR_SK_TEST_KEY>
 CLERK_FRONTEND_API_URL=https://<your-clerk-instance>.clerk.accounts.dev
 ADMIN_EMAIL=your-email@example.com
 NEXT_PUBLIC_CLERK_SIGN_IN_URL=/admin/login

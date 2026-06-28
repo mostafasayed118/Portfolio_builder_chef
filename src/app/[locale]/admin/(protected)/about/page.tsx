@@ -43,6 +43,7 @@ export default function AdminAboutPage() {
 
   useEffect(() => {
     if (about && !loaded) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time form initialization from server data
       setHeadingEn(about.heading_en ?? "");
       setHeadingAr(about.heading_ar ?? "");
       setBioEn(about.bio_en ?? "");

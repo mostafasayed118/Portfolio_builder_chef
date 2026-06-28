@@ -220,6 +220,7 @@ export default function AdminSeoPage() {
   useEffect(() => {
     if (seoData?.seo) {
       const s = seoData.seo;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time form initialization from server data
       setSeoForm({
         defaultTitle_en: s.defaultTitle_en ?? "",
         defaultTitle_ar: s.defaultTitle_ar ?? "",
@@ -261,6 +262,7 @@ export default function AdminSeoPage() {
           noIndex: meta.noIndex ?? false,
         };
       }
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time form initialization from server data
       setPageForms(forms);
     }
   }, [allPageMeta]);
