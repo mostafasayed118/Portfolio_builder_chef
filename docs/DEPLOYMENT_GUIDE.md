@@ -478,28 +478,23 @@ The Content-Security-Policy in `next.config.ts` is strict. If something breaks:
 
 ---
 
-## 🔴 Critical Pre-Deployment Fix: Missing Middleware
+## 🔴 Critical Pre-Deployment Note: Next.js 16 Proxy
 
-**Issue:** The Clerk + next-intl middleware is in `src/proxy.ts`, but Next.js requires it to be at `src/middleware.ts`. Without renaming, the production build will have:
-- ❌ No admin route protection
-- ❌ No i18n locale routing
-- ❌ No request logging
+**Next.js 16 uses `proxy.ts` instead of `middleware.ts`.** This project already has `src/proxy.ts` configured with Clerk + next-intl middleware. Do NOT create a `middleware.ts` file — it will conflict with `proxy.ts` and cause a build error:
 
-**Fix:** Create `src/middleware.ts` that re-exports from `proxy.ts`:
-
-```bash
-echo "export { default } from \"./proxy\";
-export const config = {
-  matcher: [
-    \"/((?!_next|[^?]*\\\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)\",
-    \"/(api|trpc)(.*)\",
-    \"/__clerk/(.*)\",
-  ],
-};" > src/middleware.ts
+```
+Error: Both middleware file "./src/middleware.ts" and proxy file "./src/proxy.ts" are detected.
+Please use "./src/proxy.ts" only.
 ```
 
-Verify the file exists:
+**Verify `src/proxy.ts` exists** before deploying:
 
 ```bash
-ls src/middleware.ts
+ls src/proxy.ts
 ```
+
+The proxy file handles:
+- ✅ Clerk authentication for admin routes
+- ✅ next-intl locale routing
+- ✅ Request logging
+- ✅ CSP enforcement
